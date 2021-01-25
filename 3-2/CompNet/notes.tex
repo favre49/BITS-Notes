@@ -1,0 +1,106 @@
+\documentclass[12pt,letterpaper]{article}
+
+%%%%%%%%%%%%
+% Includes %
+%%%%%%%%%%%%
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1 in]{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage[justification=centering]{caption}
+
+% Formatting
+\renewcommand{\baselinestretch}{1.25}
+
+% Theorems and other necessary structures
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section] % Definition
+\newtheorem{theorem}{Theorem}[section] % Big result
+\newtheorem{corollary}{Corollary}[theorem] % Follows from a theorem
+\newtheorem{lemma}[theorem]{Lemma} % Minor result
+
+% New commands
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+
+% Title information
+\title{Computer Networks}
+\author{2018A7PS0193P}
+
+\begin{document}
+
+\maketitle
+
+\section{Networks}
+
+\begin{definition}
+  A \textbf{network} is a shared infrastructure that allows users to communicate with each other.
+\end{definition}
+
+The basic building blocks of a network are \textbf{nodes} and \textbf{links}. Nodes may be hosts or forwarding nodes. The end hosts communicate with one another through the \textbf{core network}, consisting of forwarding nodes. These nodes are connected via links called \textbf{network edges}.
+
+End hosts are physically connected to the core network via the \textbf{access network}. This consists of many parts, such as the ethernet switch, router, etc.
+
+\subsection{Communication Models}
+
+Networks could have multiple communication models:
+
+\begin{itemize}
+  \item \textbf{Client-Server model}: The client host requests, and receives the service from an always-on server. This server is also an end host, but has some special privileges.
+  \item \textbf{Peer-peer model}: Here, there is minimal or no use of dedicates servers, as in BitTorrent. The clients directly communicate with one another.
+\end{itemize}
+
+\subsection{Core Network Models}
+
+\subsubsection{Circuit Switching}
+
+How is our core network made? One way to do this is via \textbf{circuit switching}. There are end-to-end resources reserved for a ``call", like on a telephone network. There is no sharing of resources. Call setup needs to be done as a preparatory step. Circuit switching generally can be implemented by two different methods:
+
+\begin{itemize}
+  \item \textbf{FDM}, which stands for Frequency Domain Multiplexing. The total frequency bandwidth is divided among the users, allowing them to send data simultaneously. 
+  \item \textbf{TDM}, which stands for Time Domain Multiplexing. Here the time is divided among the users (perhaps in a round robin fashion). As such, one user gets access to the entire bandwidth of the circuit, but only for a period in time.
+\end{itemize}
+
+\subsubsection{Packet Switching}
+
+Another way is through \textbf{packet switching}, where data is sent over the net in discrete ``chunks", called packets. This is how it is done on the Internet. The host takes the application message, and breaks into packets of length $L$ bits. It then transmits packets into the access networks at transmission rate $R$, also called the bandwidth. Of course, this means that each packet faces a transmission delay of $L/R$.
+
+Packet switching uses \textbf{store and forward}. The packets are stored at intermediate nodes before sending to the next node. The intermediate node checks for errors in the packets before transmitting, assuring the integrity of the packets.
+
+When using packet switching, there may be four sources of packet delay:
+
+\begin{itemize}
+  \item Nodal processing : The node performs error checking and checks the header for the destination of the packet.
+  \item Queueing: When the arrival rate of the packets is faster than the sending rate, the node will keep the packets in a buffer queue. As such, there is a delay when the packet wait in the node queue.
+  \item Propagation: This is the delay from propagation of the packets from a node to the next node, i.e., the outgoing delay. This depends on the medium of the wire, and is given by $d/s$, where $d$ is the length of the connection and $s$ is the speed.
+  \item Transmission : This is the delay from transmission of packets into the node, i.e. the incoming delay.
+\end{itemize}
+
+\subsection{Performance of a Network}
+
+The performance of a network can be measured by the following parameters:
+
+\begin{itemize}
+  \item Delay
+  \item Packet loss : This is the number of packets lost when transmitting. Some applications, like streaming, might not care too much about this.
+  \item Throughput : This is the amount of bits transferred in unit time. This is important in some applications, such as for file transfer. 
+\end{itemize}
+
+\section{The Internet}
+
+The Internet is, in fact, a network of networks. The networks must be able to communicate despite using different applications running on different devices - i.e. it is heterogeneous.
+
+As such, the Internet is full of different access ISP networks. How do end hosts on different access ISPs communicate with one another. Of course, if we directly connect them all, it would not be scalable as it would need $O(N^2)$ connections. We also cannot use a single global hub, since it would be difficult to find a single place to put it and connect the entire world.
+
+Since a single global ISP cannot scale to connect the entire world, we use multiple global ISPs. These must be interconnected themselves. One way to do this is using \textbf{peering links}, which directly link two global ISPs. Another is to use \textbf{Internet Exchange Points}, called IXPs, to which multiple global ISPs can connect.
+
+The Internet uses this system in a tiered manner - end hosts might connect to a regional ISP, which may then connect to a higher level country ISP, and so on.
+
+Some corporations, like Google, have their own Content Distribution Networks (CDNs), and have their own network to bring services and content closer to users.
+
+
+
+\end{document}

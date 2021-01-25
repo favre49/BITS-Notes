@@ -1,0 +1,147 @@
+\documentclass[12pt,letterpaper]{article}
+
+%%%%%%%%%%%%
+% Includes %
+%%%%%%%%%%%%
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1 in]{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage[justification=centering]{caption}
+
+% Formatting
+\renewcommand{\baselinestretch}{1.25}
+
+% Theorems and other necessary structures
+%\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section] % Definition
+\newtheorem{theorem}{Theorem}[section] % Big result
+\newtheorem{corollary}{Corollary}[theorem] % Follows from a theorem
+\newtheorem{lemma}[theorem]{Lemma} % Minor result
+
+% New commands
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\C}{\mathbb{C}}
+
+% Title information
+\title{Number Theory}
+\author{2018A7PS0193P}
+
+\begin{document}
+
+\maketitle
+
+\section{Fundamentals}
+
+\subsection{Notation}
+
+For the rest of this course, the following notation will be followed:
+
+\begin{enumerate}
+  \item $\N$ is the set of natural numbers
+  \item $\Z$ is the set of integers
+  \item $\mathbb{W}$ is the set of whole numbers, i.e. $\mathbb{W} = \N \cup \{0\}$
+\end{enumerate}
+
+\subsection{Induction}
+
+Often in number theory, we use inductive proofs to prove our arguments. Induction consists of the following steps:
+
+\begin{enumerate}
+  \item Define an induction hypothesis $P(k)$
+  \item Verify it works for some base case $k=b$. It is possible multiple base cases need to be verified.
+  \item Assuming $P(k)$ is true, show that it implies that $P(k+1)$ is true
+\end{enumerate}
+
+Remember that $P(k)$ is a statement, not a function. You cannot multiply it by some constant or perform any operations on it.
+
+In weak induction (like in the steps given above), we only assume that $P(k)$ is true. However in strong induction, we assume that $P(i)$ is true $\forall i \in [b,k]$, and use this to prove that $P(k+1)$ is true.
+
+\subsection{Well Ordering Principle}
+
+\begin{theorem}[Well Ordering Principle]
+  Every non empty set of non-negative integers has a least element.
+\end{theorem}
+
+This is not true about negative integers - consider the case of infinite sets, like the set of all integers. There is no well defined least element.
+
+This principle is equivalent to the principle of induction.
+
+\subsubsection{Proof of Equivalence to Principle of Induction}
+
+First, let us prove that WOP $\Rightarrow$ PMI. Let $P(n)$ be a statement that depends on $n \in \N$. Suppose that:
+
+\begin{itemize}
+  \item $P(1)$ is true
+  \item $P(k)$ is true implies $P(k+1)$ is true for all $k \in N$.
+\end{itemize}
+
+We have to show that $P(n)$ is true for all $n \in N$. Let :
+
+\[S = \{n \in \N : P(n) \text{ is true} \}\]
+
+This means we must show that $S = \N$. Let $T := \N \symbol{92} S$, i.e. $T$ is the complement. Let as assume that $S \neq \N$.
+
+By WOP, $T$ has a least element, say $m$. Note that $m \geq 2$ since $1 \in S$. Then, $m-1 \notin T$ and $m-1 \in S$. As such, $P(m-1)$ must be true! However, by our initial assumptions, that would mean $P(m)$ is true as well, so $m \in S$. This creates a contradiction, since $m \in T$. Hence, $S = \N$.
+
+
+\subsection{Binomial Theorem}
+
+\begin{theorem}[Binomial Theorem]
+  Let $x,y \in \C$ and let $n \in \N$, then 
+  \[(x+y)^n = \sum_{k=0}^{n} {n \choose k} x^ky^{n-k}\]
+\end{theorem}
+
+
+\begin{corollary}
+  \[\sum_{k=0}^n {n \choose k} = 2^n\]
+\end{corollary}
+
+\begin{lemma}[Pascal's Identity]
+  \[{n \choose k} = {n-1 \choose k-1} + {n-1 \choose k}\]
+\end{lemma}
+
+\begin{lemma}
+  \[\sum_{k=0}^{\left \lfloor n/2 \rfloor \right} {n-k \choose k} = F_n\]
+\end{lemma}
+
+\section{The Division Algorithm}
+
+\begin{theorem}
+  Let $a,b \in \Z$ with $b > 0$. Then, there exist unique integers $q$ and $r$ such that $a+b.q = r$, $r \in [0,b)$.
+\end{theorem}
+
+\noindent \textbf{Proof:}
+
+Let $S = \{a - bn : n \in Z, a-bn \geq 0\}$. This set is always non-empty:
+\begin{itemize}
+  \item If $a \geq 0$, then $a \in S$
+  \item If $a<0$, then if $n = a$, we have $a-ab \in S$ since $b \geq 1$.
+\end{itemize}
+
+By WOP, $S$ has a least element, say $r$. So, there exists $q \in Z$ such that $r = a-bq$. Since $r \in S$, we have $r \geq 0$.
+
+Suppose $r \geq b$. Then:
+
+\[a-b(q+1) = a-bq-b = r-b \geq 0\]
+\[ \Rightarrow a-b(q+1) \in S\]
+\[\Rightarrow r-b \in S\]
+
+However, $r-b < r$, and $r$ is the least element! This gives us a contradiction. So, $r < b$.
+
+As such, we have proved the existence of this solution. Now we must prove it's uniqueness.
+
+Suppose there exists $p,r,q',r'$, such that:
+\[a = bq+r, 0 \leq r < b\]
+\[a = bq'+r', 0 \leq r' < b\]
+
+Assume WLOG $q \geq q'$. Now,
+\[r'-r = b(q-q')\]
+If $q > q'$, then $r'-r \geq b$. However, $r'-r < b$. So, this is a contradiction, and $q' = q$. The solution must be unique.
+
+
+\end{document}

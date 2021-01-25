@@ -1,0 +1,83 @@
+\documentclass[12pt,letterpaper]{article}
+
+%%%%%%%%%%%%
+% Includes %
+%%%%%%%%%%%%
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1 in]{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage[justification=centering]{caption}
+
+% Formatting
+\renewcommand{\baselinestretch}{1.25}
+
+% Theorems and other necessary structures
+\newtheorem{definition}{Definition}[section] % Definition
+\newtheorem{theorem}{Theorem}[section] % Big result
+\newtheorem{corollary}{Corollary}[theorem] % Follows from a theorem
+\newtheorem{lemma}[theorem]{Lemma} % Minor result
+
+% New commands
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+
+% Title information
+\title{Design and Analysis of Algorithms}
+\author{2018A7PS0193P}
+
+\begin{document}
+
+\maketitle
+
+\section{Fundamentals}
+
+\begin{definition}
+  An algorithm is a well defined computational procedure. It takes an input, does some computation and terminates with output
+\end{definition}
+
+To check the correctness of an algorithm, we must check the following characteristics:
+
+\begin{itemize}
+  \item Initialization: The algorithm is correct at the beginning
+  \item Maintenance : The algorithm remains correct as it runs
+  \item Termination : The algorithm terminates in finite time, correctly
+\end{itemize}
+
+For this entire course, we must always prove these characteristics when defining any algorithm.
+
+Algorithms are generally defined by a complexity - the time taken to complete the computation on a given input size. There are three ways we could consider this - best case, worst case, or average case.
+
+Complexity is discussed a lot in DSA, so I'm not going to rewrite it here. A quick roundup is:
+
+\begin{itemize}
+  \item $O(g(n)) = \{f(n) : \text{there exists } c, n_0 : 0 \leq f(n) \leq c \cdot g(n) \forall n \geq n_0 \}$
+  \item $\Omega(g(n)) = \{f(n) : \text{there exists } c, n_0 : 0 \leq c \cdot g(n)\leq f(n) \forall n \geq n_0 \}$
+  \item $\Theta(g(n)) = \{f(n) : \text{there exists } c, n_0 : 0 \leq c_2 \cdot g(n)\leq f(n) \leq c_2 \cdot g(n) \forall n \geq n_0 \}$
+\end{itemize}
+
+To find complexities in the case of recurrences, we use the \textbf{master method}. Let the recurrence be given by:
+
+\[T(n) = aT\left(\frac{n}{b}\right) + f(n)\]
+
+Here, $a, b \geq 1$. Let $\epsilon$ be a constant. Then:
+
+\begin{enumerate}
+  \item If $f(n) = O(n^{\log_ba - \epsilon})$ then $T(n) = \Theta(n^{\log_ba})$
+  \item If $f(n) = O(n^{\log_ba})$ then $T(n) = \Theta(n^{\log_ba}\log{n})$
+  \item If $f(n) = O(n^{\log_ba + \epsilon})$ then $T(n) = \Theta(f(n))$ provided if $af(n/b) \leq cf(n)$ for some constant $c <1$ and all sufficiently large $n$.
+\end{enumerate}
+
+Here, we redo DSA despite it being a prerequisite of the course. This recap has lasted 3 lectures (so far). You should probably just read CLRS, this is a waste. The topics covered are:
+
+\begin{itemize}
+  \item Quicksort (and it's average case analysis)
+  \item The $\Omega(n\log{n})$ lower bound of comparison sorting
+  \item Non-comparison sorting like counting sort, radix sort, etc.
+  \item Average case analysis of bucket sort
+\end{itemize}
+
+\end{document}

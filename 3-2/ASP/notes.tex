@@ -1,0 +1,167 @@
+\documentclass[12pt,letterpaper]{article}
+
+%%%%%%%%%%%%
+% Includes %
+%%%%%%%%%%%%
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1 in]{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage[justification=centering]{caption}
+
+% Formatting
+\renewcommand{\baselinestretch}{1.25}
+
+% Theorems and other necessary structures
+\newtheorem{definition}{Definition}[section] % Definition
+\newtheorem{theorem}{Theorem}[section] % Big result
+\newtheorem{corollary}{Corollary}[theorem] % Follows from a theorem
+\newtheorem{lemma}[theorem]{Lemma} % Minor result
+
+% New commands
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+
+% Title information
+\title{Applied Stochastic Processes}
+\author{2018A7PS0193P}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+\begin{definition}
+  A stochastic process is a probability model that describes the evolution of a system evolving randomly in time.
+\end{definition}
+
+\begin{definition}
+  A random variable is a mapping $X : \Omega \rightarrow \R$ that assigns a real number $X(\omega)$ to each outcome $\omega \in \Omega$, where $\Omega$ is the sample space.
+\end{definition}
+
+A stochastic process can be given by a collection of random variables $\{X(t), t \in T\}$, where $T$ is called the \textbf{index set}. If $T$ is countable (observed at discrete times), we get a \textbf{discrete time stochastic process}. On the other hand, if $T$ is uncountable (observed continuously), then we get a \textbf{continuous time stochastic process}.
+
+\begin{definition}
+  The state space  of a stochastic process is defined as the set of all possible values that the random variables $X(t)$ can assume.
+\end{definition}
+
+\subsection{Elementary Probability}
+
+For a recap of elementary probability, refer to the notes from Applied Statistical Methods.
+
+\subsection{Transformation of Random Variables}
+
+\begin{lemma}
+  Let $X$ have a continuous, strictly increasing CDF $F$. Let $U \sim $ Uniform(0,1). If $Y = F^{-1}(U)$, then Y also has the CDF $F$. 
+\end{lemma}
+
+The lemma above allows us to transform $U$ to any other random variable, as long as it has a continuous and strictly increasing CDF. Say we had an algorithm to define a uniform random variable in the range (0,1), now we have a way to generate random variables from a different distribution.
+
+\subsection{Moment Generating Functions}
+
+\begin{definition}
+  The moment generating function $\phi(t)$ of the random variable $X$ is defined for all values $t$ as $\phi(t) = E[e^{tx}]$.
+\end{definition}
+
+The moment generating functions of some oft-used distributions are as follows:
+
+\begin{itemize}
+  \item Moment generating function of Binomial($n,p$) is:
+    \begin{align*}
+      \phi(t) = (pe^t + 1 - p)^n
+    \end{align*}
+  \item Moment generating function of Poisson($\lambda$) is:
+    \begin{align*}
+      \phi(t) = e^{\lambda(e^t-1)}
+    \end{align*}
+  \item Moment generating function of Exponential($\lambda$) is:
+    \begin{align*}
+      \phi(t) = \frac{\lambda}{\lambda-t}
+    \end{align*}
+  \item TODO more
+\end{itemize}
+
+\begin{theorem}
+  The moment generating function of the sum of independent random variables is the product of the individual moment generating functions.
+\end{theorem}
+
+So, this means that $\phi_{X+Y}(t) = \phi_X(t) \cdot \phi_Y(t)$, as long as $X \perp Y$ (this notation means that they are independent).
+
+\subsection{Conditional distributions}
+
+The conditional probability distribution of $Y$ given the occurrence of the value $x$ of $X$ is given by:
+
+\[ f_{Y|X} (y|x) = \frac{f_{X,Y}(x,y)}{f_X(x)}\]
+
+where $f_{X,Y}(x,y)$ is the joint distribution and $f_X(x)$ is the marginal density of $X$.
+
+The conditional expectation of $X$ given $Y$ is:
+
+\[E(X|Y=y) = \int_{-\infty}^{\infty} x f_{X|Y}(x,y) dx \]
+
+\subsection{Markov's and Chebyshev's Inequality}
+
+\begin{theorem}[Markov's Inequality]
+  Let $X$ be a non-negative random variable and suppose that $E(X)$ exists. For any $t > 0$, 
+  \[P(X > t) \leq \frac{E(X)}{t}\]
+\end{theorem}
+
+\begin{theorem}[Chebyshev's Inequality]
+  Let $\mu = E(X)$ and $\sigma^2 = V(X)$. Then
+  \[P(|X-\mu| \geq t) \leq \frac{\sigma^2}{t^2}\]
+  \[ P(|Z| \geq k) \leq \frac{1}{k^2}\]
+  where $Z = (X-\mu) / \sigma$ and $t > 0$.
+\end{theorem}
+
+Chebyshev's Inequality is a more general version of Markov's Inequality, applicable for any random variable $X$.
+\section{Convergence of Random Variables}
+
+Let $X_1,X_2,...$ be a sequence of random variables and let $X$ be another random variable. Let $F_n$ be the CDF of $X_n$ and $F$ be the CDF of $X$.
+
+We say that $X_n$ converges to $X$ in probability, denoted by $X_n \xrightarrow{P} X$, if for every $\epsilon > 0$,
+\[P(|X_n-X| > \epsilon) \rightarrow 0\]
+as $n \rightarrow \infty$.
+
+We say that $X_n$ converges to $X$ in distribution, denoted by $X_n \leadsto X$, if
+\[ \lim_{n \rightarrow \infty} F_n(t) = F(t)\]
+for all $t$ for which $F$ is continuous.
+
+\begin{lemma}
+  If $X_n \xrightarrow{P} X$, then $X_n \leadsto X$.
+\end{lemma}
+
+The above lemma is provided without proof, as it is beyond the scope of the course.
+
+\noindent \textbf{Example:}
+
+Let $X_n \sim N(0,\frac{1}{n})$. We claim that this series converges to 
+
+\[ F_X(n) = \begin{cases}
+0 & x < 0 \\
+1 & x \geq 0
+\end{cases}\]
+
+in distribution. Let $t > 0$, and define the standard normal variable $Z_n = \sqrt{n}X_n$, so $Z_n \sim N(0,1)$. So,
+\begin{align*}
+  F_{X_n}(t) &= P(X_n \leq t) \\
+             &= P(Z_n \leq \sqrt{n}t) \\
+             &= \int_{-\infty} ^{\sqrt{n}t} f(x) dx
+\end{align*}
+
+where $f(x)$ is the PDF of $Z_n$.
+
+It is clear that as $n \rightarrow \infty$, we get the following distribution:
+
+\[F_{X_n}(t) = \begin{cases}
+  0 & t < 0 \\
+  0.5 & t = 0 \\
+  1 & t > 0
+\end{cases}\]
+
+So, $F_{X_n} \leadsto F_X \forall t \in \R - \{0\}$.
+
+\end{document}

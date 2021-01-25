@@ -1,0 +1,186 @@
+\documentclass[12pt,letterpaper]{article}
+
+%%%%%%%%%%%%
+% Includes %
+%%%%%%%%%%%%
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1 in]{geometry}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage[justification=centering]{caption}
+
+% Formatting
+\renewcommand{\baselinestretch}{1.25}
+
+% Theorems and other necessary structures
+%\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section] % Definition
+\newtheorem{theorem}{Theorem}[section] % Big result
+\newtheorem{corollary}{Corollary}[theorem] % Follows from a theorem
+\newtheorem{lemma}[theorem]{Lemma} % Minor result
+
+% New commands
+\newcommand{\R}{\mathbb{R}} % Real numbers
+\newcommand{\N}{\mathbb{N}} % Natural numbers
+\newcommand{\Z}{\mathbb{Z}} % Integral numbers
+
+% Title information
+\title{Compilers}
+\author{2018A7PS0193P}
+
+\begin{document}
+
+\maketitle
+
+\section{Process of Translation}
+
+The process of compilers converting from source code (the high level language) to target code (the machine language) is known as translation.  It consists of many steps, which are described below.
+
+\subsection{Lexical Analysis}
+
+Lexical analysis follows the following steps:
+
+\begin{enumerate}
+\item Identify the valid set of characters in the language
+\item Break the sequence of characters into appropriate words or tokens (keywords, numbers, operators, etc.)
+\item Find out whether these tokens are valid or not.
+\end{enumerate}
+
+The key goal of the lexical analyzer is to break a sentence into a series of words/tokens. These breaks are generally done via certain separators. The tokens are recognized via some rules encoded into a Finite State Machine.
+
+During the lexical phase, we may experience the following lexical errors:
+
+\begin{itemize}
+  \item Occurrence of illegal characters
+  \item Exceeding the length of identifier
+\end{itemize}
+
+The output of the lexical analyzer will be a sequence of tokens and their ``type'', which signifies whether it is a identifier, operator, etc.
+
+\subsection{Syntax Analysis}
+
+The syntax analysis takes the sequence of tokens as an input, and generates a parse tree. In case the syntax is not correct according to the grammar rules, it flags a syntactical error. This is modelled using Context Free Grammars that will be recognized using PDAs or Table Driven processes.
+
+\subsection{Semantic Analysis}
+
+Semantic analysis takes the parse tree as an input, and outputs a disambiguated parse tree. It performs the following:
+
+\begin{itemize}
+  \item Check Semantics
+  \item Error reporting (types, etc.)
+  \item Disambiguate overloaded operators (meaning of operators depends on operands)
+  \item Type coercion (type casting)
+  \item Uniqueness checking (redeclaration of variables)
+\end{itemize}
+
+As such, the disambiguated parse tree gives us an unambiguous representation of the parse tree.
+
+The phases mentioned till now comprise the \textbf{front end} of the compiler, where the source code is handled. After this, the compiler works on generating the target code.
+
+\subsection{Code optimization}
+
+This is an optional phase that modifies the programs to run faster and consume less resources like memory, registers, etc. However, it will not change the representation of the program.
+
+Some examples of machine independent code optimization done is:
+
+\begin{itemize}
+  \item Common sub-expression elimination
+  \item Copy Propagation
+  \item Dead code elimination
+  \item Code Motion
+  \item Strength Reduction
+  \item Constant Folding
+\end{itemize}
+
+\textit{TODO: See what these do and examples of each.}
+
+\subsection{Code Generation}
+
+This is the process of mapping from source level abstractions (identifiers, values, etc) to target machine abstractions (registors, memory, etc.). This is a two step process - initially, intermediate code gets generated from the disambiguated parse tree, which is used to generate the final machine code.
+
+During code generation, we have to do the following:
+
+\begin{itemize}
+  \item Map identifiers to locations (memory or registers)
+  \item Map source code operators to opcodes or sequences of opcodes.
+  \item Transform conditionals and iterations to a test/jump or compare instructions
+  \item We use layout parameter passing protocols - the locations for parameters, return values, etc.
+\end{itemize}
+
+\subsection{Post Translation Optimizations}
+
+Unlike in the code optimization phase where we perform machine independent code optimizations, this does machine-dependent code optimizations. This is an optional phase as well, where we may remove unneeded operations or rearrange to prevent hazards. It is a flexible phase, and may occur at any time in the back-end of the compiler.
+
+\subsection{Symbol Table}
+
+The symbol table contains information required about the source program identifiers during compilation, including:
+
+\begin{itemize}
+  \item Category of variable
+  \item Data type
+  \item Quantity stored in structure
+  \item Scope information
+  \item Address in Memory
+\end{itemize}
+
+The symbol table must be present in every phase of the compiler, and is used in all the phases to get information about the identifiers.
+
+\section{Advantages and Disadvantages of Compilers}
+
+The advantages of compilers are:
+
+\begin{itemize}
+  \item Highly modular in nature
+  \item It is retargetable. This means that if there is a single language and multiple machines, then we can use the same front end. If there are many languages
+  \item Source code and machine independent optimizations are possible.
+\end{itemize}
+
+The limitations of the compiler are:
+
+\begin{itemize}
+  \item Design of programming languages has a huge effect on the performance of compilers.
+  \item Lots of work is repeatable. For $S$ languages and $M$ machines, $S\cdot M$ compilers are needed. This is known as the $S*M$ problem of compilers.
+\end{itemize}
+
+The $S*M$ problem is generally solved by introducing some common intermediate language, called the \textbf{Universal Intermediate Language Generator}. Some common machine independent intermediate code generation techniques are:
+
+\begin{itemize}
+  \item Postfix Notation
+  \item Three Address code
+  \item Syntax tree
+  \item Directed Acyclic Graph
+\end{itemize}
+
+
+\section{Lexical Analysis}
+
+The lexical analyzer performs the following functions:
+
+\begin{itemize}
+  \item Take high level language as input and output a sequence of tokens
+  \item It generally cleans the code, by stripping off blanks, tabs newlines and comments.
+  \item Keeps track of the line numbers for associated error messages
+\end{itemize}
+
+The lexical analyzer is modelled using regular expressions. As such, it's implementation is done with a DFA.
+
+\begin{definition}
+  A token is a string of characters which logically belong together, e.g. keywords, number, identifiers, etc.
+\end{definition}
+
+\begin{definition}
+  A pattern is the set of strings for which the same token is produced.
+\end{definition}
+
+\begin{definition}
+  A lexeme is a sequence of characters matched by a pattern to form the corresponding token.
+\end{definiition}
+
+Now that we understand the definitions, we can see what the lexical analyzer actually does - it transforms strings to the token and passes the lexeme as it's corresponding attribute. For instance, the integer 43 would become \texttt{<num,43>}.
+
+
+
+
+\end{document}
