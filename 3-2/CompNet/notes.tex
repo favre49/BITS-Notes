@@ -101,6 +101,42 @@ The Internet uses this system in a tiered manner - end hosts might connect to a 
 
 Some corporations, like Google, have their own Content Distribution Networks (CDNs), and have their own network to bring services and content closer to users.
 
+\subsection{Layered Network Model}
+
+The Internet is based on a Layered Network Model known as \textbf{OSI}. Any device under OSI can have the following layers:
+
+\begin{enumerate}
+  \item Physical
+  \item Data Link
+  \item Network
+  \item Transport
+  \item Session
+  \item Presentation
+  \item Application
+\end{enumerate}
+
+Each of these layers depend on the one below (lower number) and export their services to the ones above (higher number).
+
+The end hosts implement all 7 layers of the model. Those which implement the first 3 layers are called \textbf{routers} or Layer 3 devices. Routers are used to connect two different networks. Those which implement the first 2 layers are called \textbf{switches} or Layer 2 devices. They connect devices within a network, i.e., in Local Area Networks.
+
+The Internet stack does not actually use all 7 layers - in fact it uses only 5. It removes the Presentation layer, which allows applications to interpret the meaning of data. It also removes the Session layer, which is used for synchronization, check pointing and recovery of data exchange. These functions are generally performed by the Application layer and/or the Transport layer. This Internet stack is known as \textbf{TCP/IP model}.
+
+In the context of the Internet, these layers perform the following functions:
+
+\begin{enumerate}
+  \item \textbf{Physical:} This layer delivers bits between the two endpoints of a link, e.g. copper, fiber, wireless, etc.
+  \item \textbf{Data Link:} This layer delivers packets between two hosts in a local area network. These are bridges and switches.
+  \item \textbf{Network:} This layer connects multiple networks, e.g. routers. This uses the Internet Protocol (IP).
+  \item \textbf{Transport:} This layer does process-process data transfer. It may use a multitude of protocols, including TCP, UDP, etc.
+  \item \textbf{Application:} This layer supports network applications. It may use FTP, SMTP, HTTP, etc.
+\end{enumerate}
+
+\subsection{IP Hourglass Architecture}
+
+One way to imagine the Internet architecture is as a hourglass. The IP interconnects multiple existing networks, and hides the underlying technology from applications. This provides minimal functionality (has a "narrow waist"). The tradeoff of this approach is that there are no assumptions being made, and as such no guarantee that something works.
+
+
+
 
 
 \end{document}
