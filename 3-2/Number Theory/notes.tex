@@ -109,10 +109,16 @@ By WOP, $T$ has a least element, say $m$. Note that $m \geq 2$ since $1 \in S$. 
   \[\sum_{k=0}^{\left \lfloor n/2 \rfloor \right} {n-k \choose k} = F_n\]
 \end{lemma}
 
+\subsection{Pigeonhole Principle}
+
+\begin{theorem}
+  If $n$ items are put into $m$ containers, with $n > m$, then at least one container must contain more than one item.
+\end{theorem}
+
 \section{The Division Algorithm}
 
 \begin{theorem}
-  Let $a,b \in \Z$ with $b > 0$. Then, there exist unique integers $q$ and $r$ such that $a+b.q = r$, $r \in [0,b)$.
+  Let $a,b \in \Z$ with $b > 0$. Then, there exist unique integers $q$ and $r$ such that $a = bq + r$, $r \in [0,b)$.
 \end{theorem}
 
 \noindent \textbf{Proof:}
@@ -143,5 +149,18 @@ Assume WLOG $q \geq q'$. Now,
 \[r'-r = b(q-q')\]
 If $q > q'$, then $r'-r \geq b$. However, $r'-r < b$. So, this is a contradiction, and $q' = q$. The solution must be unique.
 
+\begin{definition}
+  If $a,b \in \Z$, we say that $a$ divides $b$ if $b=ak$ for some $k \in \Z$. This is denoted by $a|b$
+\end{definition}
+
+Some properties of division are:
+
+\begin{itemize}
+  \item If $a|b$, then $\pm a | \pm b$
+  \item If $a|b$ and $b|c$ then $a|c$ (Transitivity)
+  \item If $a|b$ and $a|c$ then $a|bx+cy$ (Linear Combination)
+  \item If $a|b$ and $b \neq 0$, then $|a| \leq |b|$ (Bounds by divisibility)
+  \item $a|b$ and $b|a$, then $b = \pm a$.
+\end{itemize}
 
 \end{document}
