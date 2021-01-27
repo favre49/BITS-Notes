@@ -156,6 +156,8 @@ The $S*M$ problem is generally solved by introducing some common intermediate la
 
 \section{Lexical Analysis}
 
+\subsection{Functions of the Lexical Analyzer}
+
 The lexical analyzer performs the following functions:
 
 \begin{itemize}
@@ -164,7 +166,7 @@ The lexical analyzer performs the following functions:
   \item Keeps track of the line numbers for associated error messages
 \end{itemize}
 
-The lexical analyzer is modelled using regular expressions. As such, it's implementation is done with a DFA.
+The lexical analyzer is modelled using regular expressions. As such, it's implementation is done with a DFA. An example of one rule is $L \cdot (L+D)^*$, where $L$ refers to a letter and $D$ refers to a digit.
 
 \begin{definition}
   A token is a string of characters which logically belong together, e.g. keywords, number, identifiers, etc.
@@ -176,11 +178,33 @@ The lexical analyzer is modelled using regular expressions. As such, it's implem
 
 \begin{definition}
   A lexeme is a sequence of characters matched by a pattern to form the corresponding token.
-\end{definiition}
+\end{definition}
 
 Now that we understand the definitions, we can see what the lexical analyzer actually does - it transforms strings to the token and passes the lexeme as it's corresponding attribute. For instance, the integer 43 would become \texttt{<num,43>}.
 
+\subsection{Working of the Lexical Analyzer}
 
+The lexical analyzer reads the character one by one from the source code into the lexeme. When it reaches a separator, it assigns a token to the lexeme based on certain rules, and continues to read the characters once more.
 
+However, reading the lexemes character by character is slow, and involves many IO operations. This is done from a buffer instead of directly from the file. Moreover, the prefix of a lexeme is often not enough to determine the token - think of the lexemes \texttt{=} and \texttt{==}. We instead use a lookahead pointer to determine the appropriate token for a lexeme, and then push back the characters that we do not need in the current lexeme.
+
+\subsection{Symbol Table and the Lexical Analyzer}
+
+The lexical analyzer also interfaces with the symbol table. When the lexical analyzer discovers a lexeme constituting an identifier, it enters that lexeme to the symbol table. Sometimes, information regarding the token of a particular lexeme may also be store in the symbol table. As such, the symbol table must implement the following operations:
+
+\begin{enumerate}
+  \item \texttt{insert(s,t)} : Save lexeme \texttt{s} and token \texttt{t} and return pointer.
+  \item \texttt{lookup(s)} : return the index of entry for lexeme \texttt{s} or \texttt{`0'} if \texttt{s} is not found.
+\end{enumerate}
+
+To make the symbol table space efficient, we save lexemes in some separate memory, and instead store pointers to the lexemes in the symbol table.
+
+The rule for identifying an identifier and a keyword is generally the same. To be able to tokenize the identifiers and keywords separately, we initialize the symbol table with the list of keywords, say, by calling \texttt{insert("if",keyword)}.
+
+\subsection{Challenges in Development of Lexical Analyzer}
+
+\textit{TODO : Fix vs Free Lexemes}
+
+\textit{TODO : Whitespaces}
 
 \end{document}
