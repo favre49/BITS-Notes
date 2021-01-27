@@ -1,29 +1,36 @@
-\documentclass[12pt,letterpaper]{article}
+\documentclass[12pt,letterpaper]{amsbook}
 
-%%%%%%%%%%%%
-% Includes %
-%%%%%%%%%%%%
+% Formatting packages
 \usepackage[utf8]{inputenc}
 \usepackage[margin=1 in]{geometry}
+\usepackage{parskip}
+
+% Picture packages
 \usepackage{graphicx}
-\usepackage{amsmath}
-\usepackage{amsthm}
-\usepackage{amsfonts}
 \usepackage[justification=centering]{caption}
+
+% AMS packages
+\usepackage{amsmath,amsfonts,mathtools,amsthm,amssymb}
 
 % Formatting
 \renewcommand{\baselinestretch}{1.25}
 
 % Theorems and other necessary structures
-\newtheorem{definition}{Definition}[section] % Definition
-\newtheorem{theorem}{Theorem}[section] % Big result
-\newtheorem{corollary}{Corollary}[theorem] % Follows from a theorem
-\newtheorem{lemma}[theorem]{Lemma} % Minor result
+\usepackage{mdframed}
+\mdfsetup{skipabove=1em,skipbelow=0em}
+\theoremstyle{definition}
+\newmdtheoremenv[nobreak=true]{theorem}{Theorem}[section] % Big result
+\newmdtheoremenv[nobreak=true]{corollary}{Corollary}[theorem] % Follows from a theorem
+\newmdtheoremenv[nobreak=true]{lemma}[theorem]{Lemma} % Minor result
+\newtheorem{definition}{Definition}% Definition
+\newtheorem*{remark}{Remark}
+\newtheorem*{example}{Example}[section]
 
 % New commands
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\Z}{\mathbb{Z}}
+\newcommand{\C}{\mathbb{C}}
 
 % Title information
 \title{Applied Stochastic Processes}
@@ -33,7 +40,9 @@
 
 \maketitle
 
-\section{Introduction}
+\chapter{Fundamentals}
+
+\section{Stochastic Processes}
 
 \begin{definition}
   A stochastic process is a probability model that describes the evolution of a system evolving randomly in time.
@@ -49,11 +58,13 @@ A stochastic process can be given by a collection of random variables $\{X(t), t
   The state space  of a stochastic process is defined as the set of all possible values that the random variables $X(t)$ can assume.
 \end{definition}
 
-\subsection{Elementary Probability}
+\section{Elementary Probability}
 
 For a recap of elementary probability, refer to the notes from Applied Statistical Methods.
 
-\subsection{Transformation of Random Variables}
+\section{Transformation of Random Variables}
+
+\phantom{Invisible text to fix mdframe, I don't want to switch to tcolorbox}
 
 \begin{lemma}
   Let $X$ have a continuous, strictly increasing CDF $F$. Let $U \sim $ Uniform(0,1). If $Y = F^{-1}(U)$, then Y also has the CDF $F$. 
@@ -61,7 +72,7 @@ For a recap of elementary probability, refer to the notes from Applied Statistic
 
 The lemma above allows us to transform $U$ to any other random variable, as long as it has a continuous and strictly increasing CDF. Say we had an algorithm to define a uniform random variable in the range (0,1), now we have a way to generate random variables from a different distribution.
 
-\subsection{Moment Generating Functions}
+\section{Moment Generating Functions}
 
 \begin{definition}
   The moment generating function $\phi(t)$ of the random variable $X$ is defined for all values $t$ as $\phi(t) = E[e^{tx}]$.
@@ -91,7 +102,7 @@ The moment generating functions of some oft-used distributions are as follows:
 
 So, this means that $\phi_{X+Y}(t) = \phi_X(t) \cdot \phi_Y(t)$, as long as $X \perp Y$ (this notation means that they are independent).
 
-\subsection{Conditional distributions}
+\section{Conditional distributions}
 
 The conditional probability distribution of $Y$ given the occurrence of the value $x$ of $X$ is given by:
 
@@ -103,7 +114,7 @@ The conditional expectation of $X$ given $Y$ is:
 
 \[E(X|Y=y) = \int_{-\infty}^{\infty} x f_{X|Y}(x,y) dx \]
 
-\subsection{Markov's and Chebyshev's Inequality}
+\section{Markov's and Chebyshev's Inequality}
 
 \begin{theorem}[Markov's Inequality]
   Let $X$ be a non-negative random variable and suppose that $E(X)$ exists. For any $t > 0$, 
@@ -118,6 +129,7 @@ The conditional expectation of $X$ given $Y$ is:
 \end{theorem}
 
 Chebyshev's Inequality is a more general version of Markov's Inequality, applicable for any random variable $X$.
+
 \section{Convergence of Random Variables}
 
 Let $X_1,X_2,...$ be a sequence of random variables and let $X$ be another random variable. Let $F_n$ be the CDF of $X_n$ and $F$ be the CDF of $X$.
@@ -136,7 +148,7 @@ for all $t$ for which $F$ is continuous.
 
 The above lemma is provided without proof, as it is beyond the scope of the course.
 
-\noindent \textbf{Example:}
+\begin{example}
 
 Let $X_n \sim N(0,\frac{1}{n})$. We claim that this series converges to 
 
@@ -163,5 +175,23 @@ It is clear that as $n \rightarrow \infty$, we get the following distribution:
 \end{cases}\]
 
 So, $F_{X_n} \leadsto F_X \forall t \in \R - \{0\}$.
+\end{example}
+
+\chapter{Markov Chains}
+
+\section{Introduction}
+
+\begin{definition}
+  A stochastic process with a finite number of state spaces $S = \{0,1,...,N\}$ and a countable index state $T = \{t_0,t_1,t_2,...\}$ is a Markov chain if
+  \[P(X_{n+1} = j|X_n = i, X_{n-1} = i_{n-1},...,X_0 = i_0) \\ \]
+  \[= P(X_{n+1} = j | X_n = i) \]
+  \[= P_{ij}\]
+\end{definition}
+
+This means that the probability of a transition from state $i$ to a state $j$ is completely dependent on the starting and the ending state. The resulting transition matrix is called the \textbf{one step transition matrix}, denoted by $\textbf{P}$.
+
+\begin{lemma}
+  \[\sum_{j = 0}^{\infty} P_{ij} = 1 \forall i \in S\]
+\end{lemma}
 
 \end{document}
