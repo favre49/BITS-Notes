@@ -1,25 +1,30 @@
-\documentclass[12pt,letterpaper]{article}
+\documentclass[12pt,letterpaper]{amsbook}
 
-%%%%%%%%%%%%
-% Includes %
-%%%%%%%%%%%%
+% Formatting packages
 \usepackage[utf8]{inputenc}
 \usepackage[margin=1 in]{geometry}
+\usepackage{parskip}
+
+% Picture packages
 \usepackage{graphicx}
-\usepackage{amsmath}
-\usepackage{amsthm}
-\usepackage{amsfonts}
 \usepackage[justification=centering]{caption}
+
+%AMS packages
+\usepackage{amsmath,amsthm,amsfonts,amssymb,mathtools}
 
 % Formatting
 \renewcommand{\baselinestretch}{1.25}
 
 % Theorems and other necessary structures
-%\theoremstyle{definition}
-\newtheorem{definition}{Definition}[section] % Definition
-\newtheorem{theorem}{Theorem}[section] % Big result
-\newtheorem{corollary}{Corollary}[theorem] % Follows from a theorem
-\newtheorem{lemma}[theorem]{Lemma} % Minor result
+\usepackage{mdframed}
+\mdfsetup{skipabove=1em,skipbelow=0em}
+\theoremstyle{definition}
+\newmdtheoremenv[nobreak=true]{theorem}{Theorem}[section] % Big result
+\newmdtheoremenv[nobreak=true]{corollary}{Corollary}[theorem] % Follows from a theorem
+\newmdtheoremenv[nobreak=true]{lemma}[theorem]{Lemma} % Minor result
+\newtheorem{definition}{Definition} % Definition
+\newtheorem*{remark}{Remark}
+\newtheorem*{example}{Example}
 
 % New commands
 \newcommand{\R}{\mathbb{R}}
@@ -35,9 +40,9 @@
 
 \maketitle
 
-\section{Fundamentals}
+\chapter{Fundamentals}
 
-\subsection{Notation}
+\section{Notation}
 
 For the rest of this course, the following notation will be followed:
 
@@ -47,7 +52,7 @@ For the rest of this course, the following notation will be followed:
   \item $\mathbb{W}$ is the set of whole numbers, i.e. $\mathbb{W} = \N \cup \{0\}$
 \end{enumerate}
 
-\subsection{Induction}
+\section{Induction}
 
 Often in number theory, we use inductive proofs to prove our arguments. Induction consists of the following steps:
 
@@ -61,7 +66,9 @@ Remember that $P(k)$ is a statement, not a function. You cannot multiply it by s
 
 In weak induction (like in the steps given above), we only assume that $P(k)$ is true. However in strong induction, we assume that $P(i)$ is true $\forall i \in [b,k]$, and use this to prove that $P(k+1)$ is true.
 
-\subsection{Well Ordering Principle}
+\section{Well Ordering Principle}
+
+\phantom{}
 
 \begin{theorem}[Well Ordering Principle]
   Every non empty set of non-negative integers has a least element.
@@ -71,7 +78,7 @@ This is not true about negative integers - consider the case of infinite sets, l
 
 This principle is equivalent to the principle of induction.
 
-\subsubsection{Proof of Equivalence to Principle of Induction}
+\begin{proof}
 
 First, let us prove that WOP $\Rightarrow$ PMI. Let $P(n)$ be a statement that depends on $n \in \N$. Suppose that:
 
@@ -88,8 +95,12 @@ This means we must show that $S = \N$. Let $T := \N \symbol{92} S$, i.e. $T$ is 
 
 By WOP, $T$ has a least element, say $m$. Note that $m \geq 2$ since $1 \in S$. Then, $m-1 \notin T$ and $m-1 \in S$. As such, $P(m-1)$ must be true! However, by our initial assumptions, that would mean $P(m)$ is true as well, so $m \in S$. This creates a contradiction, since $m \in T$. Hence, $S = \N$.
 
+\end{proof}
 
-\subsection{Binomial Theorem}
+
+\section{Binomial Theorem}
+
+\phantom{}
 
 \begin{theorem}[Binomial Theorem]
   Let $x,y \in \C$ and let $n \in \N$, then 
@@ -109,19 +120,22 @@ By WOP, $T$ has a least element, say $m$. Note that $m \geq 2$ since $1 \in S$. 
   \[\sum_{k=0}^{\left \lfloor n/2 \rfloor \right} {n-k \choose k} = F_n\]
 \end{lemma}
 
-\subsection{Pigeonhole Principle}
+\phantom{}
+
+\section{Pigeonhole Principle}
+
 
 \begin{theorem}
   If $n$ items are put into $m$ containers, with $n > m$, then at least one container must contain more than one item.
 \end{theorem}
 
-\section{The Division Algorithm}
+\chapter{Division Algorithm}
 
 \begin{theorem}
   Let $a,b \in \Z$ with $b > 0$. Then, there exist unique integers $q$ and $r$ such that $a = bq + r$, $r \in [0,b)$.
 \end{theorem}
 
-\noindent \textbf{Proof:}
+\begin{proof}
 
 Let $S = \{a - bn : n \in Z, a-bn \geq 0\}$. This set is always non-empty:
 \begin{itemize}
@@ -148,6 +162,8 @@ Suppose there exists $p,r,q',r'$, such that:
 Assume WLOG $q \geq q'$. Now,
 \[r'-r = b(q-q')\]
 If $q > q'$, then $r'-r \geq b$. However, $r'-r < b$. So, this is a contradiction, and $q' = q$. The solution must be unique.
+
+\end{proof}
 
 \begin{definition}
   If $a,b \in \Z$, we say that $a$ divides $b$ if $b=ak$ for some $k \in \Z$. This is denoted by $a|b$
