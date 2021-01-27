@@ -80,4 +80,95 @@ Here, we redo DSA despite it being a prerequisite of the course. This recap has 
   \item Average case analysis of bucket sort
 \end{itemize}
 
+\section{Matrix Multiplication}
+
+Naive Matrix multiplication is $\Theta(N^3)$, since we can express the result $A \cdot B  = C$ as:
+
+\[C_{ij} = \sum_{k=1}^{r}A_{ik} \times B_{kj}\]
+
+We can improve this using a divide-and-conquer approach with \textbf{Strassen's Multiplication}. It has four steps:
+
+\begin{enumerate}
+  \item Divide the input matrices $A$ and $B$ and the output matrix $C$ into four $n/2 \times n/2$ submatrices. This takes $\Theta(1)$ time.
+  \item Create 10 matrices $S_1,S_2,...S_10$, each of which is of size $n/2 \times n/2$ and is the sum or difference of two matrices created in step 1.
+  \item Using these submatrices, we can recursively compute seven matrix products $P_1,P_2,...P_7$, each of which is $n/2$.
+  \item Compute the desired submatrices $C_{11},C_{12},C_{21},C_{22}$ by adding and subtracting various combinations of the $P_i$ matrices. We can compute all four in $\Theta(N^2)$ time.
+\end{enumerate}
+
+The details of this can be seen on page 80 of CLRS, but the running time recurrence will be given by:
+
+\[T(n) = \begin{cases}
+  \Theta(1) & \text{if } n = 1 \\
+  7T(n/2) + \Theta(n^2) & \text{if } n > 1
+\end{cases}\]
+
+By master method, this is $T(n) = \Theta(n^{\log7})$
+
+\section{Polynomial Multiplication}
+
+Polynomials are functions of the form:
+
+\[f(x) = a_0 + a_1x + a_x^2 + ... a_{n-1}x^{n-1}\]
+
+One way to express this is as a vector of coefficients  - this is called the \textbf{Coefficient form}. This form also allows us to evaluate $f(x)$ in $O(n)$ using Horner's rule, where we express the polynomial as:
+
+\[a_0 + x(a_1 + x(a_2 + ...x(a_n-1)...))\]
+
+Another way to express this is using the \textbf{point value form} , where we express it as $n$ point of the form $(x_i,f(x_i))$. This point value form uniquely identifies a polynomial. Generally this would take $\Theta(N^2)$ time , but with FFT we can do it in $O(N\log N)$.
+
+The process of getting the coefficient form from the point value form is known as $\textbf{interpolation}$.  We can do this in $O(n^3)$ using Gaussian Elimination, or in $O(n^2)$ with Lagrange Interpolation.
+
+Generally, the multiplication of polynomials takes $\Theta(N^2)$. However, we can do this much faster using \textbf{Fast Fourier Transform}.
+
+\subsection{Fourier Transform}
+
+\subsubsection{Discrete Fourier Transform}
+
+From now on, $w_n^k$ will denote the $k^{th}$ solution of $x^n=1$, i.e. the $n^{th}$ root of unity. $w_n$ will denote the principal $n^{th}$ root of unity. Remember the following properties:
+
+\begin{enumerate}
+  \item $w_n^k = e^{\frac{2k\pi i}{n}}$
+  \item $w_{dn}^{dk} = w_{n}^k$
+  \item $w_{n}^{n/2} = w_2 = -1$
+  \item If $n >0$ is even, then the squares of the $n$ complex $n^{th}$ roots of unity are the $n/2$ complex $n/2$th roots of unity. (Halving Lemma)
+  \item $\sum_{j=0}^{n-1} (w_{n}^{k})^j = 0$ (Summation Property)
+\end{enumerate}
+
+We call the vector $y = (y_0,y_1,...y_{n-1})$ the \textbf{discrete Fourier Transform}  of the polynomial $A$ if $y_k = A(w_n^k)$.
+
+\subsubsection{Fast Fourier Transform}
+
+FFT consists of three parts:
+
+\begin{enumerate}
+  \item Evaluation, where we find the DFT in $O(n\log n)$
+  \item Pointwise Multiplication of the two DFTs
+  \item Interpolation or the inverse FFT, where we find the coefficient form in $O(n \log n)$.
+\end{enumerate}
+
+Consider the following polynomials:
+
+\[A(x) = a_0x^0 + a_1x^1 + ... + a_{n-1}x^{n-1}\]
+\[A_0(x) = a_0x^0 + a_2x^1 + ... + a_{n-2}x^{n/2-1}\]
+\[A_1(x) = a_1x^0 + a_3x^1 + ... + a_{n-1}x^{n/2-1}\]
+
+It is easy to see that:
+
+\[A(x) = A_0(x^2) + xA_1(x^2)\]
+
+These polynomials have only half as many coefficients as the polynomial $A$. So, if we can compute $DFT(A)$ from $DFT(A_1)$ and $DFT(A_0)$ in linear time, we would be able to do this in $O(n \log n)$ (direct from master method).
+
+We find that do this with the equations:
+
+\[y_k = y_k^0 + w_n^k y_k^1\]
+\[y_{k+n/2} = y_k^0 - w_n^k y_k^1\]
+
+Here, $k \in [0,n/2-1]$. The proof of this can be seen on cp-algorithms.
+
+As such, we have found the DFT of the polynomial in $O(n \log n)$ time.
+
+After performing the pointwise multiplication of the DFT of our polynomials $A$ and $B$, we have to interpolate to find the coefficient form of our resulting polynomial $C$.
+
+\textit{TODO: Add interpolation with Vandermonde matrix, can be seen on cp-algorithms} 
+
 \end{document}
