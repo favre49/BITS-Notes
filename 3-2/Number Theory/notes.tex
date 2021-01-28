@@ -24,7 +24,11 @@
 \newmdtheoremenv[nobreak=true]{lemma}[theorem]{Lemma} % Minor result
 \newtheorem{definition}{Definition} % Definition
 \newtheorem*{remark}{Remark}
-\newtheorem*{example}{Example}
+\newtheorem*{exercise}{Exercise}
+
+\newenvironment{solution}
+  {\renewcommand\qedsymbol{$\blacksquare$}\begin{proof}[Solution]}
+  {\end{proof}}
 
 % New commands
 \newcommand{\R}{\mathbb{R}}
@@ -66,6 +70,17 @@ Remember that $P(k)$ is a statement, not a function. You cannot multiply it by s
 
 In weak induction (like in the steps given above), we only assume that $P(k)$ is true. However in strong induction, we assume that $P(i)$ is true $\forall i \in [b,k]$, and use this to prove that $P(k+1)$ is true.
 
+\begin{exercise}
+  Prove that the principle of strong induction is true given that the principle of weak induction is true.
+\end{exercise}
+\begin{solution}
+  Let us assume that $P(1),...,P(b)$ is true. If $P(1),...,P(k)$ are true for some $k \geq b$, then $P(k+1)$ is true. Then, we must show that $P(n)$ is true for all $n \geq 1$. 
+
+  Let $Q(n)$ be the statement that $P(1),...P(n)$ are true. Of course, in the base case, $Q(1)$ is true. Let $Q(k)$ be true, where $K \geq 1$. This means that $P(1),...P(k)$ is true, so $P(k+1)$ must be true. Hence, $Q(k+1)$ is true.
+
+  So, by Weak induction, $Q(n)$ is true $\forall n \geq 1$, which implies that $P(n)$ is true $\forall n \geq 1$.
+\end{solution}
+
 \section{Well Ordering Principle}
 
 \phantom{}
@@ -76,7 +91,9 @@ In weak induction (like in the steps given above), we only assume that $P(k)$ is
 
 This is not true about negative integers - consider the case of infinite sets, like the set of all integers. There is no well defined least element.
 
-This principle is equivalent to the principle of induction.
+\begin{lemma}
+The well ordering principle is equivalent to the principle of mathematical induction.
+\end{lemma}
 
 \begin{proof}
 
@@ -95,8 +112,9 @@ This means we must show that $S = \N$. Let $T := \N \symbol{92} S$, i.e. $T$ is 
 
 By WOP, $T$ has a least element, say $m$. Note that $m \geq 2$ since $1 \in S$. Then, $m-1 \notin T$ and $m-1 \in S$. As such, $P(m-1)$ must be true! However, by our initial assumptions, that would mean $P(m)$ is true as well, so $m \in S$. This creates a contradiction, since $m \in T$. Hence, $S = \N$.
 
-\end{proof}
+Now, let us prove that PMI $\Rightarrow$ WOP.
 
+\end{proof}
 
 \section{Binomial Theorem}
 
@@ -124,6 +142,7 @@ By WOP, $T$ has a least element, say $m$. Note that $m \geq 2$ since $1 \in S$. 
 
 \section{Pigeonhole Principle}
 
+\phantom{}
 
 \begin{theorem}
   If $n$ items are put into $m$ containers, with $n > m$, then at least one container must contain more than one item.
