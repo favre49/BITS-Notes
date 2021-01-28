@@ -135,8 +135,30 @@ In the context of the Internet, these layers perform the following functions:
 
 One way to imagine the Internet architecture is as a hourglass. The IP interconnects multiple existing networks, and hides the underlying technology from applications. This provides minimal functionality (has a "narrow waist"). The tradeoff of this approach is that there are no assumptions being made, and as such no guarantee that something works.
 
+\subsection{Application Layer}
 
+A \textbf{Network application} is a program that runs on different end systems and communicates over a network. These are run only on the end hosts - core network devices do not run user application code.
 
+The application architecture can run different application architectures:
 
+\begin{itemize}
+  \item \textbf{Client-Server}: The server is an "always on" host, which has a permanent IP address. To be able to scale, there are generally large data centers acting as a virtual server. The clients communicate with the server. Unlike the server, they may be intermittently connected, and may have a changing dynamic IP address. These clients never directly communicate with one another.
+  \item \textbf{Peer to peer} : Here, there is not always on server. Instead the end hosts directly communicate with one another. The peers are connected and may change IP addresses dynamically.
+  \item \textbf{Hybrid of client server and peer to peer} : This is the case in Instant Messaging and Skype. In instant messaging, the chatting between two users is P2P, but to get the IP addresses of a user's friends, a central server is needed.
+\end{itemize}
+
+Processes communicate within the same host using interprocess communication, but they must communicate with different hosts by exchanging messages.
+
+\begin{definition}
+  A \textbf{socket} is the interface between the application later and the transport layer within the host.  
+\end{definition}
+
+A process (a network application) send and receives messages using it's socket. This is a software entity, not a physical one.
+
+To receive messages, each process must have some identifier. The IP address is not enough since it will only uniquely identify the host, but not the individual processes running on the host. So, we also use the port number to identify a process. For instance, an HTTP server would use port number 80, and a mail server would use port number 25.
+
+\subsection{Transport Layer}
+
+What transport services does an application need? They are as follows:
 
 \end{document}
