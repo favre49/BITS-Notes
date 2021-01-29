@@ -24,7 +24,11 @@
 \newmdtheoremenv[nobreak=true]{lemma}[theorem]{Lemma} % Minor result
 \newtheorem{definition}{Definition}% Definition
 \newtheorem*{remark}{Remark}
-\newtheorem*{example}{Example}[section]
+\newtheorem*{exercise}{Exercise}
+
+\newenvironment{solution}
+  {\renewcommand\qedsymbol{$\blacksquare$}\begin{proof}[Solution]}
+  {\end{proof}}
 
 % New commands
 \newcommand{\R}{\mathbb{R}}
@@ -148,16 +152,19 @@ for all $t$ for which $F$ is continuous.
 
 The above lemma is provided without proof, as it is beyond the scope of the course.
 
-\begin{example}
+\begin{exercise}
 
-Let $X_n \sim N(0,\frac{1}{n})$. We claim that this series converges to 
+Let $X_n \sim N(0,\frac{1}{n})$. Prove that this series converges to 
 
 \[ F_X(n) = \begin{cases}
 0 & x < 0 \\
 1 & x \geq 0
 \end{cases}\]
 
-in distribution. Let $t > 0$, and define the standard normal variable $Z_n = \sqrt{n}X_n$, so $Z_n \sim N(0,1)$. So,
+in distribution. 
+
+\begin{solution}
+Let $t > 0$, and define the standard normal variable $Z_n = \sqrt{n}X_n$, so $Z_n \sim N(0,1)$. So,
 \begin{align*}
   F_{X_n}(t) &= P(X_n \leq t) \\
              &= P(Z_n \leq \sqrt{n}t) \\
@@ -175,7 +182,8 @@ It is clear that as $n \rightarrow \infty$, we get the following distribution:
 \end{cases}\]
 
 So, $F_{X_n} \leadsto F_X \forall t \in \R - \{0\}$.
-\end{example}
+\end{solution}
+\end{exercise}
 
 \chapter{Markov Chains}
 
@@ -193,5 +201,8 @@ This means that the probability of a transition from state $i$ to a state $j$ is
 \begin{lemma}
   \[\sum_{j = 0}^{\infty} P_{ij} = 1 \forall i \in S\]
 \end{lemma}
+
+Of course, this matrix means that we could represent a Markov Chain by a digraph, or even Petri Nets (out of syllabus). It is also clear that the probability of being at a particular state after $n$ transitions is given by:
+\[ \mathbf{\Pi}^{(n)} = (\mathbf{\Pi}^{(n-1)})^T \textbf{P} \]
 
 \end{document}
