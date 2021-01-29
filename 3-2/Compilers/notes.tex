@@ -203,8 +203,37 @@ The rule for identifying an identifier and a keyword is generally the same. To b
 
 \subsection{Challenges in Development of Lexical Analyzer}
 
-\textit{TODO : Fix vs Free Lexemes}
+\begin{itemize}
+  \item \textbf{Free vs Fixed Lexemes} : A language could specify that lexemes must be in a free or a fixed format. For instance, in a free format, code could look like this.
+    \begin{verbatim}
+    flag = flag
+    * 6;
+    \end{verbatim}
+    But in the case of fixed format, this must be entirely in one line. An example of a fixed format language is Python, while a free format language is C.
+  \item \textbf{Whitespaces} : How do we deal with whitespaces? Some languages ignore whitespaces until a separator is reached (or interpret contextually), while some languages consider the whitespaces as separators themselves. The former is much more complicated to implement than the latter.
+  \item \textbf{Maximal Munch} : The principle of maximal munch directs the lexical analyzer to consume as much available input as possible while creating a construct. This allows us to deal with lexemes like \texttt{iff}, and correctly assign it as a identifier rather than the keyword \texttt{if}.
+\end{itemize}
 
-\textit{TODO : Whitespaces}
+\subsection{Techniques for specifying tokens} 
+
+\begin{definition}
+  Consider $R_i$ is a regular expression and $N_i$ is a unique name, then a regular definition is a series of definitions of the following form 
+  \[N_1 \rightarrow R_1 \]
+  \[N_2 \rightarrow R_2 \]
+  \[...\]
+  \[N_n \rightarrow R_n \]
+  where each $R_i$ is a regular expression over $\sum \bigcup \{N_1,N_2,...N_n\}$.
+\end{definition}
+
+Hence, by assigning a special name $N_i$ to the regular expression $R_i$, we are in effect defining macros, that remove redundancy in later parts.
+
+The following is a regular definition for identifiers:
+
+\[\text{Alphabet} \rightarrow A|B|C|...Z|a|b|c|...|z\]
+\[\text{Digit} \rightarrow 0|1|2|...|9\]
+\[\text{Identifier} \rightarrow \text{Alphabet}(\text{Alphabet} | \text{Digit})^*\]
+
+
+
 
 \end{document}
