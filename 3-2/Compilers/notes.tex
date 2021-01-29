@@ -227,12 +227,27 @@ The rule for identifying an identifier and a keyword is generally the same. To b
 
 Hence, by assigning a special name $N_i$ to the regular expression $R_i$, we are in effect defining macros, that remove redundancy in later parts.
 
-The following is a regular definition for identifiers:
+The following is an example regular definition for identifiers:
 
 \[\text{Alphabet} \rightarrow A|B|C|...Z|a|b|c|...|z\]
 \[\text{Digit} \rightarrow 0|1|2|...|9\]
 \[\text{Identifier} \rightarrow \text{Alphabet}(\text{Alphabet} | \text{Digit})^*\]
 
+This too comes with its own challenges. Regular expressions often fail when identifying the appropriate token, and may pass the invalid tokens to the subsequent translation phases of the compiler (how?). They are only language specifications. Tokenization is a implementation problem.
+
+Tokenization can be done via the following steps:
+
+\begin{enumerate}
+  \item Construct regular expressions for lexemes of each token
+  \item Construct $R$ matching all lexemes of tokens, so $R = R_1+R_2+...$, in some well defined precedence order.
+  \item Consider the input stream to be $S=s_1s_2...s_n$. For $i \in [1,n]$, verify whether $s_1...s_i \in L(R)$.
+  \item If $s_1...s_i \in L(R) \implies s_1..s_i \in L(R_x)$ for some $x$. We choose the smallest $x$ to be the class of $s_1..s_i$. 
+  \item Discard the tokenized input and go back to step 3.
+\end{enumerate}
+
+The procedure gives preference to tokens specified earlier using regular expressions. If $s_1..s_i \in L(R)$ and $s_1...s_j \in L(R)$, we choose the longest prefix, in accordance with the principle of maximal munch.
+
+To implement our regular definitions and recognize tokens, we use \textbf{transition diagrams}. They are shown diagrammatically in the same way as Finite Automata. Transitions can be labelled with a symbol, a group of symbols, or regular definitions. A few states may be \textbf{retracting states} that indicates that the lexeme does not include the symbol that brought us to the accepting state. 
 
 
 
