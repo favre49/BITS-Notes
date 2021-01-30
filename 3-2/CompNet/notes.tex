@@ -137,12 +137,14 @@ One way to imagine the Internet architecture is as a hourglass. The IP interconn
 
 \subsection{Application Layer}
 
+\subsubsection{Network Applications}
+
 A \textbf{Network application} is a program that runs on different end systems and communicates over a network. These are run only on the end hosts - core network devices do not run user application code.
 
 The application architecture can run different application architectures:
 
 \begin{itemize}
-  \item \textbf{Client-Server}: The server is an "always on" host, which has a permanent IP address. To be able to scale, there are generally large data centers acting as a virtual server. The clients communicate with the server. Unlike the server, they may be intermittently connected, and may have a changing dynamic IP address. These clients never directly communicate with one another.
+  \item \textbf{Client-Server}: The server is an ``always on'' host, which has a permanent IP address. To be able to scale, there are generally large data centers acting as a virtual server. The clients communicate with the server. Unlike the server, they may be intermittently connected, and may have a changing dynamic IP address. These clients never directly communicate with one another.
   \item \textbf{Peer to peer} : Here, there is not always on server. Instead the end hosts directly communicate with one another. The peers are connected and may change IP addresses dynamically.
   \item \textbf{Hybrid of client server and peer to peer} : This is the case in Instant Messaging and Skype. In instant messaging, the chatting between two users is P2P, but to get the IP addresses of a user's friends, a central server is needed.
 \end{itemize}
@@ -157,8 +159,86 @@ A process (a network application) send and receives messages using it's socket. 
 
 To receive messages, each process must have some identifier. The IP address is not enough since it will only uniquely identify the host, but not the individual processes running on the host. So, we also use the port number to identify a process. For instance, an HTTP server would use port number 80, and a mail server would use port number 25.
 
-\subsection{Transport Layer}
+\subsubsection{Application Transport Services}
 
-What transport services does an application need? They are as follows:
+What transport services does an application need? This changes from application to application. Here are some examples:
+
+\begin{itemize}
+  \item \textbf{Data Loss} : Depending on the application, it might be necessary that data transfer is 100\% reliable. For instance, in the case of file transfer, there must be no data loss, but some loss can be tolerated in the case of streaming.
+  \item \textbf{Bandwidth} : Applications may also have bandwidth requirements. Streaming needs some minimum amount of bandwidth to work, but elastic applications like email and file transfer will make do with whatever bandwidth is available.
+  \item \textbf{Timing} : Another parameter to consider is timing. Some applications, like games, require low delay, but for others this is unnecessary.
+\end{itemize}
+
+\subsubsection{HTTP}
+
+The application layer for web pages is HTTP. A web page consists of objects, like HTML files, JPEG images, etc. Each of these objects is addressable by a URL. HTTP applications use TCP as it's transfer protocol. 
+
+\begin{enumerate}
+  \item Client initiates the TCP connection on port 80. The time taken to establish this is called the \textbf{Round Trip Time} or RTT. 
+  \item Client sends a request to the server
+  \item Server receives message through it's socket and sends the response.
+  \item Server attempts to close the TCP connection. The client may refuse to do so if the client has not received the message.
+  \item The client receives the message and closes the connection.
+\end{enumerate}
+
+It is important to remember that the time taken to send a file would be $2RTT + \text{File Transmission Time}$ - one RTT to establish connection, one RTT to send the first message and the time taken to send the file. Let us say the received file is an HTML file, which as 10 images embedded. Then, the client will request these images as well, by reopening the TCP connection and sending requests.
+
+If at most one object is sent over a TCP connection, it is called \textbf{Non-persistent HTTP}. This was the case in HTTP version 1.0. In HTTP version 1.1, \textbf{Persistent HTTP} was introduced, which allows multiple objects to be sent over a single TCP connection between client and server. This could be done with or without a pipeline. If there is no pipeline, the client requests for each object, waits for the response, requests the next, and so on. To speed this up, we can use a pipeline and send requests for multiple objects one after another, while waiting for the response. The responses are always received in the same order in which they were sent.
+
+\subsubsection{HTTP Requests}
+
+A HTTP request message consists of:
+
+\begin{itemize}
+  \item A request line. It contains the method (POST,GET,HEAD), the URL being requested, and the HTTP version being used.
+  \item Header lines. Each header line has the header field name and a value. An example of a header line can be \texttt{User-Agent: Firefox/3.6.10} or \texttt{Keep-Alive:115}.
+  \item The body, which contains all the data of an entity
+\end{itemize}
+
+Each line is delimited by a carriage return character \textt{\textbackslash r} and a line feed character \texttt{\textbackslash n}.
+
+The request methods could have the following meanings:
+
+\begin{itemize}
+  \item \texttt{GET} : This method is used to transfer from the server to the client
+  \item \texttt{POST} : This is used to upload something to the server
+  \item \texttt{HEAD} : This asks the server to leave requested object out of response
+  \item \texttt{PUT} : This is present in HTTP version 1.1. It uploads a file in entity body to the path specified in the URL field.
+  \item \texttt{DELETE} : This is present in HTTP version 1.1. It deletes the file specified in the URL field.
+\end{itemize}
+
+\subsubsection{HTTP Responses}
+
+A HTTP response message consists of:
+
+\begin{itemize}
+  \item A status line, which consists of the protocol, a status code and a status phrase. An example is \texttt{HTTP/1.1 200 OK}.
+  \item Header lines, which are in the same format as in the request message. It could contain the time, the OS, etc.
+  \item The body, which contains the requested data.
+\end{itemize}
+
+The HTTP response status codes are:
+
+\begin{itemize}
+  \item \texttt{200 OK} : Request succeeded, requested object later in this message.
+  \item \texttt{301 Moved Permanently} : Requested object moved, new location specified in the Location header line.
+  \item \texttt{400 Bad Request} : Request message not understood by the server.
+  \item \texttt{404 Not Found} : Requested document not found on this server.
+  \item \texttt{505 HTTP Version not supported} : The HTTP version used in the request is not supported by the server.
+\end{itemize}
+
+\subsubsection{States and HTTP}
+
+HTTP is a stateless protocol - it does not save anything from it's previous actions. To save the state in HTTP, we use \textbf{cookies}. When a client sends a http request to the server, it will create an ID for the user and create an entry in the backend database. Now, when the server sends it's response, it will include a header line called \texttt{set-cookie}. From then onwards, the usual HTTP request message will send the cookie ID through a header line called \texttt{cookie}.
+
+Hence, using cookies, we can save state with HTTP. This can be used to save user information and track them on other sites.
+
+\subsubsection{Proxy Servers}
+
+Proxy servers are also called web caches. Clients send their requests to a proxy server, which would forward it to the destination. The incoming responses are also forwarded to their respective clients. The proxy server can cache information, and hence answer requests itself to save time. This is especially useful in institutions when the content that users access has a large overlap.
+
+One issue with this is that the cached content might turn stale. To fix this we use conditional GETs. When the client sends a request, it adds a header line called \texttt{if-modified-since} which gives the last date at which an access was made.
+
+
 
 \end{document}
