@@ -251,17 +251,99 @@ Some properties of division are:
   \[\Bigl \lfloor \frac{N}{b} \Bigr \rfloor = (a_k...a_1)_b\]
 \end{lemma}
 
+This is a trivial result, which can be thought of as a left or right bitwise shift.
+
 \begin{lemma}[Particular case of Legendre's formula]
   Let $n \in \N$ and let $e$ denote the highest power of 2 dividing $n!$. Then
   \[e = \sum_{k=1}^{\infty} \Bigl \lfloor \frac{n}{2^k} \Bigr \rfloor\]
   This is always a finite sum. This can alternatively expressed as, if $n = (a_k...a_1a_0)_2$, then:
   \[e = n - (a_k + ... + a_1 + a_0)\]
 \end{lemma}
+\begin{proof}
+  It is clear that $e$ is the sum of the no. of positive multiples of $2^i$ which are $\leq n$, for all $i$. So, this can be calculated by:
+  \begin{align*}
+    e = \sum_{k=1}^{\infty} \Bigl \lfloor \frac{n}{2^k} \Bigr \rfloor    
+  \end{align*}
+\end{proof}
 
 Thus, if $r$ denotes the number of ones in the binary expansion of $n$, then $2^{n-r}$ is the highest power of 2 dividing $n!$. Further,
 \begin{itemize}
   \item $2^n \nmid n!$ for $n \in \N$
   \item $2^{n-1} | n!$ if and only if $n$ is a power of 2.
 \end{itemize}
+
+\chapter{Properties of Numbers}
+
+\section{Prime and Composite Numbers}
+
+\begin{definition}
+  A positive integer $p > 1$ is called prime if its only positive divisors are 1 and $p$. A positive integer which is not prime is called composite.  
+\end{definition}
+
+The number 1 is neither prime nor composite.
+
+\begin{lemma}
+  Every integer $n \geq 2$ has a prime factor.
+\end{lemma}
+
+\begin{proof}
+  Let $P(n)$ be the statement that $n$ has a prime factor. Then $P(2)$ is true, since 2 is a prime factor of 2. Let $k \geq 2$. Assume $P(2)...P(k)$ are true.
+
+  If $k+1$ is prime, then $k+1$ is a prime factor of itself. So $P(k+1)$ is true.
+
+  If $k+1$ is composite, then there exists $d \in [2,k]$ such that $d | k+1$. By the induction hypothesis, $d$ has a prime factor $p$. Since $p|d$ and $d|k+1$, $p|k+1$. So $p$ is a prime factor of $k+1$, and $P(k+1)$ is true. By PSI, $P(n)$ is true for all $n \geq 2$.
+\end{proof}
+
+\begin{theorem}[Euclid]
+  There are infinitely many primes.  
+\end{theorem}
+
+\begin{proof}
+  Suppose there are finitely many primes $p_1,...,p_k$. Let
+  \[N = p_1...p_k + 1\]
+  Since $N \geq 2$, it must have a prime factor. Hence, there exists $i \in [1,k]$ such that $p_i | N$. Since $p_i|N$ and $p_i|p_1p_2...p_k$, we get that $p_i|N-p_1p_2...p_k$, i.e., $p_i|1$. However, $p_i \geq 2$, which gives us a contradiction. So, there must be infinitely many primes.
+\end{proof}
+
+\begin{exercise}
+  For $n \geq 1$, let $p_n$ be the $n$th prime. Prove that
+  \[p_n \leq 2^{2^{n-1}}\]
+\end{exercise}
+
+\begin{solution}
+  Let $P(n)$ be the statement that $p_n \leq 2^{2^{n-1}}$. It is clear that this is true for the base case $P(1)$. Let us assume that $P(1),...,P(k)$ is true for $k \geq 1$.
+  We observed in Euclid's proof that $p_1...p_k+1$ is not divisible by any of $p_1...p_k$. Hence if $p_i$ denotes a prime factor of $p_1...p_k+1$, then $i \geq k+1$.
+  \[p_{k+1} \leq p_i \leq p_1...p_k+1\]
+  Using the inductive hypothesis, we find that
+  \begin{align*}
+    p_{k+1} &\leq p_1...p_k+1 \leq 2.2^2.2^{2^2}...2^{2^{k-1}}+1 \\
+            &= 2^{\sum_{j=0}^{k-1} 2^j}+1 = 2^{2^k-1}+1 \leq 2^{2^k}
+  \end{align*}
+  So, $P(k+1)$ is true. So, by PSI, the result has been proven.
+\end{solution}
+
+\begin{definition}
+  The product of the first $n$ prime numbers is called the $n^{th}$ primorial and is denoted by $p_n\#$.
+\end{definition}
+
+\begin{definition}
+  Euclid numbers are integers of the form $E_n = p_n\# +1$. 
+\end{definition}
+
+All Euclid numbers are not primes - $E_6$ is not a prime!
+
+\begin{theorem}
+  Every composite number $n$ has a prime factor $\leq \lfloor \sqrt{n} \rfloor$
+\end{theorem}
+
+\begin{proof}
+  Since $n$ is composite, there exists integers $k,l \in (1,n)$   such that 
+  \[n = kl\]
+  If $k > \sqrt{n}$ and $l > \sqrt{n}$ then $kl > n$, which is false. So, one of them must be less than or equal to $\sqrt{n}$.
+\end{proof}
+
+So, if $n > 1$ has no prime factors $\leq \lfloor \sqrt{n} \rfloor$, then $n$ is prime. We can use this as a test of primality.
+
+It is faster to do this using the Sieve of Eratosthenes. Using this, we can test primality of the first $n$ integers in $O(n \log{\log{n}})$ instead of $O(n\sqrt{n})$.
+
 
 \end{document}
