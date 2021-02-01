@@ -247,8 +247,50 @@ Tokenization can be done via the following steps:
 
 The procedure gives preference to tokens specified earlier using regular expressions. If $s_1..s_i \in L(R)$ and $s_1...s_j \in L(R)$, we choose the longest prefix, in accordance with the principle of maximal munch.
 
-To implement our regular definitions and recognize tokens, we use \textbf{transition diagrams}. They are shown diagrammatically in the same way as Finite Automata. Transitions can be labelled with a symbol, a group of symbols, or regular definitions. A few states may be \textbf{retracting states} that indicates that the lexeme does not include the symbol that brought us to the accepting state. 
+To implement our regular definitions and recognize tokens, we use \textbf{transition diagrams}. They are shown diagrammatically in the same way as Finite Automata. Transitions can be labelled with a symbol, a group of symbols, or regular definitions. A few states may be \textbf{retracting states} that indicates that the lexeme does not include the symbol that can bring us to the accepting state.
 
+Sometimes, we may want to push back extra characters into the token stream (think of \texttt{>} and \texttt{>=}, we may want to push back the extra character read if the token is \texttt{>}). We mark those states with a \texttt{*}, to show that we must push back extra characters.
 
+\subsubsection{Example for Hexadecimal and Octal constants}
+
+The regular definition would be:
+
+\[hex \rightarrow 0|1|2|...|9|A|B|C|...F\]
+\[oct \rightarrow 0|1|2|...|7\]
+\[Qualifier \rightarrow u|U|l|L\]
+\[OctalConstant\rightarrow 0 oct^+(Qualifier|\epsilon)\]
+\[HexadecimalConstant\rightarrow 0(x|X)hex^+(Qualifier|\epsilon)\]
+
+The transition diagram for the given regular definition is given in Fig 1.
+
+\begin{figure}[htpb]
+  \centering
+  \includegraphics[width=0.8\linewidth]{./assets/hex_oct_trans_diag.png}
+  \caption{Transition diagram for the Hex and Octal constants}%
+  \label{fig:}
+\end{figure}
+
+The retracting states are not given. If we get a ``bad character'', we should report it as a lexical error.
+
+\subsubsection{Example for Unsigned numbers}
+
+The regular definition is:
+
+\[Digit \rightarrow 0|1|2|...|9\]
+\[Digits \rightarrow Digit^+\]
+\[Fraction \rightarrow '.'Digits|\epsilon\]
+\[Exponent \rightarrow (E(+|-|\epsilon)Digits)|\epsilon\]
+\[Number \rightarrow Digits \cdot Fraction \cdot Exponent\]
+
+The resulting transition diagram from this is in Fig 2.
+
+\begin{figure}[htpb]
+  \centering
+  \includegraphics[width=0.8\linewidth]{./assets/unsigned_num_trans_diag.png}
+  \caption{Transition Diagram for Unsigned Numbers}%
+  \label{fig:}
+\end{figure}
+
+The issue here is this often introduces a lot of complexity. Instead, we may add split this into multiple transition diagrams, to improve implementation complexity. This also empirically better speeds. These multiple transition diagrams can be appropriately combined to generate a lexical analyzer.
 
 \end{document}
