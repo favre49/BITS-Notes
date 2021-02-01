@@ -203,6 +203,35 @@ This means that the probability of a transition from state $i$ to a state $j$ is
 \end{lemma}
 
 Of course, this matrix means that we could represent a Markov Chain by a digraph, or even Petri Nets (out of syllabus). It is also clear that the probability of being at a particular state after $n$ transitions is given by:
-\[ \mathbf{\Pi}^{(n)} = (\mathbf{\Pi}^{(n-1)})^T \textbf{P} \]
+\[ \mathbf{\Pi}^{(n)} = \mathbf{\Pi}^{(n-1)} \textbf{P} \]
 
+So, we get
+\[ \mathbf{\Pi}^{(n)} = \mathbf{\Pi}^{(0)} \textbf{P}^n \]
+
+The probability of $P(X_n=i)$ is called the \textbf{marginal probability distribution} and is given by $\mathbf{\Pi}^{(n)}_{i}$. Remember that here $\mathbf{\Pi}$ is a row vector, not a column vector.
+
+\begin{definition}
+  The $n^{th}$ step transition probability matrix is defined as:
+  \[p^{(n)}_{ij} = P(X_n=j|X_0=i)\]
+\end{definition}
+
+Essentially this is asking the question that if initially the state is $i$, what is the probability that we are at state $j$ after $n$ steps?
+
+\begin{lemma}
+  \[p_{ij}^{(n)} = P^n_{ij}\]  
+\end{lemma}
+
+This follows from the calculation of $\mathbf{\Pi}$ that we did before.
+
+\begin{theorem}[Chapman-Kolmogorov Equation]
+  \[p_{jk}^{(m+n)} = \sum p^{(n)}_{rk} p^{(m)}_{jr} = \sum p_{jr}^{(n)} p_{rk}^{(m)}\]
+\end{theorem}
+
+A problem we are facing with this approach is that we have to calculate $P^{n}$ fast enough. It is not enough to use binary exponentiation and find it in $O(d^3\log{n})$, since we are using matrices with large size, so while it would be fast in exponent, it would be slow doing matrix multiplication. Instead, we use \textbf{Singular Value Decomposition}.
+
+Using SVD, we can decompose $P$ into:
+\[P = Q \Lambda Q^{-1}\]
+Raising it to power of $n$, we get the decomposition to be:
+\[P^n = Q \Lambda^n Q^{-1}\]
+Since $\Lambda$ is a diagonal matrix, we can find the exponent even faster in $O(d\log n)$, hence speeding up the process.
 \end{document}
