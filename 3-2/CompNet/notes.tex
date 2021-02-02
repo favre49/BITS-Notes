@@ -239,6 +239,35 @@ Proxy servers are also called web caches. Clients send their requests to a proxy
 
 One issue with this is that the cached content might turn stale. To fix this we use conditional GETs. When the client sends a request, it adds a header line called \texttt{if-modified-since} which gives the last date at which an access was made.
 
+\subsubsection{HTTP/2 Protocol}
+
+\begin{definition}
+  A stream is a bidirectional sequence of text format frames sent over the HTTP/2 protocol exchanged between the server and client.  
+\end{definition}
+
+HTTP/1 was capable of transmitting only one stream at a time. This made receiving large amount of media content inefficient and time consuming. HTTP/2 allows transmission of parallel multiplexed requests and responses. A binary framing layer is created, which allows the client and sever to disintegrate the HTTP payload into small independent and manageable interleaved sequence of frames. This information is then reassembled at the other end.
+
+HTTP/2 also allows the server to send additional cacheable information to the client that isn't requested but is anticipated to be needed in future requests. This mechanism saves a RTT and reduces network latency. This is called \textbf{Server PUSH}.
+
+\subsubsection{Domain Name System}
+
+When a client requests the URL, it must obtain the IP address of the destination host to send the request to. The \textbf{Domain Name System} maps the name people use to locate a website to the IP address that a computer uses to locate a website.
+
+The DNS is formed by a distributed hierarchical database. The 13 \textbf{root DNS} servers contain reference to the \textbf{top level domain} servers, like the .com servers, the .org servers, etc. These then contain references to the website servers, like the yahoo.com servers, amazon.com servers, etc.
+
+One issue we would face is that since we would need to traverse the hierarchy recursively to query a host, it can take a long time to process a DNS query. In practice, instead of traversing the tree on a direct path, the local DNS server would first get information about the TLD DNS server from the root server, and then contact the TLD server directly, instead of letting the root DNS server do this. This is done recursively, contacting lower and lower levels in the hierarchy directly from the local DNS server and getting the IP of the next level.
+
+DNS responses are generally cached to improve the delay performance and to reduce the number of DNS messages.
+
+DNS provides the following services:
+
+\begin{itemize}
+  \item Host name to IP address mapping
+  \item Host aliasing
+  \item Mail server aliasing
+  \item Load distribution
+\end{itemize}
+
 
 
 \end{document}
