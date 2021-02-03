@@ -199,7 +199,7 @@ So, $F_{X_n} \leadsto F_X \forall t \in \R - \{0\}$.
 This means that the probability of a transition from state $i$ to a state $j$ is completely dependent on the starting and the ending state. The resulting transition matrix is called the \textbf{one step transition matrix}, denoted by $\textbf{P}$.
 
 \begin{lemma}
-  \[\sum_{j = 0}^{\infty} P_{ij} = 1 \forall i \in S\]
+  \[\sum_{j = 0}^{\infty} \mathbf{P}_{ij} = 1 \forall i \in S\]
 \end{lemma}
 
 Of course, this matrix means that we could represent a Markov Chain by a digraph, or even Petri Nets (out of syllabus). It is also clear that the probability of being at a particular state after $n$ transitions is given by:
@@ -227,11 +227,24 @@ This follows from the calculation of $\mathbf{\Pi}$ that we did before.
   \[p_{jk}^{(m+n)} = \sum p^{(n)}_{rk} p^{(m)}_{jr} = \sum p_{jr}^{(n)} p_{rk}^{(m)}\]
 \end{theorem}
 
-A problem we are facing with this approach is that we have to calculate $P^{n}$ fast enough. It is not enough to use binary exponentiation and find it in $O(d^3\log{n})$, since we are using matrices with large size, so while it would be fast in exponent, it would be slow doing matrix multiplication. Instead, we use \textbf{Singular Value Decomposition}.
+A problem we are facing with this approach is that we have to calculate $\mathbf{P}^{n}$ fast enough. It is not enough to use binary exponentiation and find it in $O(d^3\log{n})$, since we are using matrices with large size, so while it would be fast in exponent, it would be slow doing matrix multiplication. Instead, we use \textbf{Eigendecomposition} (read FDS notes).
 
-Using SVD, we can decompose $P$ into:
-\[P = Q \Lambda Q^{-1}\]
+Using eigendecomposition, we can decompose $\mathbf{P}$ into:
+\[\mathbf{P} = Q \Lambda Q^{-1}\]
 Raising it to power of $n$, we get the decomposition to be:
-\[P^n = Q \Lambda^n Q^{-1}\]
+\[\mathbf{P}^n = Q \Lambda^n Q^{-1}\]
 Since $\Lambda$ is a diagonal matrix, we can find the exponent even faster in $O(d\log n)$, hence speeding up the process.
+
+\begin{theorem}
+  If $\mathbf{P}$ is a transition matrix for a finite state Markov chain, it has at least one eigenvalue as 1.  All the other eigenvalues have an absolute value $|\lambda_i| \leq$ 1.
+\end{theorem}
+
+
+\begin{definition}
+  The stationary distribution is the row vector $\mathbf{\Pi}$ such that 
+  \[\mathbf{\Pi} \mathbf{P} = \mathbf{\Pi}\]
+\end{definition}
+
+So, the stationary distribution $\mathbf{\Pi}$ is the left eigenvector such that it's eigenvalue is 1.
+
 \end{document}
