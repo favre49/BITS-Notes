@@ -10,6 +10,7 @@
 \usepackage{amsthm}
 \usepackage{amsfonts}
 \usepackage[justification=centering]{caption}
+\usepackage[ruled,vlined]{algorithm2e}
 
 % Formatting
 \renewcommand{\baselinestretch}{1.25}
@@ -170,5 +171,56 @@ As such, we have found the DFT of the polynomial in $O(n \log n)$ time.
 After performing the pointwise multiplication of the DFT of our polynomials $A$ and $B$, we have to interpolate to find the coefficient form of our resulting polynomial $C$.
 
 \textit{TODO: Add interpolation with Vandermonde matrix, can be seen on cp-algorithms} 
+
+\section{Greedy algorithms}
+
+Greedy algorithms involve making a sequence of choices where each looks best at the moment. It is making the locally optimal choice in the hope that it leads to a globally optimal solution. However, this may not always be the case. For this to work, we need the following properties:
+
+\begin{itemize}
+  \item \textbf{Greedy choice property:} we can assemble a globally optimal solution by making locally optimal (greedy) choices.
+  \item \textbf{Optimal Substructure} : A problem is said to have optimal substructure if an optimal solution to the problem contains within it optimal solutions to subproblems. 
+\end{itemize}
+
+\subsection{Activity Selection Problem}
+
+Consider a set $S = \{1,2,3,..n\}$ of $n$ activities that can happen one activity at a time. Activity $i$ takes place during interval $[s_i,f_i)$. Activities $i$ and $j$ are compatible if $[s_i,f_i)$ and $[s_j,f_j)$ don't overlap. Our goal is to select the maximum size subset of mutually comparable activities. 
+
+To solve, we can assume that activities are in increasing order of their finishing time. If not, then sort it in $O(n \log n)$. Doing this, we can choose them greedily, picking an activity whenever we are free.
+
+\subsection{Fractional Knapsack Problem}
+
+A thief robbing a store finds $n$ items. The $i^{th}$  item is worth $v_i$ dollars and weighs $w_i$ pounds. The thief wants to take as valuable a load as possible, but he can carry at most $W$ pounds in his knapsack. Which items should he take?
+
+If the thief can carry fractions of items, he can solve it greedily - this is called the fractional knapsack problem. Otherwise, if he can either take or leave an item (the 0-1 knapsack problem), then it needs to be solved by dynamic programming.
+
+In the fractional knapsack problem, we can greedily choose the items with the largest value to weight ratio.
+
+\subsection{Huffman Coding}
+
+Huffman coding is a greedy algorithm that constructs an optimal prefix code.
+
+Say we are given a text, along with the frequencies of each character in the text. Obviously, we want the most frequent character to take up the minimum number of bits, to minimize the total size. We can make the same arguments for the other characters in decreasing order of frequencies. For instance, if the character `a' has the most frequency, we may represent it by the bit 0, and the character `x' (which is next in the order of frequency) as 10 and so on. We have to design these so that there is no ambiguity when decoding the Huffman code. This means no code can be the prefix of any other code!
+
+We can represent this encoding as a binary tree where going left corresponds to adding the character `0' to the code, and moving right corresponds to adding the character `1' to the code. Each character is a leaf in this binary tree, and they will definitely not be prefixes of one another.
+
+The algorithm for Huffman Coding creates this tree. Say we are given a set $C$ of characters, along with theire frequencies. The algorithm is as follows:
+
+\begin{algorithm}[H]
+\SetAlgoLined
+\KwResult{A prefix tree for Huffman Codes}
+  $n = |C|$ \\
+  $Q = C$ \\
+  \For{$i \gets1$ \KwTo $n-1$} {
+    Allocate new node $z$ \\
+    $z.left = x =$ EXTRACT\_MIN(Q)$ \\
+    $z.right = y =$ EXTRACT\_MIN(Q)$ \\
+    $z.freq = x.freq+y.freq$ \\ 
+    INSERT($Q.z$) \\
+  }
+  return EXTRACT\_MIN(Q)
+ \caption{Huffman Coding}
+\end{algorithm}
+
+If we use a heap, we can do this in $O(n \log n)$. It can actually be faster using van Emde Boas Tree, which would make it $O(n \log \log n)$
 
 \end{document}
