@@ -251,9 +251,7 @@ To implement our regular definitions and recognize tokens, we use \textbf{transi
 
 Sometimes, we may want to push back extra characters into the token stream (think of \texttt{>} and \texttt{>=}, we may want to push back the extra character read if the token is \texttt{>}). We mark those states with a \texttt{*}, to show that we must push back extra characters.
 
-\subsubsection{Example for Hexadecimal and Octal constants}
-
-The regular definition would be:
+Let us consider the example of hexadecimal and octal constant. The regular definition would be:
 
 \[hex \rightarrow 0|1|2|...|9|A|B|C|...F\]
 \[oct \rightarrow 0|1|2|...|7\]
@@ -272,9 +270,7 @@ The transition diagram for the given regular definition is given in Fig 1.
 
 The retracting states are not given. If we get a ``bad character'', we should report it as a lexical error.
 
-\subsubsection{Example for Unsigned numbers}
-
-The regular definition is:
+Let us consider another example of a generalized expression for unsigned numbers. The regular definition is:
 
 \[Digit \rightarrow 0|1|2|...|9\]
 \[Digits \rightarrow Digit^+\]
@@ -292,5 +288,24 @@ The resulting transition diagram from this is in Fig 2.
 \end{figure}
 
 The issue here is this often introduces a lot of complexity. Instead, we may add split this into multiple transition diagrams, to improve implementation complexity. This also empirically better speeds. These multiple transition diagrams can be appropriately combined to generate a lexical analyzer.
+
+The matching process should always start with some transition diagram. If failure occurs in one transition diagram, we retract the forward pointer to the start state, and activate the next transition diagram. If there is failure in all the transition diagrams, we throw a lexical error.
+
+\section{Syntax Analysis}
+
+Regular definitions are not enough for syntax analysis, since languages are generally not regular. Instead, we use Context Free Grammars to model our language, given by $G = \{T,N,P,S\}$, where
+
+\begin{itemize}
+  \item $T$ is the set of tokens (or terminals)
+  \item $N$ is the set of non-terminals
+  \item $P$ is the set of production rules
+  \item $S$ is the start symbol.
+\end{itemize}
+
+However, just creating the CFG is not the end of our problems - we must choose a method of derivation (left vs right), choose the right non-terminal to expand, choose the right production rule and maintain some precedence order.
+
+When we replace the leftmost non-terminal in any sentential form of the grammar, it is called \textbf{leftmost derivation}. Choosing the rightmost non-terminal makes it \textbf{rightmost derivation}. If a grammar generates more than one leftmost/rightmost derivation of a string, it is said to be \textbf{ambiguous}.
+
+The end goal of our syntax analysis is to create the \textbf{parse tree} - where the root is a start symbol, internal nodes are non-terminals and leaf nodes are labelled by tokens. An ambiguous grammar can have more than one parse tree.
 
 \end{document}
