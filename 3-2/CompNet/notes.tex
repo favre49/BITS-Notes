@@ -268,6 +268,51 @@ DNS provides the following services:
   \item Load distribution
 \end{itemize}
 
+The DNS servers store the necessary information in the form of resource records(RR). They are in the format \texttt{(name, value, type, ttl)}. Here \texttt{ttl} stands for ``time to live'', which tells the DNS resolver how long to cache a query before requesting a new one. The values of the other fields depends on the type of the resource record. There are four types of resource records, depending on the \texttt{type}:
 
+\begin{itemize}
+  \item \texttt{type=A} : \texttt{name} refers to the host name, and \texttt{value} refers to the IP address.
+  \item \texttt{type=NS} : \texttt{name} is the domain name, and \texttt{value} is the host name of authoritative name server for this domain.
+  \item \texttt{type=CNAME} : \texttt{name} is the alias name for some canonical name, \texttt{value} is the canonical name.
+\item \texttt{type=MX} : \texttt{value} is the name of the mail server associated with the \texttt{name}.
+\end{itemize}
+
+To insert a record into DNS, a newly created domain name should be first registered at a registrar.
+
+\subsubsection{File Transfer Protocol}
+
+This protocol is used to transfer file from client to client. It uses the TCP protocol, since it must be reliable and error free.
+
+FTP has two kinds of connections - control connections and data connections.
+
+Some FTP commands are:
+
+\begin{itemize}
+  \item \texttt{USER username} 
+  \item \texttt{PASS password} 
+  \item \texttt{LIST} returns list of file in current directory
+  \item \texttt{RETR filename} retrieves file
+  \item \texttt{STOR filename} stores file onto remote host
+\end{itemize}
+
+These commands can give return codes and phrases as in HTTP.
+
+\subsubsection{eMail}
+
+e-Mail consists of three major components
+
+\begin{itemize}
+  \item User agents, e.g. Outlook, mutt
+  \item Mail servers, Contains incoming messages for user
+  \item Simple Mail Transfer Protocol (STMP)
+\end{itemize}
+
+A user creates a mail and sends it to their mail server using the user agent. The sender's mail server will forward this mail to the recipient's mail server over a TCP connection on port 25. The recipient's user agent will then try to access this mail from the server. The protocol used in this case is called \textbf{Mail Access Protocol}, like IMAP or POP3. Everywhere else in this process, we use SMTP. We cannot use SMTP for the recipient to access the mail, since SMTP is a push-based protocol, not a pull based protocol.
+
+POP3 is the Post Office Protocol. It allows the user to download and keep the mails. The user can create folders and move the messages into them locally. It is stateless across sessions.
+
+A more feature-rich protocol is IMAP or the Internet Mail Access Protocol. It allows the user to create remote folders and maintains user state information across sessions, It also permits a user agent to obtain components of messages, which is ideal for low bandwidth connections.
+
+The user agent could be web-based, like in Hotmail or Gmail. Now, the transfer of the message from the sender to the mail server happens over HTTP. The access of mails by the receiver is also done over HTTP
 
 \end{document}
