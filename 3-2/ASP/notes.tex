@@ -193,39 +193,27 @@ So, $F_{X_n} \leadsto F_X \forall t \in \R - \{0\}$.
   A stochastic process with a finite number of state spaces $S = \{0,1,...,N\}$ and a countable index state $T = \{t_0,t_1,t_2,...\}$ is a Markov chain if
   \[P(X_{n+1} = j|X_n = i, X_{n-1} = i_{n-1},...,X_0 = i_0) \\ \]
   \[= P(X_{n+1} = j | X_n = i) \]
-  \[= P_{ij}\]
+  \[= \mathbf{P}_{ij}\]
 \end{definition}
 
-This means that the probability of a transition from state $i$ to a state $j$ is completely dependent on the starting and the ending state. The resulting transition matrix is called the \textbf{one step transition matrix}, denoted by $\textbf{P}$.
+This means that the probability of a transition from state $i$ to a state $j$ is completely dependent on $i$ and $j$, and not on any history. The resulting transition matrix is called the \textbf{one step transition matrix}, denoted by $\textbf{P}$.
 
 \begin{lemma}
   \[\sum_{j = 0}^{\infty} \mathbf{P}_{ij} = 1 \forall i \in S\]
 \end{lemma}
 
-Of course, this matrix means that we could represent a Markov Chain by a digraph, or even Petri Nets (out of syllabus). It is also clear that the probability of being at a particular state after $n$ transitions is given by:
-\[ \mathbf{\Pi}^{(n)} = \mathbf{\Pi}^{(n-1)} \textbf{P} \]
+Of course, this matrix means that we could represent a Markov Chain by a digraph, or even Petri Nets (out of syllabus). 
 
+\section{State Probabilities}
+
+Let $\mathbf{\Pi}^{(n)}$ be a row vector such that $\mathbf{\Pi}^{n}_i$ is the probability that after $n$ transitions, we are at state $i$. This is known as the \textbf{marginal probability distribution}. This vector can be recursively computed by the formula:
+\[ \mathbf{\Pi}^{(n)} = \mathbf{\Pi}^{(n-1)} \mathbf{P} \]
 So, we get
-\[ \mathbf{\Pi}^{(n)} = \mathbf{\Pi}^{(0)} \textbf{P}^n \]
+\[ \mathbf{\Pi}^{(n)} = \mathbf{\Pi}^{(0)} \mathbf{P}^n \]
 
-The probability of $P(X_n=i)$ is called the \textbf{marginal probability distribution} and is given by $\mathbf{\Pi}^{(n)}_{i}$. Remember that here $\mathbf{\Pi}$ is a row vector, not a column vector.
-
-\begin{definition}
-  The $n^{th}$ step transition probability matrix is defined as:
-  \[p^{(n)}_{ij} = P(X_n=j|X_0=i)\]
-\end{definition}
-
-Essentially this is asking the question that if initially the state is $i$, what is the probability that we are at state $j$ after $n$ steps?
-
-\begin{lemma}
-  \[p_{ij}^{(n)} = P^n_{ij}\]  
-\end{lemma}
-
-This follows from the calculation of $\mathbf{\Pi}$ that we did before.
-
-\begin{theorem}[Chapman-Kolmogorov Equation]
-  \[p_{jk}^{(m+n)} = \sum p^{(n)}_{rk} p^{(m)}_{jr} = \sum p_{jr}^{(n)} p_{rk}^{(m)}\]
-\end{theorem}
+$\mathbf{P}^n$ is known as the $n^{th}$ step transition probability matrix (denoted by $p^{(n)}$), where:
+\[\mathbf{P}^{n}_{ij} = p_{ij}^{n} = P(X_n = j|X_0 = i)\]
+This means that $p^{(n)}$ solves the question - after $n$ transitions starting from $i$, what is the probability that I will be in state $j$?
 
 A problem we are facing with this approach is that we have to calculate $\mathbf{P}^{n}$ fast enough. It is not enough to use binary exponentiation and find it in $O(d^3\log{n})$, since we are using matrices with large size, so while it would be fast in exponent, it would be slow doing matrix multiplication. Instead, we use \textbf{Eigendecomposition} (read FDS notes).
 
@@ -235,16 +223,44 @@ Raising it to power of $n$, we get the decomposition to be:
 \[\mathbf{P}^n = Q \Lambda^n Q^{-1}\]
 Since $\Lambda$ is a diagonal matrix, we can find the exponent even faster in $O(d\log n)$, hence speeding up the process.
 
+\begin{theorem}[Chapman-Kolmogorov Equation]
+  \[p_{jk}^{(m+n)} = \sum p^{(n)}_{rk} p^{(m)}_{jr} = \sum p_{jr}^{(n)} p_{rk}^{(m)}\]
+\end{theorem}
+
 \begin{theorem}
   If $\mathbf{P}$ is a transition matrix for a finite state Markov chain, it has at least one eigenvalue as 1.  All the other eigenvalues have an absolute value $|\lambda_i| \leq$ 1.
 \end{theorem}
 
-
 \begin{definition}
-  The stationary distribution is the row vector $\mathbf{\Pi}$ such that 
-  \[\mathbf{\Pi} \mathbf{P} = \mathbf{\Pi}\]
+  The stationary distribution of a Markov Chain is a row vector $\mathbf{\Pi}$ such that 
+  \[\mathbf{\Pi} \cdot \mathbf{P} = \mathbf{\Pi}\]
 \end{definition}
 
-So, the stationary distribution $\mathbf{\Pi}$ is the left eigenvector such that it's eigenvalue is 1.
+So, the stationary distribution $\mathbf{\Pi}$ is the left eigenvector of $\mathbf{P}$ such that it's eigenvalue is 1.
+
+\begin{definition}
+  If $\lim_{n \rightarrow \infty} \mathbf{P}^n$ is such that all the rows in it are equal, that row is said to be the limiting distribution.
+\end{definition}
+
+The limiting distribution may not always exist, but if it does, it is equivalent to the stationary distribution.
+
+\section{Occupancy Time and First Entrance Time}
+
+\begin{definition}
+  Let $N_{ij}^{(n)}$ be the number of times a discrete time Markov Chain visits a state $j$ starting from state $i$ over a given time span of $n$. The occupancy time for state $j$ starting from $i$ is:
+  \[T_{ij}^{(n)} = E(N_{ij}^{(n)})\]
+\end{definition}
+
+\begin{theorem}
+  The occupancy times matrix $\mathbf{T}^{(n)} = \sum_{k=0}^{n} \mathbf{P}^{k}$.  
+\end{theorem}
+
+\begin{definition}
+  Let $f_{ij}^{(n)}$ be the probability the Markov Chain visits a state $j$ for the first time starting from a state $i$ after $n$ transitions. Then $f$ is the First Entrance Time Matrix.
+\end{definition}
+
+\begin{theorem}
+  \[f_{ij}^{(n)} = P_{ij}^{(n)} - \sum_{r=0}^{n-1} f_{ij}^{(r)} P_{jj}^{n-r}\]
+\end{theorem}
 
 \end{document}
