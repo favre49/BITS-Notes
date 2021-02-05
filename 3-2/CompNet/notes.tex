@@ -313,6 +313,26 @@ POP3 is the Post Office Protocol. It allows the user to download and keep the ma
 
 A more feature-rich protocol is IMAP or the Internet Mail Access Protocol. It allows the user to create remote folders and maintains user state information across sessions, It also permits a user agent to obtain components of messages, which is ideal for low bandwidth connections.
 
-The user agent could be web-based, like in Hotmail or Gmail. Now, the transfer of the message from the sender to the mail server happens over HTTP. The access of mails by the receiver is also done over HTTP
+The user agent could be web-based, like in Hotmail or Gmail. Now, the transfer of the message from the sender to the mail server happens over HTTP. The access of mails by the receiver is also done over HTTP.
+
+\subsubsection{Peer To Peer Architecture}
+
+As mentioned before, there is no always-on server. The end hosts directly communicate, and the peers are intermittently connected.
+
+Let us say we want to send $N$ file copies of size $F$. In a client-server system, ignoring the delays, the time taken to send to a server would be $NF/u_s$, where $u_s$ is the upload rate. Each client must download a file copy, and it the slowest download speed is $d_{min}$, then the slowest download time would be $F/d_{min}$. So, the minimum time to distribute to the $N$ clients would be:
+\[D_{c-s} \geq \max(NF/u_s,F/d_{min})\]
+In the case of P2P system, at least one copy must be uploaded, taking time $F/u_s$. Each client must download a file copy, with the slowest download time once again being $F/d_{min}$. Unlike in the client-server scheme, as the file download gets completed on peers, the number of possible ``providers'' increases. As this happens the maximum upload rate increases, up till $u_s +\sum u_i$. So, the time needed is:
+\[D_{P2P} \geq \max(F/u_s,F/d_{min},NF/(u_s+ \sum u_i))\]
+
+In BitTorrent, the file is divided into chunks, typically 256 KB in size. There are trackers that track peers participating in a torrent. A new peer joins torrent and registers with the tracker to get a list of peers, and connects to some subset of them. While torrenting, a group of peers exchange chunks of a particular file. At any given time, each peer will have a subset of the chunks, and asks its neighbours for a list of which chunks they have. The peer will then take a call on which chunks it should request from the neighbour, and to which of its neighbours it should send requested chunks. Ideally, the peer would request and send the most scarce chunks.
+
+One P2P protocol is Napster. Here, we have a central database where information is available, and the peers contact it for the necessary information. However, if the database is down then the peer-to-peer application cannot run.
+
+Another P2P protocol is Gnutella. \textit{Include information about this}.
+
+Yet another P2P protocol is Kazaa, which is the basis for Skype. \textit{Include information about this}.
+
+In a distributed database, each peer holds a small subset of the total (key,value) pairs. Any peer can query the distributed database with a particular key. The distributed DB locates the peers that have the corresponding (key,value) pairs and return it to the querying peer. Any peer can insert a new (key,value) pair into the database. 
+
 
 \end{document}
