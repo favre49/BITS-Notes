@@ -15,7 +15,7 @@
 \renewcommand{\baselinestretch}{1.25}
 
 % Theorems and other necessary structures
-%\theoremstyle{definition}
+\theoremstyle{definition}
 \newtheorem{definition}{Definition}[section] % Definition
 \newtheorem{theorem}{Theorem}[section] % Big result
 \newtheorem{corollary}{Corollary}[theorem] % Follows from a theorem
@@ -293,6 +293,8 @@ The matching process should always start with some transition diagram. If failur
 
 \section{Syntax Analysis}
 
+\subsection{Grammar Rules}
+
 Regular definitions are not enough for syntax analysis, since languages are generally not regular. Instead, we use Context Free Grammars to model our language, given by $G = \{T,N,P,S\}$, where
 
 \begin{itemize}
@@ -307,5 +309,60 @@ However, just creating the CFG is not the end of our problems - we must choose a
 When we replace the leftmost non-terminal in any sentential form of the grammar, it is called \textbf{leftmost derivation}. Choosing the rightmost non-terminal makes it \textbf{rightmost derivation}. If a grammar generates more than one leftmost/rightmost derivation of a string, it is said to be \textbf{ambiguous}.
 
 The end goal of our syntax analysis is to create the \textbf{parse tree} - where the root is a start symbol, internal nodes are non-terminals and leaf nodes are labelled by tokens. An ambiguous grammar can have more than one parse tree.
+
+Unfortunately, no well defined algorithm exists to remove ambiguity in a grammar. However, we can manually convert any ambiguous grammar into an unambiguous grammar. We can do this by enforcing associativity and precedence rules. This is pretty well covered in PPL and TOC.
+
+In programming languages, ambiguity can come in many forms. For instance, consider the sentence \texttt{if A then if B then C1 else C2}.  This could be:
+
+\begin{verbatim}
+if A then 
+{
+  if B then
+    C1
+  else
+    C2
+}
+\end{verbatim}
+
+or:
+
+\begin{verbatim}
+if A then 
+{
+  if B then
+    C1
+}
+else
+  C2
+\end{verbatim}
+
+Since there is ambiguity in its meaning, we must resolve it. One way to do this is to relate an \texttt{if} with the closest unrelated \texttt{else} (the second interpretation). Another way is to match each \texttt{else} with the closest previous \texttt{then}(the first interpretation). The unambiguous grammar would then be:
+
+\[stmt \rightarrow matchedstmt | unmatchedstmt\]
+\[matchedstmt \rightarrow \text{if }exp \text{ then } matchedstmt \text{ else } matchedstmt | others\]
+\[unmatchedstmt \rightarrow \text{if }exp \text{ then } stmt | \text{if }exp \text{ then } matchedstmt \text{ else } unmatchedstmt\]
+
+\subsection{Parsing}
+
+Resolving ambiguity is the problem of the language specification, not of the syntax analysis. Parsing is the job of implementation. We can do this in two ways:
+
+\begin{itemize}
+  \item \textbf{Top down parsing:} Construction of the parse tree starting from the root node (start symbol) and proceeds towards the leaves (terminals).
+  \item \textbf{Bottom up parsing:} Construction of the parse tree starts from the terminal nodes and builds up towards the root node(start symbol).
+\end{itemize}
+
+\subsubsection{Top Down Parsing}
+
+In top down parsing, we repeat the following two steps:
+
+\begin{enumerate}
+  \item At a node labelled with non-terminal $A$, select one of the productions of $A$ and construct the children nodes.
+  \item Find the next node at which the subtree is to be constructed.
+\end{enumerate}
+
+To choose the production rule, as in step 1, backtracking must be done. We try every production rule that we can apply and see which one works. The parser must be intelligent enough to choose the production rule to apply based on the token being pointed to by the pointer.
+
+The \textbf{First set}, denoted by \texttt{FIRST(X)} for a grammar symbol $X$ is the set of tokens that begin the strings derivable form $X$.
+
 
 \end{document}
