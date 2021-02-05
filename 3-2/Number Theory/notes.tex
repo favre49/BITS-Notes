@@ -533,4 +533,20 @@ The GCD of two non-zero numbers always exists and is unique. Observe that $(a,b)
   Suppose $m < n$. Let $d = (f_m,f_n)$. Since $d|f_m$ and $d|f_n$, $d|f_n-(f_0...f_m..f_{n-1})$. From Duncan's identity, this implies that $d|2$. Since $d> 0, $, $d = 1$ or $d=2$. However, Fermat numbers are always odd - so $d \neq 2$. This implies that $d = 1$.
 \end{solution}
 
+\begin{theorem}
+  Let $a,b \in \Z$, not both zero. Then there exist integers $x_0, y_0$ such that:
+  \[(a,b) = ax_0 + by_0\]
+\end{theorem}
+\begin{proof}
+  Consider the set $S = \{ax+by>0 : a,b \in \Z \}$. Let $d = \min S$.
+  Suppose that $d$ does not divide $a$. Then by division algorithm:
+  \[a=qd+r\]
+  \[qd = a-r\]
+  \[q(ax+by) = a-r\]
+  \[r = a(1-qx)-bqy\]
+  So, $r$ is a linear combination of $a$ and $b$, and since $r > 0$, $r \in S$. From division algorithm, $r < d$, which contradicts the fact that $d  = \min S$. So, by contradiction, $d$ divides $a$ (and by similiar argument, $d$ divides $b$).
+  We also know that any common divisor of $a$ and $b$ must divide $d$. This is obvious since if $a = uc$ and $b = vc$, then $d = ax+by = c(ux+vy)$, so $c|d$.
+  From these two facts, it is clear that $d$ is the GCD, and is of the form $ax+by$.
+\end{proof}
+
 \end{document}
