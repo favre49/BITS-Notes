@@ -364,5 +364,27 @@ To choose the production rule, as in step 1, backtracking must be done. We try e
 
 The \textbf{First set}, denoted by \texttt{FIRST(X)} for a grammar symbol $X$ is the set of tokens that begin the strings derivable form $X$.
 
+To calculate the First Set, we use the following rules:
+
+\begin{itemize}
+  \item If $P$ is a non terminal and $P \rightarrow Q_1Q_2...Q_k$ is a production, then if for some $i$, First($Q_i$) = $\{x\}$ and $\epsilon$ is in all of First($Q_j$) (such that $j < i$), then First($P$) = $\{x\}$. If $\epsilon$ is in First($Q_i$) for all $i \in [1,k]$, then First($P$) = $\{\epsilon\}$
+\end{itemize}
+
+\textit{TODO: Understand and describe First Set better}
+
+Let us look at our first parser - the \textbf{recursive descent parser}. RDP is a top down method of syntax analysis in which a set of recursive procedures are executed to parse the stream of tokens. A procedure is associated with each non-terminal of the grammar. The procedure generally implements one of the production rules of the grammar.
+
+In each procedure, we perform a match operation on hitting any token on the RHS of the grammar with the current token in the input that needs to be parsed. For example, if we have the string $aba$ and the rule $S \rightarrow abB$, it will match the tokens $a$ in both the RHS and the string, and move on to the next token. If there is no match, we throw a syntax error.
+
+This approach, of course, has it's own limitations. Consider a grammar with two productions:
+\[X \rightarrow \gamma_1\]
+\[X \rightarrow \gamma_2\]
+Suppose First($\gamma_1$) $\cap$ First($\gamma_2$) $\neq \phi$, and that $a$ is the common terminal symbol. In cases like this, we need to perform backtracking to choose the right production rule. However, RDP does not support backtracking right now. To support it, all productions should be tried in some order. Failure for some productions implies we need to try remaining productions. We would report an error only when there are no other rules.
+
+However, a recursive descent parser may loop forever on productions of the form:
+\[A \rightarrow A \alpha\]
+This is known as left recursion. We can remove it from the grammar by rewriting the rule as:
+\[A \rightarrow \beta A'\]
+\[A' \rightarrow \alpha A'|\epsilon\]
 
 \end{document}
