@@ -19,7 +19,7 @@
 \usepackage{mdframed}
 \mdfsetup{skipabove=1em,skipbelow=0em}
 \theoremstyle{definition}
-\newmdtheoremenv[nobreak=true]{theorem}{Theorem}[section] % Big result
+\newmdtheoremenv[nobreak=true]{theorem}{Theorem}[chapter] % Big result
 \newmdtheoremenv[nobreak=true]{corollary}{Corollary}[theorem] % Follows from a theorem
 \newmdtheoremenv[nobreak=true]{lemma}[theorem]{Lemma} % Minor result
 \newtheorem{definition}{Definition} % Definition
@@ -549,4 +549,60 @@ The GCD of two non-zero numbers always exists and is unique. Observe that $(a,b)
   From these two facts, it is clear that $d$ is the GCD, and is of the form $ax+by$.
 \end{proof}
 
+\begin{exercise}
+  Let $a,b \in \N$. If $b = aq+r$, then $(a,b) = (a,r)$.
+\end{exercise}
+\begin{solution}
+  Let $d = (a,b)$ and $e = (b,r)$. We need to show that $d = e$. Since $d|a$ and $d|b$, $d|a-bq=r$. So $d$ is a common divisor of $b$ and $r$. Hence $d \leq e$. Similarly, as $e|b$ and $e|r$, $e$ divides $bq+r = q$. Thus $e$  is a common divisor of $a$ and $b$, so $e \leq d$. Thus, $e = d$.
+\end{solution}
+
+\begin{exercise}
+  Let $a,b,c \in \N$. Prove that $(ac,bc) = c(a,b)$.  
+\end{exercise}
+\begin{solution}
+  Let $d = (a,b)$. Then $d|a$ and $d|b$, so $d|ca$ and $d|cb$.  There exist integers $x,y$ such that:
+  \[d = ax+by\]
+  \[cd = (ac)x + (bc)y\]
+
+  If $e$ is a positive integer such that $e | ac$ and $e|bc$, then $e|(ac)x+(bc)y$, i.e. $e|cd$. So, $cd$ is the GCD of $ac$ and $bc$.
+\end{solution}
+
+\begin{theorem}
+  Let $a,v \in \Z$, not both zero. Then $(a,b) = 1$ if and only if there exist integers $x_0,y_0$ such that $ax_0 + by_0 = 1$.  
+\end{theorem}
+\begin{proof}
+  If $(a,b) = 1$, there must exist $x_0,y_0$ such that $ax_0+by_0$ = 1, from Theorem 4.1.
+  Conversely, suppose there exists $x_0,y_0 \in \Z$, such that 
+  \[ax_0 + by_0 = 1\]
+  Let $d = (a,b)$. Then $d|ax_0+by_0$, which means that $d|1|$. Since $d \in \N$, $d=1$.
+\end{proof}
+
+\begin{corollary}
+  Let $d = (a,b)$. Then, $(\frac{a}{d}, \frac{b}{d}) = 1$
+\end{corollary}
+
+\begin{corollary}
+  If $(a,b) = 1$, and $a$ and $b$ both divide $c$, then $ab|c$.  
+\end{corollary}
+
+% I know, it's called a lemma and now we are calling it a theorem!
+\begin{theorem}[Euclid's Lemma]
+  If $a|bc$ and $(a,b) = 1$, then $a|c$.  
+\end{theorem}
+\begin{proof}
+  \[ax+by = 1\]
+  \[acx+bcy=c\]
+  Since $a|acx$ and $a|bcy$, so $a|c$.
+\end{proof}
+
+\begin{exercise}
+  Let $m, n \in \N, m > 2$. If $F_m|F_n$, prove that $m|n$.
+\end{exercise}
+\begin{proof}
+  We know that:
+  \[F_n = F_{n-m}F_{m-1} + F_{n-m+1}F_m\]
+  Since $F_m|F_n$ and $F_m|F_{n-m+1}F_m$, we get $F_m|F_n-F_{n-m+1}F_m$ and hence $F_m|F_{n-m}F_{m-1}$. But, we also know that $(F_m,F_{m-1}) = 1$. By Euclid's Lemma, $F_m|F_{n-m}$.
+  
+  From the division algorithm, let $n = mq+r$. Suppose $r > 0$. From our previous result, $F_m|F_{n-m}$, so $F_m|F_{n-2m}...F_m|F_r$. This means that $F_m \leq F_r$. But $r < m$, so $F_r < F_m$. This is a contradiction. So $r = 0$. Hence proved.
+\end{proof}
 \end{document}
