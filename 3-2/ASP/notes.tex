@@ -263,4 +263,37 @@ The limiting distribution may not always exist, but if it does, it is equivalent
   \[f_{ij}^{(n)} = P_{ij}^{(n)} - \sum_{r=0}^{n-1} f_{ij}^{(r)} P_{jj}^{n-r}\]
 \end{theorem}
 
+\section{Classification of States}
+
+\begin{definition}[accessibility]
+  We say that $i$ reaches $j$ (or $j$ is accessible from $i$) if $P^{n}_{ij} > 0$ for some $n$, and we denote it by $i \rightarrow j$.
+\end{definition}
+
+\begin{definition}  [communicability]
+  If $i \rightarrow j$ and $j \rightarrow i$, then we write $i \leftrightarrow j$ and we say that $i$ and $j$ communicate.
+\end{definition}
+
+\begin{theorem}
+  The communication relation satisfies the following properties:
+  \begin{enumerate}
+    \item $i \leftrightarrow i$ (reflexive)
+    \item $i \leftrightarrow j \Rightarrow j \leftrightarrow i$ (symmetric)
+    \item If $i \leftrightarrow j$ and $\j \leftrightarrow k$ then $i \leftrightarrow k$ (transitive)
+    \item The set of states $\chi$ can be written as a disjoint union of classes $\chi = \chi_1 \cup \chi_2 \cup ...$ where two states $i$ and $j$ communicate with each other if and only if they are in the same class. (equivalence class)
+  \end{enumerate}
+  It is hence an equivalence relation.
+\end{theorem}
+
+\begin{remark}
+  This has it's own mathematical proof from the definition, but it is far more intuitive to think of the strongly connected components in a directed graph.  
+\end{remark}
+
+If all states communicate with each other, then the chain is said to be \textbf{irreducible}. A set of states is \textbf{closed} if, once you enter that set of states you never leave. A closed set consisting of a single state is called an \textbf{absorbing state}.   
+
+\begin{definition}
+  State $i$ is recurrent or persistent if 
+  \[P(X_n=i \text{ for some } n \geq 1 | X_0 = i)  = 1\]
+  Otherwise, the state is transient.
+\end{definition}
+
 \end{document}
