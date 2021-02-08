@@ -16,6 +16,7 @@
 \renewcommand{\baselinestretch}{1.25}
 
 % Theorems and other necessary structures
+\theoremstyle{definition}
 \newtheorem{definition}{Definition}[section] % Definition
 \newtheorem{theorem}{Theorem}[section] % Big result
 \newtheorem{corollary}{Corollary}[theorem] % Follows from a theorem
@@ -222,5 +223,75 @@ The algorithm for Huffman Coding creates this tree. Say we are given a set $C$ o
 \end{algorithm}
 
 If we use a heap, we can do this in $O(n \log n)$. It can actually be faster using van Emde Boas Tree, which would make it $O(n \log \log n)$
+
+\section{Matroids}
+
+A \textbf{matroid}  is an ordered pair $M = (S,I)$ satisfying the following conditions:
+
+\begin{itemize}
+  \item $S$ is a finite set
+  \item $I$ is a non empty family of subsets of $S$ called the independent subsets of $S$, such that if $B \in I$ and $A \subseteq B$, then $A \in I$. This is the Hereditary Property.
+  \item If $A \in I$, $B \in I$, and $|A| \leq |B|$ then there exists some element $x\in B-A$ such that $A \cup \{x\} \in I$. This is the exchange property.
+\end{itemize}
+
+The graphic matroid $M_G = (S_G, I_G)$ is defined as follows:
+
+\begin{itemize}
+  \item The set $S_G$ is the set of edges in the graph $G$
+  \item If $A$ is a subset of $E$ (edges), then $A \in I_G$ if and only if $A$ is acyclic. That is, a set of edges $A$ is independent if and only if the subgraph $G_A = (V,A)$ forms a forest
+\end{itemize}
+
+\begin{theorem}
+  If $G = (V,E)$ is an undirected graph, then $M_G = (S_G,I_G)$ is a matroid.
+\end{theorem}
+
+\begin{theorem}
+  All maximal independent subsets in a matroid have the same size.
+\end{theorem}
+
+Given a matroid $M$, we call an element $x \notin A$ an \textbf{extension} of $A \in I$ if we can add $x$ to $A$ while preserving its independence, i.e. $A \cup \{x\} \in I$. 
+
+A matroid $M = (S,I)$ is said to be weighted if it is associated with weight function $w(x)$ for all $x \in S$. $w(A)$ is defined as :
+
+\[w(A) = \sum_{x \in A} w(x)\]
+
+The independent set with maximum $w(A)$ is called an optimal subset of a matroid. An optimal subset is always a maximal independent subset.
+
+Let us consider the Minimum Spanning Tree problem, where we seek the subset of edges that connects all the vertices together and has minimum total length. This is like finding the optimal subset of a weighted matroid $M_G$ where weight function $w'(e) = w_0 - w(e)$, where $w(e)$ is the weight of the edge and $w_0$ is some constant greater than all the weights. A greedy algorithm for a weighted matroid is:
+
+
+\begin{algorithm}[H]
+\SetAlgoLined
+  $A = \phi$ \\
+  sort $M.S$ into monotonically decreasing order of weight $w$  \\
+  \For{each $x \in M.S$}{
+    \If{$A \cup \{x\} \in M.I$}
+      {
+        $A = A \cup \{x\}$\\
+      }
+  }
+  \Return A \\
+  \caption{Greedy(M,w)}
+\end{algorithm}
+
+\begin{lemma}[Greedy Choice Property]
+  Consider $M = (S,I)$ with weight function $w$. Let $S$ be sorted in decreasing order. Consider $x$, the first element of $S$ such that $\{x\} $ is independent. If this exists then there exists an optimal subset $A$ containing $x$.
+\end{lemma}
+
+\begin{lemma}
+  Let $M = (S,I)$ be any matroid. If $x$ is an element of $S$ that is an extension of some independent subset $A$ of $S$, then $x$ is also an extension of $\phi$. 
+\end{lemma}
+
+\begin{corollary}
+  Let $M = (S,I)$ be any matroid. If $x$ is an element of $S$ such that $x$ is not an extension of $\phi$, then $x$ is not an extension of any independent set $A$ of $S$. 
+\end{corollary}
+
+\begin{lemma}[Optimal substructure property]
+  Let $x$ be the first element of $S$ chosen by GREEDY for the weighted matroid $M = (S,I)$. We can reduce this problem to $M' = (S',I')$, such that:
+  \begin{itemize}
+    \item $s' = \{y \in S : \{x,y\} \in I\}$
+    \item $I' = \{B \subseteq S - \{x\} : B \cup \{x\} \in I\}$
+  \end{itemize}
+\end{lemma}
 
 \end{document}
