@@ -10,6 +10,7 @@
 \usepackage{amsthm}
 \usepackage{amsfonts}
 \usepackage[justification=centering]{caption}
+\usepackage{listings}
 
 % Formatting
 \renewcommand{\baselinestretch}{1.25}
@@ -135,9 +136,9 @@ In the context of the Internet, these layers perform the following functions:
 
 One way to imagine the Internet architecture is as a hourglass. The IP interconnects multiple existing networks, and hides the underlying technology from applications. This provides minimal functionality (has a "narrow waist"). The tradeoff of this approach is that there are no assumptions being made, and as such no guarantee that something works.
 
-\subsection{Application Layer}
+\section{Application Layer}
 
-\subsubsection{Network Applications}
+\subsection{Network Applications}
 
 A \textbf{Network application} is a program that runs on different end systems and communicates over a network. These are run only on the end hosts - core network devices do not run user application code.
 
@@ -159,7 +160,7 @@ A process (a network application) send and receives messages using it's socket. 
 
 To receive messages, each process must have some identifier. The IP address is not enough since it will only uniquely identify the host, but not the individual processes running on the host. So, we also use the port number to identify a process. For instance, an HTTP server would use port number 80, and a mail server would use port number 25.
 
-\subsubsection{Application Transport Services}
+\subsection{Application Transport Services}
 
 What transport services does an application need? This changes from application to application. Here are some examples:
 
@@ -169,7 +170,7 @@ What transport services does an application need? This changes from application 
   \item \textbf{Timing} : Another parameter to consider is timing. Some applications, like games, require low delay, but for others this is unnecessary.
 \end{itemize}
 
-\subsubsection{HTTP}
+\subsection{HTTP}
 
 The application layer for web pages is HTTP. A web page consists of objects, like HTML files, JPEG images, etc. Each of these objects is addressable by a URL. HTTP applications use TCP as it's transfer protocol. 
 
@@ -185,7 +186,7 @@ It is important to remember that the time taken to send a file would be $2RTT + 
 
 If at most one object is sent over a TCP connection, it is called \textbf{Non-persistent HTTP}. This was the case in HTTP version 1.0. In HTTP version 1.1, \textbf{Persistent HTTP} was introduced, which allows multiple objects to be sent over a single TCP connection between client and server. This could be done with or without a pipeline. If there is no pipeline, the client requests for each object, waits for the response, requests the next, and so on. To speed this up, we can use a pipeline and send requests for multiple objects one after another, while waiting for the response. The responses are always received in the same order in which they were sent.
 
-\subsubsection{HTTP Requests}
+\subsection{HTTP Requests}
 
 A HTTP request message consists of:
 
@@ -207,7 +208,7 @@ The request methods could have the following meanings:
   \item \texttt{DELETE} : This is present in HTTP version 1.1. It deletes the file specified in the URL field.
 \end{itemize}
 
-\subsubsection{HTTP Responses}
+\subsection{HTTP Responses}
 
 A HTTP response message consists of:
 
@@ -227,19 +228,19 @@ The HTTP response status codes are:
   \item \texttt{505 HTTP Version not supported} : The HTTP version used in the request is not supported by the server.
 \end{itemize}
 
-\subsubsection{States and HTTP}
+\subsection{States and HTTP}
 
 HTTP is a stateless protocol - it does not save anything from it's previous actions. To save the state in HTTP, we use \textbf{cookies}. When a client sends a http request to the server, it will create an ID for the user and create an entry in the backend database. Now, when the server sends it's response, it will include a header line called \texttt{set-cookie}. From then onwards, the usual HTTP request message will send the cookie ID through a header line called \texttt{cookie}.
 
 Hence, using cookies, we can save state with HTTP. This can be used to save user information and track them on other sites.
 
-\subsubsection{Proxy Servers}
+\subsection{Proxy Servers}
 
 Proxy servers are also called web caches. Clients send their requests to a proxy server, which would forward it to the destination. The incoming responses are also forwarded to their respective clients. The proxy server can cache information, and hence answer requests itself to save time. This is especially useful in institutions when the content that users access has a large overlap.
 
 One issue with this is that the cached content might turn stale. To fix this we use conditional GETs. When the client sends a request, it adds a header line called \texttt{if-modified-since} which gives the last date at which an access was made.
 
-\subsubsection{HTTP/2 Protocol}
+\subsection{HTTP/2 Protocol}
 
 \begin{definition}
   A stream is a bidirectional sequence of text format frames sent over the HTTP/2 protocol exchanged between the server and client.  
@@ -249,7 +250,7 @@ HTTP/1 was capable of transmitting only one stream at a time. This made receivin
 
 HTTP/2 also allows the server to send additional cacheable information to the client that isn't requested but is anticipated to be needed in future requests. This mechanism saves a RTT and reduces network latency. This is called \textbf{Server PUSH}.
 
-\subsubsection{Domain Name System}
+\subsection{Domain Name System}
 
 When a client requests the URL, it must obtain the IP address of the destination host to send the request to. The \textbf{Domain Name System} maps the name people use to locate a website to the IP address that a computer uses to locate a website.
 
@@ -279,7 +280,7 @@ The DNS servers store the necessary information in the form of resource records(
 
 To insert a record into DNS, a newly created domain name should be first registered at a registrar.
 
-\subsubsection{File Transfer Protocol}
+\subsection{File Transfer Protocol}
 
 This protocol is used to transfer file from client to client. It uses the TCP protocol, since it must be reliable and error free.
 
@@ -297,7 +298,7 @@ Some FTP commands are:
 
 These commands can give return codes and phrases as in HTTP.
 
-\subsubsection{eMail}
+\subsection{eMail}
 
 e-Mail consists of three major components
 
@@ -315,7 +316,7 @@ A more feature-rich protocol is IMAP or the Internet Mail Access Protocol. It al
 
 The user agent could be web-based, like in Hotmail or Gmail. Now, the transfer of the message from the sender to the mail server happens over HTTP. The access of mails by the receiver is also done over HTTP.
 
-\subsubsection{Peer To Peer Architecture}
+\subsection{Peer To Peer Architecture}
 
 As mentioned before, there is no always-on server. The end hosts directly communicate, and the peers are intermittently connected.
 
@@ -328,11 +329,37 @@ In BitTorrent, the file is divided into chunks, typically 256 KB in size. There 
 
 One P2P protocol is Napster. Here, we have a central database where information is available, and the peers contact it for the necessary information. However, if the database is down then the peer-to-peer application cannot run.
 
-Another P2P protocol is Gnutella. \textit{Include information about this}.
+Another P2P protocol is Gnutella. Unlike Napster, it is a completely decentralized protocol.
 
 Yet another P2P protocol is Kazaa, which is the basis for Skype. \textit{Include information about this}.
 
-In a distributed database, each peer holds a small subset of the total (key,value) pairs. Any peer can query the distributed database with a particular key. The distributed DB locates the peers that have the corresponding (key,value) pairs and return it to the querying peer. Any peer can insert a new (key,value) pair into the database. 
+\subsection{Distributed Databases}
 
+Distributed databases are a common application of the P2P framework. In a distributed database, each peer holds a small subset of the total (key,value) pairs. Any peer can query the distributed database with a particular key. The distributed DB locates the peers that have the corresponding (key,value) pairs and return it to the querying peer. Any peer can insert a new (key,value) pair into the database. 
+
+A non-scalable way of doing this is as a distributed hash table. The key,value pairs are randomly scattered across all the peers. They maintain a list of the IP addresses of all the peers, and send their queries to all these peers. Those who contain the required (key,value) pairs respond with the matching pairs. This is, as mentioned before, not scalable since all peers must be queried.
+
+Instead we may implement this with the \textbf{Circular DHT}  protocol. A hash function assigns each node and key an $m$ bit identifier using a base hash function such as SHA-1. The node's ID could be a hash of the port and the IP address, while the key's ID can be a hash of the original key. Since there is a finite number of hashes, these ID values will lie on an imaginary circle, ranging values from $0$ to $2^{m-1}$. We now assign (key,value) pairs to the peer that has the closest node ID to the pair's key ID.
+
+One protocol that uses this concept is the \textbf{Chord protocol}. Every node keeps track of 2 pointers - the predecessor, a pointer to the previous node on the ID circle, and the successor, a pointer to the next node on the ID circle. When doing a lookup operation, a node will check whether the key's ID is between the ID of the node and it's successor. In this case, it will know that the key is present in the successor. If not, the query is forwarded to the successor, and the same operation is done recursively. The number of messages is $O(n)$, where $n$ is the number of nodes. So, this is not scalable.
+
+A scalable way to do this is that each node $n$ contains a routing table with up to $m$ entries ($m$ is the number of bits), known as a \textbf{finger table}. The $i^{th}$ entry in the table at node $n$ contains the first node $s$ that succeeds $n$ by at least $2^{i-1}$, i.e. $s = succ(n+2^{i-1})$. $s$ is called the \textbf{ $i^{th}$ finger} of node $n$. With this information, we can jump to the furthest successor that precedes the key ID.
+
+\section{Socket Programming}
+
+To a kernel, a socket is an endpoint of communication. To an application, a socket is a file descriptor that lets the application read or write to and from the network.
+
+Sockets can be of two types depending on the transport service - UDP or TCP. UDP is unreliable, while TCP is reliable and byte-stream oriented. By reliable, it means that all the packets sent will be received, in the correct order. 
+
+In UDP, there is no ``connection'' between client and server - there is no handshaking before sending data. The sender attaches the destination address and the port number to each packet, which the receiver extracts upon receiving. The transmitted data may be lost or received out of order.
+
+A socket structure looks like this:
+
+\begin{lstlisting}[language=C]
+struct sockaddr {
+  unsigned short int sa_family; // Address family
+  unsigned in_addr sin_addr // Internet address
+}
+\end{lstlisting}
 
 \end{document}
