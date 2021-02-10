@@ -207,8 +207,8 @@ We can represent this encoding as a binary tree where going left corresponds to 
 The algorithm for Huffman Coding creates this tree. Say we are given a set $C$ of characters, along with theire frequencies. The algorithm is as follows:
 
 \begin{algorithm}[H]
-\SetAlgoLined
-\KwResult{A prefix tree for Huffman Codes}
+  \SetAlgoLined
+  \KwResult{A prefix tree for Huffman Codes}
   $n = |C|$ \\
   $Q = C$ \\
   \For{$i \gets1$ \KwTo $n-1$} {
@@ -219,7 +219,7 @@ The algorithm for Huffman Coding creates this tree. Say we are given a set $C$ o
     INSERT($Q.z$) \\
   }
   return EXTRACT\_MIN(Q)
- \caption{Huffman Coding}
+  \caption{Huffman Coding}
 \end{algorithm}
 
 If we use a heap, we can do this in $O(n \log n)$. It can actually be faster using van Emde Boas Tree, which would make it $O(n \log \log n)$
@@ -261,14 +261,14 @@ Let us consider the Minimum Spanning Tree problem, where we seek the subset of e
 
 
 \begin{algorithm}[H]
-\SetAlgoLined
+  \SetAlgoLined
   $A = \phi$ \\
   sort $M.S$ into monotonically decreasing order of weight $w$  \\
   \For{each $x \in M.S$}{
     \If{$A \cup \{x\} \in M.I$}
-      {
-        $A = A \cup \{x\}$\\
-      }
+    {
+      $A = A \cup \{x\}$\\
+    }
   }
   \Return A \\
   \caption{Greedy(M,w)}
@@ -293,5 +293,40 @@ Let us consider the Minimum Spanning Tree problem, where we seek the subset of e
     \item $I' = \{B \subseteq S - \{x\} : B \cup \{x\} \in I\}$
   \end{itemize}
 \end{lemma}
+
+
+\section{0-1 Knapsack}
+
+No notes for this, it's too simple. $O(N*W)$ algorithm. For general information, there are lots of faster algorithms if you add some extra constraints.
+
+\section{Travelling Salesman Problem}
+
+Consider we have a graph, where every edge between vertices $i$ and $j$ has some weight $c_{ij}$. Our goal is to find a path where we start from one city, visit every other city and return to the same one again, in the cheapest manner. This is like finding a Hamiltonian Cycle in the graph.
+
+Let $g(i,S)$ be the length of the shortest path starting at vertex $i$, going through all the vertices in $S$ and terminating at 1. Then the following equations are obvious:
+
+\[g(1,V-\{1\}) = \min_{2 \leq k \leq n} \{c_{1k} + g(k,V-\{1,k\})\}\]
+\[g(i,S) = \min_{j \in S} \{c_{ij} + g(j,S-\{j\})\}\]
+
+From this, we can design the TSP algorithm:
+
+\begin{algorithm}[H]
+  \SetAlgoLined
+  \For{$i = 2$ to $n$} {
+    $g(i,\phi) = c_{j1}$
+  }
+  \For{$k = 1$ to $n-2$}{
+    \For{$i=2$ to $n$} {
+      \For{$S \subseteq V - \{i,1\}$ with $|S| = k$}{
+        $g(i,S) = \min_{j \in S} \{c_{ij} + g(j, S-\{j\})\}$
+      }
+    }
+  }
+  $g(1,V-\{1\}) = \min_{j \in S} \{c_{1i} + g(i,V-\{1,i\})\}$ \\
+  \Return $g(1,V-\{1\})$
+  \caption{TSP($V,c_{ij}$)}
+\end{algorithm}
+
+The time complexity of this is $T(n) = \Theta(n^2 \cdot 2^n)$ and space complexity $\Theta(n2^n)$.
 
 \end{document}
