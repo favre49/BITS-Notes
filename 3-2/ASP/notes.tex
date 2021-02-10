@@ -296,4 +296,12 @@ If all states communicate with each other, then the chain is said to be \textbf{
   Otherwise, the state is transient.
 \end{definition}
 
+A recurrent state is \textbf{null} if $\mu_{ii} = \infty$ (wut?). Otherwise it is called \textbf{positive} or non null.
+
+\begin{theorem}
+  A state $i$ is recurrent if and only if $\sum_n P_{ii}^n = \infty$. A state $i$ is transient if and only if $\sum_n P_{ii}^n < \infty$  
+\end{theorem}
+
+This means that if $i$ is a persistent state, then if every state in it's equivalence class is also persistent, i.e. it is a class property.
+
 \end{document}
