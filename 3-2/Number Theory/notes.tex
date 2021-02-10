@@ -605,4 +605,35 @@ The GCD of two non-zero numbers always exists and is unique. Observe that $(a,b)
   
   From the division algorithm, let $n = mq+r$. Suppose $r > 0$. From our previous result, $F_m|F_{n-m}$, so $F_m|F_{n-2m}...F_m|F_r$. This means that $F_m \leq F_r$. But $r < m$, so $F_r < F_m$. This is a contradiction. So $r = 0$. Hence proved.
 \end{proof}
+
+\begin{definition}
+  Let $n \geq 2$ and let $a_1,...a_n \in \Z$, not all zero. The GCD of $a_1,...,a_n$ is the largest positive integer that divides each $a_i$. This is denoted by $a_1,...,a_n$.  
+\end{definition}
+
+This has the following properties:
+
+\begin{itemize}
+  \item $(a_1,a_2...a_n)$ is the least positive integer that is a linear combination of $a_1...a_n$.
+  \item $(a_1,...,a_n) = ((a_1,...,a_{n-1}),a_n)$
+  \item If $d | a_1...a_n$ and $(d,a_i) = 1$ for all $i \in [1,n-1]$, then $d|a_n$.
+  \item If $a_1,...,a_n$ are pairwise relatively prime, then $(a_1,...,a_n) = 1$.
+\end{itemize}
+
+\section{Euclidean Algorithm}
+
+We are given $a,b \in \Z$, not both zero, and want to compute $(a,b)$. The algorithm to do this works as follows:
+
+\begin{enumerate}
+  \item If $a$ or $b$ are negative, replace with their absolute value.
+    \item If $a > b$, then swap $a$ and $b$.
+    \item If $a = 0$, then $(a,b) = b$.
+    \item If $a >0$, write $b = aq+r$. Then, 
+      \[(a,b) = (r,a)\]
+      Go to step 3 with $a = r$ and $b=a$ respectively.
+\end{enumerate}
+
+This is called the Euclidean Algorithm. 
+
+To express $(a,b)$ as a linear combination of $a$ and $b$ where $0 \leq a \leq b$, we create a table with four columns with headings $x,y,r,q$. We denote the rows as $R_{-1}, R_0, R_1, ... R_{i-1}$ and the entries in $R_i$ as $x_i,y_i,r_i,q_i$. Suppose we have filled $R_{i-1}$ for some $i \geq 1$. To fill $R_i$, we firs compute $q_i$, which is the quotient obtained on dividing $r_{i-2}$ by $r_{i-1}$. Next, $R_i = R_{i-2} - q_iR_{i-1}$. This is known as the Extended Euclidean Algorithm.
+
 \end{document}
