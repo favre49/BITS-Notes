@@ -386,5 +386,32 @@ However, a recursive descent parser may loop forever on productions of the form:
 This is known as left recursion. We can remove it from the grammar by rewriting the rule as:
 \[A \rightarrow \beta A'\]
 \[A' \rightarrow \alpha A'|\epsilon\]
+Left recursion can be hidden as well, where expanding production rules in some order could lead to left recursion. This is called hidden left recursion, and we must handle it in the same way as we did left recursion.
+
+Left factoring is the process of removing the common left factor that appears in two productions of the same non-terminal. An example of a rule to remove is:
+\[A \rightarrow \alpha \beta_1|\alpha \beta_2\]
+We can remove the left factoring and get:
+\[A \rightarrow \alpha A'\]
+\[A' \rightarrow \alpha \beta_1|\beta_2\]
+By doing this, we can reduce the amount of backtracking done by the parser.
+
+Consider the following grammar:
+\[A \rightarrow aBb\]
+\[B \rightarrow c | \epsilon\]
+And suppose we want to parse an input string ``ab''. How would the parser know to use $\epsilon$ for $B$? To do this we use the \textbf{follow set}.
+
+Follow($X$) for a non terminal $X$ is the set of symbols that might follow the derivation of $X$ in an input stream. The follow of the start symbol $S$ is \$ - the follow set can never be $\epsilon$. The steps to compute the follow set is:
+
+\begin{itemize}
+  \item Always include \$ in Follow($S$).
+  \item If there is a production rule $A \rightarrow \alpha B \beta$, where $B$ is a non terminal, then Follow($B$)  = First($\beta$).
+  \item If there is a production rule $A \rightarrow \alpha B \beta$, where $B$ is a non terminal, and First($\beta$) contains $\epsilon$, then everything in Follow($A$) is in Follow($B$).
+  \item If there is a production rule $A \rightarrow \alpha B$, then Follow($B$) = Follow($A$).
+\end{itemize}
+
+Now that we have talked about all the issues that can face RDP, let us look at a new parser - \textbf{predictive parsing}. This is a non recursive top down parsing method, which recognizes LL(1) languages. The first L means that we scan the input stream from left to right, and the second L means that we do leftmost derivation.
+
+The predictive parser makes use of a parse table, which is a two dimensional array $M[X,a]$ where $X$ is a non terminal and $a$ is a terminal.
+
 
 \end{document}
