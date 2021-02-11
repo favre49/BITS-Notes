@@ -74,10 +74,10 @@ Packet switching uses \textbf{store and forward}. The packets are stored at inte
 When using packet switching, there may be four sources of packet delay:
 
 \begin{itemize}
-  \item Nodal processing : The node performs error checking and checks the header for the destination of the packet.
-  \item Queueing: When the arrival rate of the packets is faster than the sending rate, the node will keep the packets in a buffer queue. As such, there is a delay when the packet wait in the node queue.
-  \item Propagation: This is the delay from propagation of the packets from a node to the next node, i.e., the outgoing delay. This depends on the medium of the wire, and is given by $d/s$, where $d$ is the length of the connection and $s$ is the speed.
-  \item Transmission : This is the delay from transmission of packets into the node, i.e. the incoming delay.
+  \item \textbf{Nodal processing} : The node performs error checking and checks the header for the destination of the packet.
+  \item \textbf{Queueing} : When the arrival rate of the packets is faster than the sending rate, the node will keep the packets in a buffer queue. As such, there is a delay when the packet wait in the node queue.
+  \item \textbf{Propagation} : This is the delay from propagation of the packets from a node to the next node, i.e., the outgoing delay. This depends on the medium of the wire, and is given by $d/s$, where $d$ is the length of the connection and $s$ is the speed.
+  \item \textbf{Transmission} : This is the delay from transmission of packets into the node, i.e. the incoming delay.
 \end{itemize}
 
 \subsection{Performance of a Network}
@@ -134,9 +134,9 @@ In the context of the Internet, these layers perform the following functions:
 
 \subsection{IP Hourglass Architecture}
 
-One way to imagine the Internet architecture is as a hourglass. The IP interconnects multiple existing networks, and hides the underlying technology from applications. This provides minimal functionality (has a "narrow waist"). The tradeoff of this approach is that there are no assumptions being made, and as such no guarantee that something works.
+One way to imagine the Internet architecture is as a hourglass. The IP interconnects multiple existing networks, and hides the underlying technology from applications. This provides minimal functionality (has a ``narrow waist''). The trade-off of this approach is that there are no assumptions being made, and as such no guarantee that something works.
 
-\section{Application Layer}
+\section{The Application Layer}
 
 \subsection{Network Applications}
 
@@ -238,7 +238,7 @@ Hence, using cookies, we can save state with HTTP. This can be used to save user
 
 Proxy servers are also called web caches. Clients send their requests to a proxy server, which would forward it to the destination. The incoming responses are also forwarded to their respective clients. The proxy server can cache information, and hence answer requests itself to save time. This is especially useful in institutions when the content that users access has a large overlap.
 
-One issue with this is that the cached content might turn stale. To fix this we use conditional GETs. When the client sends a request, it adds a header line called \texttt{if-modified-since} which gives the last date at which an access was made.
+One issue with this is that the cached content might turn stale. To fix this we use conditional GETs. When the client sends a request, it adds a header line called \texttt{if-modified-since} which gives the last date at which an access was made. If the object has not been modified since that date, the server will give a cached response along with the status code \texttt{304 Not Modified}. If it has, then the proxy server will query the updated information and return the status code \texttt{200 OK}.
 
 \subsection{HTTP/2 Protocol}
 
@@ -284,7 +284,7 @@ To insert a record into DNS, a newly created domain name should be first registe
 
 This protocol is used to transfer file from client to client. It uses the TCP protocol, since it must be reliable and error free.
 
-FTP has two kinds of connections - control connections and data connections.
+In a typical session, FTP will use two connections - a control connection and a data connections. The control connection, which is generally established on port 21, is the primary connection and is used to send commands back and forth between the client and the server. The data connection, established on port 20, is used solely to transfer the requested data. It stays open until the transfer is complete.
 
 Some FTP commands are:
 
@@ -296,7 +296,14 @@ Some FTP commands are:
   \item \texttt{STOR filename} stores file onto remote host
 \end{itemize}
 
-These commands can give return codes and phrases as in HTTP.
+These commands can give return codes and phrases as in HTTP:
+
+\begin{itemize}
+  \item \texttt{331 Username OK, password required}
+  \item \texttt{125 data connection already open; transfer starting}
+  \item \texttt{425 can't open data connection}
+  \item \texttt{452 Error writing to file}
+\end{itemize}
 
 \subsection{eMail}
 
@@ -329,9 +336,9 @@ In BitTorrent, the file is divided into chunks, typically 256 KB in size. There 
 
 One P2P protocol is Napster. Here, we have a central database where information is available, and the peers contact it for the necessary information. However, if the database is down then the peer-to-peer application cannot run.
 
-Another P2P protocol is Gnutella. Unlike Napster, it is a completely decentralized protocol.
+Another P2P protocol is Gnutella. Unlike Napster, it is a completely decentralized protocol. On startup, an end host finds at least one other node to connect to. It then queries this node for more nodes to connect to, until it reaches some quota. Due to the completely decentralized network, this protocol is unscalable - searching takes time exponential in the number of nodes, and often end hosts are only connected intermittently.
 
-Yet another P2P protocol is Kazaa, which is the basis for Skype. \textit{Include information about this}.
+Yet another P2P protocol is Kazaa, which is the basis for Skype. Kazaa is also a decentralized system. The users are divided into two groups - supernodes and ordinary nodes. Supernodes are powerful computers that act like traffic hubs, processing data requests from ordinary nodes.
 
 \subsection{Distributed Databases}
 
@@ -361,5 +368,15 @@ struct sockaddr {
   unsigned in_addr sin_addr // Internet address
 }
 \end{lstlisting}
+
+\section{Transport Layer}
+
+The transport layer is responsible for logical communication between the hosts, unlike the network layer which is responsible for logical communication between processes. Since the transport layer works on top of the network layer, it is constrained by the underlying network layer protocol. However, in some cases it can offer services even when the network layer doesn't offer it.
+
+The transport layer multiplexes messages at sending time by handling data from multiple sockets and adding a transport header for each message. It is also responsible for demultiplexing the received messages by using the header information to deliver the received messages to the correct sockets. 
+
+When demultiplexing, the host receives what are called \textbf{IP datagrams}. Each of these has a source IP address and a destination IP address. They also have one transport layer \textbf{segment} , which contain the source and destination port number. The host uses the IP address and port number to direct the segment to the appropriate sockets.
+
+In the case of UDP, demultiplexing works slightly differently, since it is a connectionless protocol. When a host receives a UDP segment, it checks the destination port number in the segment and directs the segment to the socket with that port number.
 
 \end{document}
