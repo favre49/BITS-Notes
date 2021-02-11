@@ -86,15 +86,13 @@ This is an optional phase that modifies the programs to run faster and consume l
 Some examples of machine independent code optimization done is:
 
 \begin{itemize}
-  \item Common sub-expression elimination
-  \item Copy Propagation
-  \item Dead code elimination
-  \item Code Motion
-  \item Strength Reduction
-  \item Constant Folding
+\item \textbf{Common sub-expression elimination:} The compiler searches for instances of identical expressions and analyzes whether it is worthwhile to replace them with a single variable holding the computer value.
+\item \textbf{Copy Propagation:} The compiler replaces the occurrences of targets of direct assignments with their value. For instance, if we had the code \texttt{y=x; z = 3+y;}, copy propagation would yield \texttt{z=3+x;}
+\item \textbf{Dead code elimination:} The compiler removes code which does not affect the program results, including unreachable code and unused variables.
+\item \textbf{Code Motion:} The compiler moves statements and expressions out of the body of a loop if they are loop-invariant, i.e., doing so does not affect program semantics.
+\item \textbf{Strength Reduction:} The compiler replaces expensive operations with equivalent but less expensive operations.
+\item \textbf{Constant Folding:} The compiler recognizes and evaluates constant expressions at compile time instead of runtime.
 \end{itemize}
-
-\textit{TODO: See what these do and examples of each.}
 
 \subsection{Code Generation}
 
@@ -360,17 +358,28 @@ In top down parsing, we repeat the following two steps:
   \item Find the next node at which the subtree is to be constructed.
 \end{enumerate}
 
-To choose the production rule, as in step 1, backtracking must be done. We try every production rule that we can apply and see which one works. The parser must be intelligent enough to choose the production rule to apply based on the token being pointed to by the pointer.
+To choose the production rule, as in step 1, backtracking must be done. We try every production rule that we can apply and see which one works. The parser must be intelligent enough to choose the production rule to apply based on the token being pointed to by the pointer. If we could determine the first character of the string produced when a production rule is applied, we could compare it to the current token and choose the production rule correctly. For this, we use a concept called the First Set.
 
-The \textbf{First set}, denoted by \texttt{FIRST(X)} for a grammar symbol $X$ is the set of tokens that begin the strings derivable form $X$.
+The \textbf{First set}, denoted by \texttt{FIRST(X)} for a grammar symbol $X$ is the set of tokens that begin the strings derivable form $X$. If there is a production rule:
+\[A \rightarrow \alpha\]
+then First($\alpha$) is the set of tokens that appear as the first token in strings generated from $\alpha$.
 
-To calculate the First Set, we use the following rules:
-
+Consider the following example:
+\[S \rightarrow ABCDE\]
+\[A \rightarrow a|\epsilon\]
+\[B \rightarrow b|\epsilon\]
+\[C \rightarrow c\]
+\[D \rightarrow d|\epsilon\]
+\[E \rightarrow e|\epsilon\]
+Then, the first sets are as following:
 \begin{itemize}
-  \item If $P$ is a non terminal and $P \rightarrow Q_1Q_2...Q_k$ is a production, then if for some $i$, First($Q_i$) = $\{x\}$ and $\epsilon$ is in all of First($Q_j$) (such that $j < i$), then First($P$) = $\{x\}$. If $\epsilon$ is in First($Q_i$) for all $i \in [1,k]$, then First($P$) = $\{\epsilon\}$
+  \item First($S$) = $\{a,b,c\}$
+  \item First($A$) = $\{a,\epsilon\}$
+  \item First($B$) = $\{b,\epsilon\}$
+  \item First($C$) = $\{c\}$
+  \item First($D$) = $\{d,\epsilon\}$
+  \item First($E$) = $\{e,\epsilon\}$
 \end{itemize}
-
-\textit{TODO: Understand and describe First Set better}
 
 Let us look at our first parser - the \textbf{recursive descent parser}. RDP is a top down method of syntax analysis in which a set of recursive procedures are executed to parse the stream of tokens. A procedure is associated with each non-terminal of the grammar. The procedure generally implements one of the production rules of the grammar.
 
