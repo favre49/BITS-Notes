@@ -498,7 +498,7 @@ The proofs of lemmas 5.1 and 5.2 come directly from induction, so I am not discu
  TODO  
 \end{proof}
 
-\chapter{Greatest Common Divisor}
+\chapter{Greatest Common Divisor and Least Common Multiple}
 
 \section{Greatest Common Divisor}
 
@@ -634,6 +634,72 @@ We are given $a,b \in \Z$, not both zero, and want to compute $(a,b)$. The algor
 
 This is called the Euclidean Algorithm. 
 
-To express $(a,b)$ as a linear combination of $a$ and $b$ where $0 \leq a \leq b$, we create a table with four columns with headings $x,y,r,q$. We denote the rows as $R_{-1}, R_0, R_1, ... R_{i-1}$ and the entries in $R_i$ as $x_i,y_i,r_i,q_i$. Suppose we have filled $R_{i-1}$ for some $i \geq 1$. To fill $R_i$, we firs compute $q_i$, which is the quotient obtained on dividing $r_{i-2}$ by $r_{i-1}$. Next, $R_i = R_{i-2} - q_iR_{i-1}$. This is known as the Extended Euclidean Algorithm.
+To express $(a,b)$ as a linear combination of $a$ and $b$ where $0 \leq a \leq b$, we create a table with four columns with headings $x,y,r,q$. We denote the rows as $R_{-1}, R_0, R_1, ... R_{i-1}$ and the entries in $R_i$ as $x_i,y_i,r_i,q_i$. Suppose we have filled $R_{i-1}$ for some $i \geq 1$. To fill $R_i$, we first compute $q_i$, which is the quotient obtained on dividing $r_{i-2}$ by $r_{i-1}$. Next, $R_i = R_{i-2} - q_iR_{i-1}$. This is known as the Extended Euclidean Algorithm.
+
+\begin{theorem}[Lame's theorem]
+  Let $b \geq a \geq 2$. The number of divisions required to compute $(a,b)$ by the Euclidean algorithm is at most 5 times the number of decimal digits in $a$.  
+\end{theorem}
+
+\begin{proof}
+  Suppose that $a$ contains $k$ decimal digits and takes $n$ divisions to compute $(a,b)$. We need to show that $n \leq 5k$. Let $r_0 = b, r_1 = a$. Applying Division algorithm repeatedly, we have:
+  \[r_0 = r_1q_1+r_2, 0 < r_2 < r_1\]
+  \[r_1 = r_2q_2+r_3, 0 < r_3 < r_2\]
+  \[\cdots\]
+  \[r_{n-1} = r_n \cdot q_n + 0\]
+
+  We can prove that $q_i \geq 1$ for $1 \leq i \leq n-1$ and $q_n \geq 2$. This is because if $q_n$ is 1, then $r_{n-1} = r_n$, which is a contradiction. If $q_i = 0$, then $r_{i-1} = r_{i+1}$, which is also a contradiction.
+  We claim that $r_{n-i} \geq F_{i+2}$ for $1 \leq i \leq n-1$. This is true for the base case, where $r_{n-1} \geq F_3 = 2$. 
+  \begin{align*}
+    r_{n-j} &= r_{n-(j-1)}q_{n-(j-1)} + r_{n-(j-2)}\\
+            &\geq r_{n-(j-1)} + r_{n-(j-2)}\\
+            &\geq F_{j+1} + F_j = F_j+2
+  \end{align*}
+  In particular, $a = r_1 \geq F_{n+1}$. Now $10^k > a \geq F_{n+1} \heq \alpha^{n-1}$, where $\alpha = \frac{1+\sqrt5}{2}$ and $n \geq 3$. Taking logarithms and using the fact that $\log \alpha > 1/5$, we get that $n \leq 5k$.
+\end{proof}
+
+\section{Least Common Multiple}
+
+\begin{definition}
+  Let $a,b \in \N$. We say that a positive integer $l$ is the least common multiple of $a$ and $b$ if 
+  \begin{itemize}
+    \item $a$ and $b$ both divide $l$
+    \item $c$ is a positive integer divisible by both $a$ and $b$, then $l \leq c$.
+  \end{itemize}
+  It is generally denoted by $[a,b]$.
+\end{definition}
+
+\begin{exercise}
+  Prove that $(a,b)[a,b] = ab$.
+\end{exercise}
+\begin{solution}
+  Let $d = (a,b)$ and let $k = ab/d$. Obviously, $k \in \N$. We have to show that $k = [a,b]$. We first prove that $a$ and $b$ both divide $k$. Write 
+  \[a = da_1,b=db_1,a_1,b_1 \in \Z\]
+  Then,
+  $k = \frac{ab}{d} = ab_1 = ba_1$.
+  Hence $a$ and $b$ both divide $k$.
+  Suppose $c$ is a positive integer divisible by both $a$ and $b$. Write
+  \[c = aa', c = bb', a',b' \in \Z\]
+  Since $d = (a,b)$, there exists integers $x$ and $y$ such that:
+  \[d = ax+by\]
+  Then 
+  \[\frac{c}{k} = \frac{cd}{ab} = \frac{c(ax+by)}{ab} = \frac{c}{b}x + \frac{c}{a}y = b'x+a'y \in \Z\]
+  Hence $k$ divides $c$. Since $c \neq 0$, this implies $k \leq c$. Therefore, by definition, $k = [a,b]$ and $(a,b)[a,b] = ab$.
+\end{solution}
+
+\section{Fundamental Theorem of Arithmetic}
+
+\begin{theorem}[Fundamental Theorem of Arithmetic]
+  Every integer $n \geq 2$ can be written as a product of primes and the factorization into primes is unique up to the order of the factors.
+\end{theorem}
+\begin{proof}
+  Let $P(n)$ be the statement that $n$ can be written as a product of primes. $P(2)$ is true, since it is a prime. Let $k \geq 2$ and $P(2), \cdots , P(k)$ is true.
+  If $k+1$ is prime, then $P(k+1)$ is immediately true. If it is composite, then $k+1$ is of the form $a \cdot b$ where $2 \leq a,b \geq k$. By induction hypothesis, since $P(a)$ and $P(b)$ is true, $P(k+1)$ is also true.
+
+  Suppose that 
+  \[n = p_1p_2..p_r = q_1...q_s\]
+  Assume $r \leq s$. Since if $p_1|q_1...q_s$, $p_1 = q_i$ for some $i, 1 \leq i \leq s$. We can cancel this out and keep doing this till we get
+  \[1 = q_{i_1}q_{i_2}q_{i_{s-r}}\]
+  However, $q_i$ is a prime. This is a contradiction unless $s = r$. Hence uniqueness is proved.
+\end{proof}
 
 \end{document}
