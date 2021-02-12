@@ -369,14 +369,19 @@ struct sockaddr {
 }
 \end{lstlisting}
 
+TODO: complete this.
+
 \section{Transport Layer}
 
 The transport layer is responsible for logical communication between the hosts, unlike the network layer which is responsible for logical communication between processes. Since the transport layer works on top of the network layer, it is constrained by the underlying network layer protocol. However, in some cases it can offer services even when the network layer doesn't offer it.
 
-The transport layer multiplexes messages at sending time by handling data from multiple sockets and adding a transport header for each message. It is also responsible for demultiplexing the received messages by using the header information to deliver the received messages to the correct sockets. 
+The transport layer provides two protocols - UDP, an unreliable connectionless service, and TCP, a reliable, connection oriented service. The transport layer works with transport layer packets called \textbf{segments}. 
 
-When demultiplexing, the host receives what are called \textbf{IP datagrams}. Each of these has a source IP address and a destination IP address. They also have one transport layer \textbf{segment} , which contain the source and destination port number. The host uses the IP address and port number to direct the segment to the appropriate sockets.
+The transport layer multiplexes messages at sending time by handling data from multiple sockets and adding a transport header for each message. It is also responsible for demultiplexing the received messages by using the header information to deliver the received messages to the correct sockets. These are the only two services UDP provides, but TCP provides some additional services. As mentioned before, it also proved reliable data transfer. Besides this, it provides what is called congestion control. TCP congestion control prevents any one TCP connection from swamping links and routers between hosts with excess traffic, and tries to give every connection an equal share of traffic.
 
-In the case of UDP, demultiplexing works slightly differently, since it is a connectionless protocol. When a host receives a UDP segment, it checks the destination port number in the segment and directs the segment to the socket with that port number.
+In \textbf{connectionless multiplexing}, as seen in UDP, the sockets are identified by a port number. So to perform multiplexing, the segments must contain information of a source port number and a destination port number.This information is passed from the sender's transport layer to it's network layer, which encloses it within a \textbf{datagram}  (network layer packet). This datagram will now also have information about the sender's IP address and the destination IP address. Finally, when this message reaches the destination, that host checks the destination port number and redirects the message to that port. The source port number seems unnecessary, but acts as a ``return address'' for the application to use to communicate.
+
+TCP uses \textbf{connection oriented multiplexing}. Unlike a UDP socket, a TCP socket is identified by a tuple of (source IP address, source port number, destination IP address, destination port number). Thus, when a TCP segment arrives from the network to a host, the host uses all four values to demultiplex the segment to the appropriate socket. In contrast with UDP, two arriving TCP segments with different source IP addresses or source port numbers will be directed to two different sockets.
+
 
 \end{document}
