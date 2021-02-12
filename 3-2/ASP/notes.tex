@@ -288,7 +288,7 @@ The limiting distribution may not always exist, but if it does, it is equivalent
   This has it's own mathematical proof from the definition, but it is far more intuitive to think of the strongly connected components in a directed graph.  
 \end{remark}
 
-If all states communicate with each other, then the chain is said to be \textbf{irreducible}. A set of states is \textbf{closed} if, once you enter that set of states you never leave. A closed set consisting of a single state is called an \textbf{absorbing state}.   
+If all states communicate with each other, then the chain is said to be \textbf{irreducible}. A set of states is \textbf{closed} if, once you enter that set of states you never leave. In a more mathematical sense, a set $B$ is closed if for all $j \in B^C$, there is no $i \in B$ such that $i \rightarrow j$. A closed set consisting of a single state is called an \textbf{absorbing state}.   
 
 \begin{definition}
   State $i$ is recurrent or persistent if 
@@ -303,5 +303,16 @@ A recurrent state is \textbf{null} if $\mu_{ii} = \infty$ (wut?). Otherwise it i
 \end{theorem}
 
 This means that if $i$ is a persistent state, then if every state in it's equivalence class is also persistent, i.e. it is a class property.
+
+\begin{theorem}
+  A set B is closed if and only if $P_{ij} = 0 \forall j \in B^C, i \in B$.  
+\end{theorem}
+\begin{remark}
+  This comes directly from thinking of the Markov Chain as a graph.
+\end{remark}
+
+\begin{theorem}
+  If $B$ is a closed set, then $B$ is the union of equivalence classes in the Markov Chain.
+\end{theorem}
 
 \end{document}
