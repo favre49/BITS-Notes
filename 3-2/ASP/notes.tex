@@ -263,6 +263,13 @@ The limiting distribution may not always exist, but if it does, it is equivalent
   \[f_{ij}^{(n)} = P_{ij}^{(n)} - \sum_{r=0}^{n-1} f_{ij}^{(r)} P_{jj}^{n-r}\]
 \end{theorem}
 
+\begin{definition}
+The mean time of eventual return is the expected number of transitions to go from $i$ to $j$. This is denoted by $\mu_{ij}$ and is given by:
+\[\mu_{ij} = \sum_{n=1}^{\infty} n f_{ij}^{(n)}\]
+\end{definition}
+
+$\mu_{ii}$ is called the mean recurrence time. This value is not guaranteed to converge.
+
 \section{Classification of States}
 
 \begin{definition}[accessibility]
@@ -296,7 +303,7 @@ If all states communicate with each other, then the chain is said to be \textbf{
   Otherwise, the state is transient.
 \end{definition}
 
-A recurrent state is \textbf{null} if $\mu_{ii} = \infty$ (wut?). Otherwise it is called \textbf{positive} or non null.
+A recurrent state is \textbf{null} if $\mu_{ii} = \infty$. Otherwise it is called \textbf{positive} or non null.
 
 \begin{theorem}
   A state $i$ is recurrent if and only if $\sum_n P_{ii}^n = \infty$. A state $i$ is transient if and only if $\sum_n P_{ii}^n < \infty$  
@@ -314,5 +321,15 @@ This means that if $i$ is a persistent state, then if every state in it's equiva
 \begin{theorem}
   If $B$ is a closed set, then $B$ is the union of equivalence classes in the Markov Chain.
 \end{theorem}
+
+\begin{definition}
+  The period of a state $i$ is $d_i = gcd(\{n : P_{ii}^n > 0\})$. If $d_i > 1$, the state is periodic, and is otherwise aperiodic if $d_i=1$.
+\end{definition}
+
+Periodicity is a property of a class. Every state in the same class has the same period.
+
+\begin{definition}
+  A state is ergodic if it is persistent, non-null and aperiodic. A chain is ergodic if all it's states are ergodic. 
+\end{definition}
 
 \end{document}
