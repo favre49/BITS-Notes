@@ -450,6 +450,22 @@ All rules of this type must be such that $\bigcap_{i=1}^n First(\alpha_i) = \phi
 \[A \rightarrow \alpha | \epsilon\]
 must be such that $First(\alpha) \cap Follow(A) = \phi$.
 
+\subsubsection{Bottom Up Parsing}
+
+In bottom up parsing, we design a parse tree for an input string starting from the leaf nodes and going towards the root. This is equivalent to finding a series of steps to reduce a string $w$ of input to the start symbol of the grammar by tracing out the rightmost derivations of $w$ in reverse.
+
+Bottom up parsing is done via \textbf{shift reduce parsing}. Shift reduce parsing splits the string into two parts,  separated by a special character `.'. The left part is a string of terminals and non terminals (on the stack), and the right part is a string of terminals (rest of the input string). Initially, we assume the input to be $.w$ . The parser does one of two operations:
+
+\begin{itemize}
+  \item \textbf{Shift:} It moves terminal symbol from the right part of the string to the left part of the string. If string before the shift if $\alpha . pqr$, then the string after shift is $\alpha p . q r$. This is equivalent to pushing a terminal onto the stack.
+  \item \textbf{Reduce:} It occurs immediately on the left of `.' and identifies a string name as RHS of a production and replaces it by the LHS. If string before reduce action is $\alpha \beta . p q r$ and $A \rightarrow \beta$ is a production then string after reduction is $\alpha A . pqr$. This is equivalent to popping the RHS of the production, and pushing the LHS onto the stack.
+\end{itemize}
+
+Bottom up parsing is capable of handling left recursive grammars.
+
+A string that matches the RHS of a production and whose replacement gives a step in the reverse of right most derivation is called a \textbf{handle}. Our goal is to always reduce the handle and not just any RHS. Hence the shift reduce parser must be capable of detecting these handles.
+
+A shift reduce parser could also find a \textbf{conflict}. A shift-reduce conflict is when both a shift and a reduce operation are valid. A reduce-reduce conflict is when reduction can be done by more than one production rule.
 
 
 
