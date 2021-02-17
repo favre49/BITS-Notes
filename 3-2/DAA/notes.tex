@@ -329,4 +329,55 @@ From this, we can design the TSP algorithm:
 
 The time complexity of this is $T(n) = \Theta(n^2 \cdot 2^n)$ and space complexity $\Theta(n2^n)$.
 
+\section{Matrix Chain Multiplication}
+
+If we are given a sequence of matrices, $A,B,C$ of size $u \times v$, $v \times w$, $w \times z$ respectively. This gives us two ways to multiple the matrix : 
+
+\begin{itemize}
+  \item $(A \times B) \times C$ : Takes $u \times v \times w + u \times w \times z$ steps
+  \item $A \times (B \times C)$ : Takes $u \times v \times z + v \times w \times z$ steps
+\end{itemize}
+
+Our goal is to find the order of multiplication that would take the minimum number of steps.
+
+One way to do this could be brute force, where we try every order of multiplication. This problem is equivalent to finding the number of ways to parenthesize an expression of $n$ matrices. This can be expression by the recursion:
+
+\[P(n) = \begin{cases}
+1 & \text{if } n = 1 \\
+\sum_{k=1}^{n-1} P(k) \times P(n-k) & \text{otherwise}
+\end{cases}
+\]
+This is, in fact, the $n-1$ Catalan number $C(n-1)$, where:
+\[C(n) = \frac{1}{n+1} {2n \choose n}\]
+
+A more efficient approach to solve this is DP. Let us assume every matrix $A_i$ has the dimensions $p_{i-1} \times p_i$. Then we can use the following DP:
+
+\begin{algorithm}[H]
+  \SetAlgoLined
+  $n$ = length[$p$] - 1 \\
+  \For{i = 1 to n} {
+    $m[i][i] = 0$
+  }
+  \For{l = 2 to n} {
+    \For{i=1 to n-l+1} {
+      $j=i+l-1$ \\
+      $m[i][j] = \infty$ \\
+      \For{k=i to j-1} {
+        $q = m[i][k] + m[k+1[j] + p_{i-1}p_kp_j$ \\
+        \If{$q < m[i][j]$}{
+          $m[i][j] = q$ \\
+          $s[i][j] = k$ 
+        }
+      }
+    }
+  }
+  \caption{Matrix-Chain-Order(p)}
+\end{algorithm}
+
+This is a standard DP by length. The idea is, if we are given a range of matrices $[l .. r]$, the best parenthesization will always involve splitting the range into two parts - a prefix and a suffix, and multiplying it. So, for every range, we store the best achievable cost for every subrange of a length $l$, and to find the cost of a current subrange, try every prefix to find the minimum cost.
+
+\section{Longest Common Subsequence}
+
+This is also very common and standard, read GFG or something. Interesting fact is that the longest palindromic subsequence in a string is the LCS of the string and it's reverse.
+
 \end{document}
