@@ -312,6 +312,10 @@ A recurrent state is \textbf{null} if $\mu_{ii} = \infty$. Otherwise it is calle
 This means that if $i$ is a persistent state, then if every state in it's equivalence class is also persistent, i.e. it is a class property.
 
 \begin{theorem}
+  For a finite Markov Chain, there exists at least one persistent class.
+\end{theorem}
+
+\begin{theorem}
   A set B is closed if and only if $P_{ij} = 0 \forall j \in B^C, i \in B$.  
 \end{theorem}
 \begin{remark}
@@ -329,7 +333,9 @@ This means that if $i$ is a persistent state, then if every state in it's equiva
 Periodicity is a property of a class. Every state in the same class has the same period.
 
 \begin{definition}
-  A state is ergodic if it is persistent, non-null and aperiodic. A chain is ergodic if all it's states are ergodic. 
+  A state is ergodic if it is persistent and aperiodic. A chain is ergodic if all it's states are ergodic. 
 \end{definition}
+
+Ergodism is a class property, since periodicity and persistency are both class properties.
 
 \end{document}
