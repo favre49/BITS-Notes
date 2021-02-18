@@ -761,4 +761,34 @@ To express $(a,b)$ as a linear combination of $a$ and $b$ where $0 \leq a \leq b
 
 The largest power $x$ such that $p^x|a$ for a prime $p$ is called the multiplicity of $p$ in $a$.
 
+\chapter{Linear Diophantine Equations}
+
+\section{Linear Diophantine Equations in Two Variables}
+
+Linear Diophantine equations in two variables are of the form:
+\[ax+by=c\]
+
+An integer solution exists if and only if $(a,b)|c$. In this case, for any initial solution $x_0,y_0$, the general solution is given by:
+\[x = x_0 + \frac{b}{d}n, y = y_0 - \frac{a}{d}n\]
+where $d = (a,b)$ and $n \in \Z$. The initial solution $x_0,y_0$ can be found using the Extended Euclidean Algorithm.
+
+\section{Fibonacci Linear Diophantine Equation}
+\phantom{}
+\begin{theorem}
+  Let $k \in \N, c \in \Z$. The linear Diophantine equation:
+  \[F_{k+1}x + F_ky = c\]
+  is always solvable. If $k$ is even, the complete solution is given by:
+  \[x=F_{k-1}c+F_kn, y=-F_kc -F_{k+1}n\]
+  If $k$ is odd, the complete solution is given by:
+  \[x=-F_{k-1}c + F_kn, y = F_kc - F_{k+1}n\]
+\end{theorem}
+\begin{proof}
+  $(F_k,F_{k+1}) = 1$, so the solution always exists. 
+  If $k$ is even, then:
+  \[x_0 = F_{k-1}c, y_0 = -F_kc\]
+  always solves it (prove it via Cassini's Formula). If $k$ is odd, then:
+  \[x_0 = -F_{k-1}c, y = F_kc\]
+  always solves it.
+\end{proof}
+
 \end{document}
