@@ -467,6 +467,33 @@ A string that matches the RHS of a production and whose replacement gives a step
 
 A shift reduce parser could also find a \textbf{conflict}. A shift-reduce conflict is when both a shift and a reduce operation are valid. A reduce-reduce conflict is when reduction can be done by more than one production rule.
 
+Now let us look at our first bottom up parser, the \textbf{LR(0) parser}. Before we discuss the exact algorithm we must understand some concepts. First is the augmentation of grammar. If $G$ is a grammar with a start symbol $S$, the augmented grammar $G'$ which has a new start symbol $S'$ and a additional production:
+\[S' \rightarrow S\]
+When the parser reduces by this new rule, it will stop immediately in the accept state.
 
+An LR(0) item of a grammar is a production of $G$ with a special symbol `.' at some position on the RHS. So, the production $A \rightarrow XYZ$ gives four LR(0) items:
+\[A \rightarrow .XYZ\]
+\[A \rightarrow X.YZ\]
+\[A \rightarrow XY.Z\]
+\[A \rightarrow XYZ.\]
+Each item indicates how much of a production has been seen at a point in the process of parsing.
+
+Let $I$ be a set of items for a grammar $G$. Then the Closure($I$) is a set constructed as follows:
+
+\begin{itemize}
+  \item Every item $I$ is in closure($I$)
+  \item If $A \rightarrow \alpha . B \beta$ is in closure ($I$) and $B \rightarrow \gamma$ is a production then $B \rightarrow .\gamma$ is in closure($I$).
+\end{itemize}
+
+The Goto operation, defined by Goto($I,X$), where $I$ is a set of items and $X$ is a grammar symbol, is closure of set of items $A \rightarrow \alpha X. \beta$ such that $A \rightarrow \alpha . X \beta$. If $I$ is a set of items for some valid prefix $\alpha$, then goto($I,X$) is set of valid items for prefix $\alpha X$.
+
+Finally we can look at the exact algorithm in LR(0) parsing:
+
+\begin{itemize}
+  \item Design the augmented grammar
+  \item Construct a goto graph using closure and goto operations on LR(0) items
+  \item Design the parsing table
+  \item Execute parsing on the string
+\end{itemize}
 
 \end{document}
