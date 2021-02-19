@@ -791,4 +791,86 @@ where $d = (a,b)$ and $n \in \Z$. The initial solution $x_0,y_0$ can be found us
   always solves it.
 \end{proof}
 
+\section{Linear Diophantine Equations in Many Variables}
+\phantom{}
+\begin{theorem}
+  Let $a_1,...,a_k$ be integers, not all zero. The Diophantine equation:
+  \[a_1x_1 + ... + a_kx_k = x\]
+  has an integer solution if and only if $(a_1,...,a_k)|c$. In that case, there are infinitely many solutions.
+\end{theorem}
+
+\begin{exercise}
+  Find the complete solution to:
+  \[6x+8y+12z=10\]
+\end{exercise}
+\begin{solution}
+  $(6,8,12)  = 2$, and $2|10$, so this equation is solvable.
+  Let us consider the ``subequation'' $8y+12z$. Since it is a linear combination of 8 and 12, it must be a multiple of $(8,12) = 4$. So,
+  \[8y+12z = 4u\]
+  This gives us a new equation:
+  \[6x+4u = 10\]
+  The general solution of this is given by:
+  \[x = 1+2n, u = 1-3n\]
+  Substituting $u$ in the first equation,
+  \[8x+12y = 4(1-3n)\]
+  This equation is also solvable, and we can find it's general solution as well. Since $4=2.8 + (-1).12$, we get $4(1-3n) = (2-6n)8 + (-1-3n)12$. Finally, we can write the complete solution:
+  \[x = 1+2n\]
+  \[y = 2-6n + 3m\]
+  \[z = -1+3n -2m\]
+\end{solution}
+
+\begin{exercise}
+  Suppose we have a coin system. Let's say we use 4 rupee and 9 rupee coins only. Then which amounts can be exchanged? For instance, 1 rupee cannot be exchanged; 17 rupees can be exchanged. 
+\end{exercise}
+\begin{solution}
+  This problem can be expressed as - what numbers can be expressed as a linear combination of 4 and 9 with positive coefficients.
+  In fact, only finitely many integers cannot be exchanged. Generally, if $a,b \in \N$ with $(a,b) = 1$, then the largest integer which cannot be represented as $ax+by$ with $x,y \in \Z, y,y \geq 0$ is $ab-a-b$.
+
+  TODO complete proof
+\end{solution}
+
+\chapter{Congruence}
+
+\begin{definition}
+  Let $m \in \N$. Two integers $a,b$ are said to be congruent modulo $m$ if $m|a-b$. This is denoted by $a \equiv b \mod m$  
+\end{definition}
+
+Congruence has the following properties:
+
+\begin{itemize}
+  \item $a \equiv a \mod m$
+  \item $a \equiv b \mod m$, then $b \equiv a \mod m$
+  \item $a \equiv b \mod m$ and $b \equiv c \mod m$, then $a \equiv c \mod m$
+\end{itemize}
+
+As such, it is an equivalence relation. The set of all integers congruent to $a$ modulo $m$ is denoted by $[a]$, and is called the congruence class of $a \mod m$
+
+\begin{lemma}
+  Two integers are congruent modulo $m$ if and only if $a,b$ have the same remainder upon division by $m$ 
+\end{lemma}
+\begin{proof}
+Suppose $a$ and $b$ have the same remainder upon division by $m$. Then:
+\[a = mq_1 + r\]
+\[b = mq_2 + r\]
+\[a-b = m(q_1-q_2) + 0\]
+\[m|a-b \Rightarrow a \equiv b \mod m\]
+
+Suppose $a \equiv b \mod m$. This means that $a-b = mk, k \in \Z$. By division algorithm, there exist unique integers $q,r$ such that:
+\[b = mq+r, 0 \leq r < m\]
+\[a = m(q+k) + r\]
+Since $0 \leq r < m$, $r$ is the remainder of $a$ upon division by $m$. So, they have the same remainder. Hence proved.
+\end{proof}
+
+So, every integer $a$ is congruent to it's remainder $r$ modulo $m$. We call $r$ the least residue of $a$ modulo $m$. Every integer is congruent to exactly one of the least residues $0,1,...,m-1$ modulo $m$. Hence,
+\[\Z = \bigcup_{i=0}^{m-1} [i]_m\]
+
+\begin{lemma}
+  Suppose $a \equiv b \mod m$ and $x \equiv d \mod m$. Then:
+  \begin{itemize}
+    \item $a \pm c \equiv b \pm d \mod m$
+    \item $ac \equiv bd \mod m$
+    \item $a^n \equiv b^n \mod m$
+  \end{itemize}
+\end{lemma}
+
 \end{document}
