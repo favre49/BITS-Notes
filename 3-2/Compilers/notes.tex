@@ -505,7 +505,7 @@ The Goto operation, defined by Goto($I,X$), where $I$ is a set of items and $X$ 
 
 \subsection{LR(0) Automaton}
 
-The goal of the LR(0) parser is to create a LR(0) automaton, also called the Goto graph. The states of the automaton are the sets of items of the LR(0) collection, and the transitions are given by the Goto function. The start state of this automaton is Closure($\{S' \rightarrow S\}$). All the states are accepting states.
+The goal of the LR(0) parser is to create a LR(0) automaton, also called the Goto graph. The states of the automaton are the sets of items of the LR(0) collection, and the transitions are given by the Goto function. The start state of this automaton is Closure($\{S' \rightarrow .S\}$). All the states are accepting states.
 
 This automaton helps us with shift-reduce decisions. Suppose that the string $\gamma$ of grammar symbols takes the LR(0) automaton from the start state 0 to some state $j$. Then, shift on the next input symbol $a$ if state $j$ has a transition on $a$. Otherwise, we reduce; the items in state $j$ tell us which production to use.
 
@@ -522,5 +522,67 @@ The Action function takes as arguments a state $i$ and a terminal $a$ (or \$, th
 \end{enumerate}
 
 The Goto function maps a state $i$ and a non terminal $A$ to state $j$ if Goto($I_i,A$) = $I_j$
+
+\subsection{Is this Grammar LR(0)?} 
+
+A grammar is LR(0) if its LR(0) parsing table does not contain multiple defined entries. Another way is to check if it has any shift-reduce/reduce-reduce conflicts.
+
+\subsection{Contents of LR Parser}
+
+The configuration of a LR parser is defined by the 2-tuple (Stack Contents, Remaining Input). Hence, the initial configuration would be $(S_0,a_0a_1a_2...a_n\$)$
+
+\subsection{Example}
+
+Let us consider the grammar
+\[S \rightarrow AA\]
+\[A \rightarrow aA|b\]
+And parse the input $aabb$. The grammar will be augmented to become:
+\[0:S' \rightarrow S\]
+\[1:S \rightarrow AA\]
+\[2:A \rightarrow aA\]
+\[3:A \rightarrow b\]
+
+Now we can generate the Goto graph.
+
+\begin{figure}[htpb]
+  \centering
+  \includegraphics[width=0.8\linewidth]{./assets/goto_graph_example.png}
+  \caption{Goto graph}%
+  \label{fig:}
+\end{figure}
+
+Each edge in the automaton is the goto, and every state is the closure. Using this graph, we can encode it as a parsing table (Fig 2).
+
+\begin{figure}[htpb]
+  \centering
+  \includegraphics[width=0.6\linewidth]{./assets/lr0_parsing_table_example.png}
+  \caption{Parsing Table}%
+  \label{fig:./assets}
+\end{figure}
+
+The parsing operation of $aabb$ can be seen in Table 1.
+
+\begin{table}[htpb]
+  \centering
+  \caption{Parsing Process}
+  \label{tab:label}
+  \begin{tabular}{|p{2cm}|p{2cm}|p{10cm}|}
+    \hline
+    Stack & Input & Action \\
+    \hline
+    0 & $aabb\$$ & Shift : Push $a$ and state 3 onto the stack \\ 
+    0a3 & $abb\$$ & Shift : Push $a$ and state 3 onto the stack \\
+    0a3a3 & $bb\$$ & Shift Push $b$ and state 4 onto the stack \\
+    0a3a3b4 & $b\$$ & Reduce by $A \rightarrow b$. Pop 2 symbols from the stack and push $A$ and state 6 onto the stack \\
+    0a3a3A6 & $b\$$ & Reduce by $A \rightarrow aA$. Pop 4 symbols from the stack and push $A$ and state 6 onto the stack \\
+    0a3A6 & $b\$$ & Reduce by $A \rightarrow aA$. Pop 4 symbols from the stack and push $A$ and state 2 onto the stack. \\
+    0A2 & $b\$$ & Shift : Push $b$ and state 4 on stack. \\ 
+    0A2b4 & \$ & Reduce by $A \rightarrow b$. Pop 2 symbols from the stack and push $A$ and state 5 onto the stack \\
+    0A2A5 & \$ & Reduce by $S \rightarrow AA$. Pop 4 symbols from the stack and push state 1 onto the stack. \\
+    0S1 & \$ & Accept. \\
+    \hline
+  \end{tabular}
+\end{table}
+
 
 \end{document}
