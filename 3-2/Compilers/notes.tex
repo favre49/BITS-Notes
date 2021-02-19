@@ -1,15 +1,17 @@
-\documentclass[12pt,letterpaper]{article}
+\documentclass[12pt,letterpaper]{amsbook}
 
 %%%%%%%%%%%%
 % Includes %
 %%%%%%%%%%%%
 \usepackage[utf8]{inputenc}
 \usepackage[margin=1 in]{geometry}
+\usepackage{parskip}
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{amsfonts}
 \usepackage[justification=centering]{caption}
+\usepackage[hidelinks]{hyperref}
 
 % Formatting
 \renewcommand{\baselinestretch}{1.25}
@@ -34,11 +36,11 @@
 
 \maketitle
 
-\section{Process of Translation}
+\chapter{Process of Translation}
 
 The process of compilers converting from source code (the high level language) to target code (the machine language) is known as translation.  It consists of many steps, which are described below.
 
-\subsection{Lexical Analysis}
+\section{Lexical Analysis}
 
 Lexical analysis follows the following steps:
 
@@ -59,11 +61,11 @@ During the lexical phase, we may experience the following lexical errors:
 
 The output of the lexical analyzer will be a sequence of tokens and their ``type'', which signifies whether it is a identifier, operator, etc.
 
-\subsection{Syntax Analysis}
+\section{Syntax Analysis}
 
 The syntax analysis takes the sequence of tokens as an input, and generates a parse tree. In case the syntax is not correct according to the grammar rules, it flags a syntactical error. This is modelled using Context Free Grammars that will be recognized using PDAs or Table Driven processes.
 
-\subsection{Semantic Analysis}
+\section{Semantic Analysis}
 
 Semantic analysis takes the parse tree as an input, and outputs a disambiguated parse tree. It performs the following:
 
@@ -79,7 +81,7 @@ As such, the disambiguated parse tree gives us an unambiguous representation of 
 
 The phases mentioned till now comprise the \textbf{front end} of the compiler, where the source code is handled. After this, the compiler works on generating the target code.
 
-\subsection{Code optimization}
+\section{Code optimization}
 
 This is an optional phase that modifies the programs to run faster and consume less resources like memory, registers, etc. However, it will not change the representation of the program.
 
@@ -94,7 +96,7 @@ Some examples of machine independent code optimization done is:
   \item \textbf{Constant Folding:} The compiler recognizes and evaluates constant expressions at compile time instead of runtime.
 \end{itemize}
 
-\subsection{Code Generation}
+\section{Code Generation}
 
 This is the process of mapping from source level abstractions (identifiers, values, etc) to target machine abstractions (registors, memory, etc.). This is a two step process - initially, intermediate code gets generated from the disambiguated parse tree, which is used to generate the final machine code.
 
@@ -107,11 +109,11 @@ During code generation, we have to do the following:
   \item We use layout parameter passing protocols - the locations for parameters, return values, etc.
 \end{itemize}
 
-\subsection{Post Translation Optimizations}
+\section{Post Translation Optimizations}
 
 Unlike in the code optimization phase where we perform machine independent code optimizations, this does machine-dependent code optimizations. This is an optional phase as well, where we may remove unneeded operations or rearrange to prevent hazards. It is a flexible phase, and may occur at any time in the back-end of the compiler.
 
-\subsection{Symbol Table}
+\section{Symbol Table}
 
 The symbol table contains information required about the source program identifiers during compilation, including:
 
@@ -152,9 +154,9 @@ The $S*M$ problem is generally solved by introducing some common intermediate la
 \end{itemize}
 
 
-\section{Lexical Analysis}
+\chapter{Lexical Analysis}
 
-\subsection{Functions of the Lexical Analyzer}
+\section{Functions of the Lexical Analyzer}
 
 The lexical analyzer performs the following functions:
 
@@ -180,13 +182,13 @@ The lexical analyzer is modelled using regular expressions. As such, it's implem
 
 Now that we understand the definitions, we can see what the lexical analyzer actually does - it transforms strings to the token and passes the lexeme as it's corresponding attribute. For instance, the integer 43 would become \texttt{<num,43>}.
 
-\subsection{Working of the Lexical Analyzer}
+\section{Working of the Lexical Analyzer}
 
 The lexical analyzer reads the character one by one from the source code into the lexeme. When it reaches a separator, it assigns a token to the lexeme based on certain rules, and continues to read the characters once more.
 
 However, reading the lexemes character by character is slow, and involves many IO operations. This is done from a buffer instead of directly from the file. Moreover, the prefix of a lexeme is often not enough to determine the token - think of the lexemes \texttt{=} and \texttt{==}. We instead use a lookahead pointer to determine the appropriate token for a lexeme, and then push back the characters that we do not need in the current lexeme.
 
-\subsection{Symbol Table and the Lexical Analyzer}
+\section{Symbol Table and the Lexical Analyzer}
 
 The lexical analyzer also interfaces with the symbol table. When the lexical analyzer discovers a lexeme constituting an identifier, it enters that lexeme to the symbol table. Sometimes, information regarding the token of a particular lexeme may also be store in the symbol table. As such, the symbol table must implement the following operations:
 
@@ -199,7 +201,7 @@ To make the symbol table space efficient, we save lexemes in some separate memor
 
 The rule for identifying an identifier and a keyword is generally the same. To be able to tokenize the identifiers and keywords separately, we initialize the symbol table with the list of keywords, say, by calling \texttt{insert("if",keyword)}.
 
-\subsection{Challenges in Development of Lexical Analyzer}
+\section{Challenges in Development of Lexical Analyzer}
 
 \begin{itemize}
   \item \textbf{Free vs Fixed Lexemes} : A language could specify that lexemes must be in a free or a fixed format. For instance, in a free format, code could look like this.
@@ -212,7 +214,7 @@ The rule for identifying an identifier and a keyword is generally the same. To b
   \item \textbf{Maximal Munch} : The principle of maximal munch directs the lexical analyzer to consume as much available input as possible while creating a construct. This allows us to deal with lexemes like \texttt{iff}, and correctly assign it as a identifier rather than the keyword \texttt{if}.
 \end{itemize}
 
-\subsection{Techniques for specifying tokens} 
+\section{Techniques for specifying tokens} 
 
 \begin{definition}
   Consider $R_i$ is a regular expression and $N_i$ is a unique name, then a regular definition is a series of definitions of the following form 
@@ -220,7 +222,7 @@ The rule for identifying an identifier and a keyword is generally the same. To b
   \[N_2 \rightarrow R_2 \]
   \[...\]
   \[N_n \rightarrow R_n \]
-  where each $R_i$ is a regular expression over $\sum \bigcup \{N_1,N_2,...N_n\}$.
+  where each $R_i$ is a regular expression over $\sum \cup \{N_1,N_2,...N_n\}$.
 \end{definition}
 
 Hence, by assigning a special name $N_i$ to the regular expression $R_i$, we are in effect defining macros, that remove redundancy in later parts.
@@ -289,9 +291,9 @@ The issue here is this often introduces a lot of complexity. Instead, we may add
 
 The matching process should always start with some transition diagram. If failure occurs in one transition diagram, we retract the forward pointer to the start state, and activate the next transition diagram. If there is failure in all the transition diagrams, we throw a lexical error.
 
-\section{Syntax Analysis}
+\chapter{Syntax Analysis}
 
-\subsection{Grammar Rules}
+\section{Grammar Rules}
 
 Regular definitions are not enough for syntax analysis, since languages are generally not regular. Instead, we use Context Free Grammars to model our language, given by $G = \{T,N,P,S\}$, where
 
@@ -340,7 +342,7 @@ Since there is ambiguity in its meaning, we must resolve it. One way to do this 
 \[matchedstmt \rightarrow \text{if }exp \text{ then } matchedstmt \text{ else } matchedstmt | others\]
 \[unmatchedstmt \rightarrow \text{if }exp \text{ then } stmt | \text{if }exp \text{ then } matchedstmt \text{ else } unmatchedstmt\]
 
-\subsection{Parsing}
+\section{Parsing}
 
 Resolving ambiguity is the problem of the language specification, not of the syntax analysis. Parsing is the job of implementation. We can do this in two ways:
 
@@ -349,7 +351,7 @@ Resolving ambiguity is the problem of the language specification, not of the syn
   \item \textbf{Bottom up parsing:} Construction of the parse tree starts from the terminal nodes and builds up towards the root node(start symbol).
 \end{itemize}
 
-\subsubsection{Top Down Parsing}
+\section{Top Down Parsing and the Recursive Descent Parser}
 
 In top down parsing, we repeat the following two steps:
 
@@ -418,6 +420,8 @@ Follow($X$) for a non terminal $X$ is the set of symbols that might follow the d
   \item If there is a production rule $A \rightarrow \alpha B$, then Follow($B$) = Follow($A$).
 \end{itemize}
 
+\section{Predictive Parsing}
+
 Now that we have talked about all the issues that can face RDP, let us look at a new parser - \textbf{predictive parsing}. This is a non recursive top down parsing method, which recognizes LL(1) languages. The first L means that we scan the input stream from left to right, and the second L means that we do leftmost derivation. The predictive parser makes use of a parse table and a stack to process the input token stream.
 
 The parse table is a two dimensional array $M[X,a]$ where $X$ is a non terminal and $a$ is a terminal. This parse table tells the parse table which production rule to use when we have a non-terminal $X$ and the lookahead pointer points to $a$. This parse table is generated by finding the First and Follow set of every non-terminal in the grammar.
@@ -450,7 +454,7 @@ All rules of this type must be such that $\bigcap_{i=1}^n First(\alpha_i) = \phi
 \[A \rightarrow \alpha | \epsilon\]
 must be such that $First(\alpha) \cap Follow(A) = \phi$.
 
-\subsubsection{Bottom Up Parsing}
+\section{Bottom Up Parsing and Shift-Reduce Parsing}
 
 In bottom up parsing, we design a parse tree for an input string starting from the leaf nodes and going towards the root. This is equivalent to finding a series of steps to reduce a string $w$ of input to the start symbol of the grammar by tracing out the rightmost derivations of $w$ in reverse.
 
@@ -467,16 +471,26 @@ A string that matches the RHS of a production and whose replacement gives a step
 
 A shift reduce parser could also find a \textbf{conflict}. A shift-reduce conflict is when both a shift and a reduce operation are valid. A reduce-reduce conflict is when reduction can be done by more than one production rule.
 
-Now let us look at our first bottom up parser, the \textbf{LR(0) parser}. Before we discuss the exact algorithm we must understand some concepts. First is the augmentation of grammar. If $G$ is a grammar with a start symbol $S$, the augmented grammar $G'$ which has a new start symbol $S'$ and a additional production:
+\section{The LR(0) Parser}
+
+Now let us look at our first bottom up parser, the LR(0) parser. Before we discuss the exact algorithm we must understand some concepts. 
+
+\subsection{Augmentation of Grammar}
+
+If $G$ is a grammar with a start symbol $S$, the augmented grammar $G'$ which has a new start symbol $S'$ and a additional production:
 \[S' \rightarrow S\]
 When the parser reduces by this new rule, it will stop immediately in the accept state.
+
+\subsection{LR(0) Items}
 
 An LR(0) item of a grammar is a production of $G$ with a special symbol `.' at some position on the RHS. So, the production $A \rightarrow XYZ$ gives four LR(0) items:
 \[A \rightarrow .XYZ\]
 \[A \rightarrow X.YZ\]
 \[A \rightarrow XY.Z\]
 \[A \rightarrow XYZ.\]
-Each item indicates how much of a production has been seen at a point in the process of parsing.
+Each item indicates how much of a production has been seen at a point in the process of parsing. For instance, the second rule indicates that we have seen an input string derivable from $X$ and hope to see a string derivable from $YZ$ on the next input.
+
+\subsection{Closure}
 
 Let $I$ be a set of items for a grammar $G$. Then the Closure($I$) is a set constructed as follows:
 
@@ -485,15 +499,28 @@ Let $I$ be a set of items for a grammar $G$. Then the Closure($I$) is a set cons
   \item If $A \rightarrow \alpha . B \beta$ is in closure ($I$) and $B \rightarrow \gamma$ is a production then $B \rightarrow .\gamma$ is in closure($I$).
 \end{itemize}
 
-The Goto operation, defined by Goto($I,X$), where $I$ is a set of items and $X$ is a grammar symbol, is closure of set of items $A \rightarrow \alpha X. \beta$ such that $A \rightarrow \alpha . X \beta$. If $I$ is a set of items for some valid prefix $\alpha$, then goto($I,X$) is set of valid items for prefix $\alpha X$.
+\subsection{Goto}
 
-Finally we can look at the exact algorithm in LR(0) parsing:
+The Goto operation, defined by Goto($I,X$), where $I$ is a set of items and $X$ is a grammar symbol, is closure of set of items $A \rightarrow \alpha X. \beta$ such that $A \rightarrow \alpha . X \beta$. If $I$ is a set of items for some valid prefix $\alpha$, then Goto($I,X$) is set of valid items for prefix $\alpha X$. 
 
-\begin{itemize}
-  \item Design the augmented grammar
-  \item Construct a goto graph using closure and goto operations on LR(0) items
-  \item Design the parsing table
-  \item Execute parsing on the string
-\end{itemize}
+\subsection{LR(0) Automaton}
+
+The goal of the LR(0) parser is to create a LR(0) automaton, also called the Goto graph. The states of the automaton are the sets of items of the LR(0) collection, and the transitions are given by the Goto function. The start state of this automaton is Closure($\{S' \rightarrow S\}$). All the states are accepting states.
+
+This automaton helps us with shift-reduce decisions. Suppose that the string $\gamma$ of grammar symbols takes the LR(0) automaton from the start state 0 to some state $j$. Then, shift on the next input symbol $a$ if state $j$ has a transition on $a$. Otherwise, we reduce; the items in state $j$ tell us which production to use.
+
+\subsection{Parsing Table}
+
+This LR(0) automaton is encoded in the \textbf{parsing table}. It consists of two parts - a parsing action function ``Action'' and a goto function ``Goto''.
+
+The Action function takes as arguments a state $i$ and a terminal $a$ (or \$, the input end marker). The value of Action($i,a$) can have one of four forms:
+\begin{enumerate}
+  \item Shift $j$, where $j$ is a state. The action taken by the parser effectively shifts input $a$ onto the stack, but uses state $j$ to represent $a$. This is denoted by $sj$.
+  \item Reduce $A \righarrow \beta$. The action of the parser effectively reduces $\beta$ on the top of the stack to head $A$. This is denoted by $rj$, where $j$ is the number of the production.
+  \item Accept the input and finish parsing. This is denoted by acc.
+  \item Error. This is denoted by a blank cell.
+\end{enumerate}
+
+The Goto function maps a state $i$ and a non terminal $A$ to state $j$ if Goto($I_i,A$) = $I_j$
 
 \end{document}
