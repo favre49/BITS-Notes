@@ -133,7 +133,7 @@ The advantages of compilers are:
 
 \begin{itemize}
   \item Highly modular in nature
-  \item It is retargetable. This means that if there is a single language and multiple machines, then we can use the same front end. If there are many languages
+  \item It is retargetable. This means that if there is a single language and multiple machines, then we can use the same front end.
   \item Source code and machine independent optimizations are possible.
 \end{itemize}
 
@@ -287,7 +287,7 @@ The resulting transition diagram from this is in Fig 2.
   \label{fig:}
 \end{figure}
 
-The issue here is this often introduces a lot of complexity. Instead, we may add split this into multiple transition diagrams, to improve implementation complexity. This also empirically better speeds. These multiple transition diagrams can be appropriately combined to generate a lexical analyzer.
+The issue here is this often introduces a lot of complexity. Instead, we may add split this into multiple transition diagrams, to improve implementation complexity. This also is seen empirically to give better speeds. These multiple transition diagrams can be appropriately combined to generate a lexical analyzer.
 
 The matching process should always start with some transition diagram. If failure occurs in one transition diagram, we retract the forward pointer to the start state, and activate the next transition diagram. If there is failure in all the transition diagrams, we throw a lexical error.
 
@@ -351,7 +351,7 @@ Resolving ambiguity is the problem of the language specification, not of the syn
   \item \textbf{Bottom up parsing:} Construction of the parse tree starts from the terminal nodes and builds up towards the root node(start symbol).
 \end{itemize}
 
-\section{Top Down Parsing and the Recursive Descent Parser}
+\section{Top Down Parsing}
 
 In top down parsing, we repeat the following two steps:
 
@@ -360,7 +360,11 @@ In top down parsing, we repeat the following two steps:
   \item Find the next node at which the subtree is to be constructed.
 \end{enumerate}
 
-To choose the production rule, as in step 1, backtracking must be done. We try every production rule that we can apply and see which one works. The parser must be intelligent enough to choose the production rule to apply based on the token being pointed to by the pointer. If we could determine the first character of the string produced when a production rule is applied, we could compare it to the current token and choose the production rule correctly. For this, we use a concept called the First Set.
+To choose the production rule, as in step 1, backtracking must be done. We try every production rule that we can apply and see which one works. The parser must be intelligent enough to choose the production rule to apply based on the token being pointed to by the pointer.
+
+\section{First Set}
+
+If we could determine the first character of the string produced when a production rule is applied, we could compare it to the current token and choose the production rule correctly. For this, we use a concept called the First Set.
 
 The \textbf{First set}, denoted by \texttt{FIRST(X)} for a grammar symbol $X$ is the set of tokens that begin the strings derivable form $X$. If there is a production rule:
 \[A \rightarrow \alpha\]
@@ -383,6 +387,8 @@ Then, the first sets are as following:
   \item First($E$) = $\{e,\epsilon\}$
 \end{itemize}
 
+\section{Recursive Descent Parser}
+
 Let us look at our first parser - the \textbf{recursive descent parser}. RDP is a top down method of syntax analysis in which a set of recursive procedures are executed to parse the stream of tokens. A procedure is associated with each non-terminal of the grammar. The procedure generally implements one of the production rules of the grammar.
 
 In each procedure, we perform a match operation on hitting any token on the RHS of the grammar with the current token in the input that needs to be parsed. For example, if we have the string $aba$ and the rule $S \rightarrow abB$, it will match the tokens $a$ in both the RHS and the string, and move on to the next token. If there is no match, we throw a syntax error.
@@ -392,26 +398,28 @@ This approach, of course, has it's own limitations. Consider a grammar with two 
 \[X \rightarrow \gamma_2\]
 Suppose First($\gamma_1$) $\cap$ First($\gamma_2$) $\neq \phi$, and that $a$ is the common terminal symbol. In cases like this, we need to perform backtracking to choose the right production rule. However, RDP does not support backtracking right now. To support it, all productions should be tried in some order. Failure for some productions implies we need to try remaining productions. We would report an error only when there are no other rules.
 
-However, a recursive descent parser may loop forever on productions of the form:
-\[A \rightarrow A \alpha\]
+Moreover, a recursive descent parser may loop forever on productions of the form:
+\[A \rightarrow A \alpha_1|A \alpha_2 | ... | A \alpha_n | \beta_1 | ... | \beta_m\]
 This is known as left recursion. We can remove it from the grammar by rewriting the rule as:
-\[A \rightarrow \beta A'\]
-\[A' \rightarrow \alpha A'|\epsilon\]
+\[A \rightarrow \beta_1 A' | \beta_2 A' | ... | \beta_m A'\]
+\[A' \rightarrow \alpha_1 A'| \alpha_2 A' | ... | \epsilon\]
 Left recursion can be hidden as well, where expanding production rules in some order could lead to left recursion. This is called hidden left recursion, and we must handle it in the same way as we did left recursion.
 
 Left factoring is the process of removing the common left factor that appears in two productions of the same non-terminal. An example of a rule to remove is:
-\[A \rightarrow \alpha \beta_1|\alpha \beta_2\]
+\[A \rightarrow \alpha \beta_1|\alpha \beta_2 | ... | \alpha \beta_n\]
 We can remove the left factoring and get:
 \[A \rightarrow \alpha A'\]
-\[A' \rightarrow \alpha \beta_1|\beta_2\]
+\[A' \rightarrow \beta_1|\beta_2| ... | \beta_n\]
 By doing this, we can reduce the amount of backtracking done by the parser.
+
+\section{Follow Set}
 
 Consider the following grammar:
 \[A \rightarrow aBb\]
 \[B \rightarrow c | \epsilon\]
 And suppose we want to parse an input string ``ab''. How would the parser know to use $\epsilon$ for $B$? To do this we use the \textbf{follow set}.
 
-Follow($X$) for a non terminal $X$ is the set of symbols that might follow the derivation of $X$ in an input stream. The follow of the start symbol $S$ is \$ - the follow set can never be $\epsilon$. The steps to compute the follow set is:
+Follow($X$) for a non terminal $X$ is the set of symbols that might follow the derivation of $X$ in an input stream. The follow of the start symbol $S$ is \{\$\}. The follow set can never be $\epsilon$, since if it ends with an epsilon, the follow would be the ending symbol of the string -  the \$. The steps to compute the follow set is:
 
 \begin{itemize}
   \item Always include \$ in Follow($S$).
@@ -429,8 +437,8 @@ The parse table is a two dimensional array $M[X,a]$ where $X$ is a non terminal 
 To construct the parse table, we do the following steps for each production rule $A \rightarrow \alpha$:
 
 \begin{enumerate}
-  \item For each terminal $a$ in First($\alpha$), $M[A,a] = A \righarrow \alpha$
-  \item If $\epsilon$ is in First ($\alpha$), $M[A,b] = A \righarrow \alpha$ for each terminal $b$ in Follow(A).
+  \item For each terminal $a$ in First($\alpha$), $M[A,a] = A \rightarrow \alpha$
+  \item If $\epsilon$ is in First ($\alpha$), $M[A,b] = A \rightarrow \alpha$ for each terminal $b$ in Follow(A).
   \item If $\epsilon$ is in First($\alpha$), and \$ is in Follow($A$), $M[A,\$] = A \rightarrow \alpha$.
 \end{enumerate}
 
@@ -446,7 +454,7 @@ Now we can finally see the algorithm for predictive parsing. Consider that \$ is
     \end{itemize}
 \end{itemize}
 
-Predictive parsing needs a LL(1) Grammar. A grammar is LL(1) if the constructed parse tree has no multiple entries. If it does have multiple entries of same production in the same cell, it cannot be LL(1), and cannot be parsed using predictive parsing.
+Predictive parsing needs a LL(1) Grammar. A grammar is LL(1) if the constructed parse table has no multiple entries. If it does have multiple entries of same production in the same cell, it cannot be LL(1), and cannot be parsed using predictive parsing.
 
 Another way to tell if a grammar is LL(1) is to consider rules of the type:
 \[A \righarrow \alpha_1 | \alpha_2 | \cdots | \alpha_n\]
@@ -516,7 +524,7 @@ This LR(0) automaton is encoded in the \textbf{parsing table}. It consists of tw
 The Action function takes as arguments a state $i$ and a terminal $a$ (or \$, the input end marker). The value of Action($i,a$) can have one of four forms:
 \begin{enumerate}
   \item Shift $j$, where $j$ is a state. The action taken by the parser effectively shifts input $a$ onto the stack, but uses state $j$ to represent $a$. This is denoted by $sj$.
-  \item Reduce $A \righarrow \beta$. The action of the parser effectively reduces $\beta$ on the top of the stack to head $A$. This is denoted by $rj$, where $j$ is the number of the production.
+  \item Reduce $A \rightarrow \beta$. The action of the parser effectively reduces $\beta$ on the top of the stack to head $A$. This is denoted by $rj$, where $j$ is the number of the production.
   \item Accept the input and finish parsing. This is denoted by acc.
   \item Error. This is denoted by a blank cell.
 \end{enumerate}
