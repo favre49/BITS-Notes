@@ -370,6 +370,14 @@ The \textbf{First set}, denoted by \texttt{FIRST(X)} for a grammar symbol $X$ is
 \[A \rightarrow \alpha\]
 then First($\alpha$) is the set of tokens that appear as the first token in strings generated from $\alpha$.
 
+To compute FIRST($X$), we use the following rules:
+
+\begin{enumerate}
+  \item If $X$ is a terminal, then FIRST($X$) $= \{X\}$
+  \item If $X$ is a non terminal and $X \rightarrow Y_1Y_2...Y_k$ is a production for $k \geq 1$, then place $a$ in First($X$) if for some $i$, $a$ is in First($Y_i$) and $\epsilon$ is in all of First($Y_j)$ for $j < i$. If $\epsilon$ is in all $Y_i$, then add $\epsilon$ to First($X$).
+  \item If $X \rightarrow \epsilon$, then add $\epsilon$ to First($X$).
+\end{enumerate}
+
 Consider the following example:
 \[S \rightarrow ABCDE\]
 \[A \rightarrow a|\epsilon\]
@@ -457,10 +465,18 @@ Now we can finally see the algorithm for predictive parsing. Consider that \$ is
 Predictive parsing needs a LL(1) Grammar. A grammar is LL(1) if the constructed parse table has no multiple entries. If it does have multiple entries of same production in the same cell, it cannot be LL(1), and cannot be parsed using predictive parsing.
 
 Another way to tell if a grammar is LL(1) is to consider rules of the type:
-\[A \righarrow \alpha_1 | \alpha_2 | \cdots | \alpha_n\]
+\[A \rightarrow \alpha_1 | \alpha_2 | \cdots | \alpha_n\]
 All rules of this type must be such that $\bigcap_{i=1}^n First(\alpha_i) = \phi$ and rules of the type:
 \[A \rightarrow \alpha | \epsilon\]
 must be such that $First(\alpha) \cap Follow(A) = \phi$.
+
+\section{Error Recovery}
+
+The compiler must recover from errors and identify as many errors as possible. For this, the most frequently used error technique is \textbf{panic mode}.
+
+In panic mode, when an error is encountered anywhere in the statement, the rest of the statement is ignored by not processing the input from erroneous input to delimiters. This mode prevents the parser from developing infinite loops and is considered as the easiest way for recovery of the errors.
+
+The error is detected when an entry in the parse table is empty. We then skip over symbols in the input until a token in a selected set of \textbf{synchronizing tokens} appears. If the error occurs for the parse table entry $M[A,a]$, we place the symbols in Follow($A$) in a synchronizing set in the parse table. So, we skip tokens until an element in the synchronizing set appears, then pop $A$ and continue parsing from that token.
 
 \section{Bottom Up Parsing and Shift-Reduce Parsing}
 
@@ -509,7 +525,7 @@ Let $I$ be a set of items for a grammar $G$. Then the Closure($I$) is a set cons
 
 \subsection{Goto}
 
-The Goto operation, defined by Goto($I,X$), where $I$ is a set of items and $X$ is a grammar symbol, is closure of set of items $A \rightarrow \alpha X. \beta$ such that $A \rightarrow \alpha . X \beta$. If $I$ is a set of items for some valid prefix $\alpha$, then Goto($I,X$) is set of valid items for prefix $\alpha X$. 
+The Goto operation, defined by Goto($I,X$), where $I$ is a set of items and $X$ is a grammar symbol, is closure of set of items $A \rightarrow \alpha X. \beta$ such that $A \rightarrow \alpha . X \beta$ is in $I$. If $I$ is a set of items for some valid prefix $\alpha$, then Goto($I,X$) is set of valid items for prefix $\alpha X$. 
 
 \subsection{LR(0) Automaton}
 
@@ -550,7 +566,7 @@ And parse the input $aabb$. The grammar will be augmented to become:
 \[2:A \rightarrow aA\]
 \[3:A \rightarrow b\]
 
-Now we can generate the Goto graph.
+Now we can generate the Goto graph. This is done by first starting with the start state $S' \rightarror .S$. This is  state is populated with other LR(0) items which exist in it's closure. Then, from each state, we make transitions over terminals (whichever are possible), where each transition is a goto (or a shift).
 
 \begin{figure}[htpb]
   \centering
@@ -559,7 +575,7 @@ Now we can generate the Goto graph.
   \label{fig:}
 \end{figure}
 
-Each edge in the automaton is the goto, and every state is the closure. Using this graph, we can encode it as a parsing table (Fig 2).
+Each edge in the automaton is the goto, and every state is the closure. Using this graph, we can encode it as a parsing table (Fig 2). The goto operations over terminals are equivalent to shift operations. If a state has no outgoing goto operations, we must reduce by the item in that state, over every terminal.
 
 \begin{figure}[htpb]
   \centering
@@ -568,7 +584,7 @@ Each edge in the automaton is the goto, and every state is the closure. Using th
   \label{fig:./assets}
 \end{figure}
 
-The parsing operation of $aabb$ can be seen in Table 1.
+The parsing operation of $aabb$ can be seen in Table 1. In the 4th step, we see we pop out $b4$ and push $A6$. How did we decide to move to state 6? This is because of the Goto operation. We checked the preceding state $a3$ and check it's goto over non terminal $A$. This was a transition to state 6.
 
 \begin{table}[htpb]
   \centering
