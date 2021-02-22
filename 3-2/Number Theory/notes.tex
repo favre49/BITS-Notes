@@ -865,12 +865,44 @@ So, every integer $a$ is congruent to it's remainder $r$ modulo $m$. We call $r$
 \[\Z = \bigcup_{i=0}^{m-1} [i]_m\]
 
 \begin{lemma}
-  Suppose $a \equiv b \mod m$ and $x \equiv d \mod m$. Then:
+  Suppose $a \equiv b \mod m$ and $c \equiv d \mod m$. Then:
   \begin{itemize}
     \item $a \pm c \equiv b \pm d \mod m$
     \item $ac \equiv bd \mod m$
     \item $a^n \equiv b^n \mod m$
   \end{itemize}
 \end{lemma}
+
+\begin{exercise}
+  Find the remainder when $1!+2!+...+100!$ is divided by 15. 
+\end{exercise}
+\begin{solution}
+  If $n \geq 5$, then $n!$ is divisible by 15. So, $n! \equiv 0 \mod 15$. Hence, this sum modulo 15 is equivalent to $1!+2!+3!+4!$ modulo 15. So, the remainder is 3. 
+\end{solution}
+\begin{exercise}
+  Find the positive integers $n$ for which $\sum_{k=1}^n k!$ is a square.  
+\end{exercise}
+\begin{solution}
+  If $k \geq 5$, then $k! \equiv 0 \mod 10$. So,
+  \[\sum_{k=1}^n k! \equiv 1!+2!+3!+4! \mod 10\]
+  Squares are congruent to 0,1,4,5,6 or 9 modulo 10. However, for $n \geq 5$, this sum is 3 modulo 10. So, $n$ must be less than 5. We can now try each of these cases by hand. From this, we find $n=1$ or $n=3$.
+\end{solution}
+
+\begin{definition}
+  A set $a_1,...,a_m$ is said to be a compete set of residues modulo $m$ if every integer is congruent to modulo $m$ to exactly one of them. 
+\end{definition}
+
+\begin{remark}
+  A set of $m$ integers form a complete set of residues modulo $m$ if and only if no two of the integers are congruent modulo $m$. 
+\end{remark}
+
+\begin{exercise}
+  Let $m \in \N$ with $m \geq 3$. Prove that the set $\{1^2,2^2,...,m^2\}$ doesn't form a complete set of residues modulo $m$.
+\end{exercise}
+\begin{solution}
+  If they do not form a complete set of residues modulo $m$, then two of the integers must be congruent modulo $m$. Since $m-1 \equiv -1 \mod m$, we have:
+  \[(m-1)^2 \equiv 1 \mod m\]
+  Thus, this set cannot form a complete set of residues modulo $m$.
+\end{solution}
 
 \end{document}
