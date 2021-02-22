@@ -446,7 +446,59 @@ This creates a new protocol - \texttt{rdt2.1}. The FSMs are as in Fig 3 and 4.
   \label{fig:./assets}
 \end{figure}
 
+TODO: Add explanation for what exactly is going on, stepwise. I'm still confused. Also rdt2.2
 
+Let us now assume that the underlying channel could also lose packets entirely. rdt2.2 gives us the base to start from, but we need to handle the lost packets. We put the burden of detecting and recovering from lost packets on the sender. Suppose that the sender transmits a data packer and either that packet or the receiver's ACK of that packet gets lost. If the sender is willing to wait long enough so that it is certain that a packet has been lost, it can retransmit the data packet. But how long is long enough? We could choose the worst case, but that is difficult to approximate and may be too slow. So we just choose some time value that packet loss is very likely, but not guaranteed to have happened.
+
+Even in this case, we could have duplicate data packets, since the ACK could just have been received very late due to some delays, even if the packet was not lost. Luckily, rdt2.2 can already handle this case. Thus, we now have \texttt{rdt3.0}. Since the sequence numbers are either 0 or 1, it's also called a alternating bit protocol. In Fig 5 we can see the FSM for the sender in \texttt{rdt3.0}.
+
+\begin{figure}[htpb]
+  \centering
+  \includegraphics[width=0.8\linewidth]{./assets/rdt3_fsm.png}
+  \caption{rdt3 sender}%
+  \label{fig:./assets}
+\end{figure}
+
+\texttt{rdt3.0} is good, but it has it's own issue. Let us define \textbf{utilization} of the sender as the fraction of time the sender is actually busy sending bits into the channel. If we are sending $L$ bits per packet, and $R$ is the rate of transmission, the sender will spend $\frac{L}{R}$ time sending bits. However, the time taken to receive the acknowledgements for the packet will be $RTT$. So,
+\[U = \frac{L/R}{RTT+L/R}\]
+This $U$, if calculated, is generally found to be dismal in the case of \texttt{rdt3.0}. Instead, we use a pipelined protocol.
+
+In a pipelined protocol, the sender may send multiple packets despite not having received the ACK. If one sends $n$ packets at once, we can increase the utilization by a factor of $n$! However, this comes with multiple consequences:
+
+\begin{itemize}
+  \item The range of sequence numbers must be increased
+  \item The sender and receiver sides of the protocols need to buffer more than one packet
+\end{itemize}
+
+We can have two pipeline protocols - Go-Back-N (GBN) or Selective Repeat (SR).
+
+In a GBN protocol, the sender is  allowed to send multiple packets without waiting for an ACK, but it is constrained to some maximum allowable number $N$. Let us define \texttt{base} as the sequence number of the oldest unacknowledged packet and \texttt{nextseqsum} to be the smallest unused sequence number. Then, we have four intervals:
+
+\begin{itemize}
+  \item \texttt{[0,base-1]} : corresponds to the packets that have already been transmitted and acknowledged.
+  \item \texttt{[base,nextseqsum-1]} corresponds to packets that have been sent but not acknowledged.
+  \item \texttt{[nextseqnum,base+N-1]} can be used for packets that can be sent immediately
+  \item \texttt{base+N} and greater cannot be used until an unacknowledged packet currently in the pipeline has been acknowledged 
+\end{itemize}
+
+So, the window of permissible numbers transmitted but not yet acknowledged packets can be viewed as a sliding window of size $N$.
+
+In the GBN protocol, an ACK for a packet with sequence number $n$ will be taken as cumulative acknowledgement, indicating that all packets with a sequence number up to and including $n$ have been correctly received at the receiver. Just like in \texttt{rdt3.0}, a timer is used to recover from lost data or acknowledgement protocols. If a timeout occurs, the sender resends all packets that have been previously sent but not acknowledged.
+
+In GBN, the receiver also discards out of order packets. This means that the receiver need not buffer out of order packets. The receiver hence maintains the sequence number of the next in order packet, called \texttt{expectedseqnum}. If an out of order packet is received, it is discarded.
+
+GBN has it's downsides:
+
+\begin{itemize}
+  \item If window size and bandwidth-delay product are both large, many packets can be in the pipeline.
+  \item A single packet error can cause retransmission of many packets
+\end{itemize}
+
+Selective Repeat avoids unnecessary retransmissions by having the sender retransmit only the packets that it suspects were received in error at the receiver. This means that the receiver must individually acknowledge the correctly received packets. Like in GBN, a window of size $N$ will limit the number of outstanding unacknowledged packets in the pipeline, but unlike GBN, the sender will have already received ACK for some of the packets in the window.
+
+The SR receiver will also ACK packets even if they are received out of order. Out of order packets are buffered until any missing packets are received, at which point they are delivered to the upper layer.
+
+In SR protocols, the sender and receiver do not always have the same windows. This lack of synchronization can result in issues when we deal with windows of finite sizes.
 
 
 \end{document}
