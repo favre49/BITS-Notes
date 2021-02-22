@@ -4,6 +4,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[margin=1 in]{geometry}
 \usepackage{parskip}
+\usepackage[hidelinks]{hyperref}
 
 % Picture packages
 \usepackage{graphicx}
@@ -19,7 +20,7 @@
 \usepackage{mdframed}
 \mdfsetup{skipabove=1em,skipbelow=0em}
 \theoremstyle{definition}
-\newmdtheoremenv[nobreak=true]{theorem}{Theorem}[section] % Big result
+\newmdtheoremenv[nobreak=true]{theorem}{Theorem}[chapter] % Big result
 \newmdtheoremenv[nobreak=true]{corollary}{Corollary}[theorem] % Follows from a theorem
 \newmdtheoremenv[nobreak=true]{lemma}[theorem]{Lemma} % Minor result
 \newtheorem{definition}{Definition}% Definition
@@ -340,7 +341,57 @@ Ergodism is a class property, since periodicity and persistency are both class p
 
 \chapter{Poisson Processes}
 
-Let $X$ be a continuous random variable whose values lie in the non negative real numbers. The probability distribution of $X$ is \textbf{memoryless} precisely if for any non negative real numbers $t$ and $s$, we have:
+\begin{definition}
+Let $X$ be a continuous random variable whose values lie in the non negative real numbers. The probability distribution of $X$ is \textbf{memoryless} if for any non negative real numbers $t$ and $s$, we have:
 \[P(X>t + s | X > t) = P(X>s)\]
+\end{definition}
+
+Hence, the distribution of a ``waiting time'' until a certain event does not depend on how much time has elapsed already.
+
+\begin{theorem}
+  A positive continuous random variable $X$ is memoryless if and only if $X \sim Exp(x;\lambda)$ for some $\lambda$.
+\end{theorem}
+
+\begin{definition}
+A stochastic process $\{N(t),t \geq 0\}$ is said to be a counting process if $N(t)$ represents the total number of events that occur by time $t$.  
+\end{definition}
+
+From it's definition, 
+\begin{itemize}
+  \item $N(t) \geq 0$
+  \item $N(t)$ is integer valued
+  \item If $s < t$ then $N(s) \leq N(t)$
+  \item For $s < t$, $N(t)-N(s)$ equals the number of events that occur in the interval $(s,t]$
+\end{itemize}
+
+A counting process has \textbf{independent increments}  if the numbers of events that occur in disjoint time intervals are independent. A counting process has \textbf{stationary increments} if the distribution of the number of events that occur in any time interval only depends on the length of that time interval.
+
+\begin{definition}
+  The counting process $\{N(t),t\}$ is said to be a Poisson Process having rate $\lambda, \lambda > 0$ if 
+  \begin{enumerate}
+    \item $N(0) = 0$
+    \item The process has independent increments
+    \item The number of events in any interval of length $t$ is Poisson distributed with mean $\lambda t$. That is, for all $s,t \geq 0$
+      \[P(N(t+s) - N(s) = n) = e^{- \lambda t}\frac{(\lambda t) ^ n}{n!}\]
+      This means it has stationary increments.
+  \end{enumerate}
+\end{definition}
+
+The definition of a Poisson process can also be encoded in the form of three postulates, which must be present for a counting process to be a Poisson process:
+
+\begin{enumerate}
+  \item \textbf{Independence} : $N(t+h) - N(t)$ is independent of the number of occurrences prior to that interval
+  \item \textbf{Homogeneity in time} : $p_n(t)$ depends only on the length $t$ of the interval and is independent of where the interval is situated, where:
+    \[p_n(t) = P(N(t+s) - N(s) = n)\]
+  \item \textbf{Regularity} : In an interval of infinitesimal length $h$, the probability of exactly one occurrence $\lambda h + o(h)$ and that of more than one occurrence is $o(h)$ (wut?)
+\end{enumerate}
+
+It is possible to prove that these two definitions are equivalent.
+
+\begin{lemma}
+  For a Poisson Process with rate $\lambda$,
+  \[E[N(t)] = \lambda t\]
+\end{lemma}
+
 
 \end{document}
