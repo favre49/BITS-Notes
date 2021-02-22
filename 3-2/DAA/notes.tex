@@ -380,4 +380,50 @@ This is a standard DP by length. The idea is, if we are given a range of matrice
 
 This is also very common and standard, read GFG or something. Interesting fact is that the longest palindromic subsequence in a string is the LCS of the string and it's reverse.
 
+\section{Optimal Binary Search Trees}
+
+Suppose that we are designing a program to translate text from English to French. For each occurrence of English word in the text, we need to look up it's French equivalent. This can be done using a binary tree, and could ensure $O(\log n)$ time. However, words occur at different frequencies, so there could be a different total cost of search given a text. So, we want a optimal binary search tree.
+
+Formally, we are given $n$ keys $K = k_1,k_2,...,k_n$ in sorted order and wish to build a BST on these keys. For each $k_i$, we have a $p_i$ probability that the search will be for $k_i$. Some searches may be for values not in $K$, so we also have $n+1$ dummy keys $d_0,d_1,...d_n$. In particular, $d_i$ represents values between $k_i$ and $k_{i+1}$. Each of these have a probability $q_i$. Of course,
+
+\[\sum_{i=1}^n p_i + \sum_{i=0}^n q_i = 1\]
+
+The expected cost in a tree T is given by:
+
+\[E[T] = \sum_{i=1}^n (depth_{T}(k_i) + 1) \times p_i + \sum_{i=0}^n (depth_{T}(d_i) + 1)\times q_i \]
+
+Any non-leaf subtree of our BST must contain keys in a continuous range $k_i \cdots k_j$. Each subtree must be optimal. Let $e[i,j]$ be the expected cost for an optimal BST of keys $k_i,\cdots,k_j$, and let $w[i,j]$ be such that:
+
+\[w[i,j] = \sum_{v=i}^j p_v + \sum_{v=i-1}^j q_v\]
+
+Then if $k_r$ is root,
+\begin{align*}
+  e[i,j] &=  p_r + e[i,r-1] + w[i,r-1] + e[r+1,j] + w[r+1,j] \\
+         &= e[i,r-1] + e[r+1,j] + w[i,j]
+\end{align*}
+
+Hence our goal becomes choosing $r$ such that it minimizes $e[i,j]$. This gives us the following algo
+
+\begin{algorithm}[H]
+  \SetAlgoLined
+  \For{i = 1 to n+1} {
+    $e[i,i-1] = w[i,i-1] = q_i-1$ \\
+  }
+  \For{l = 1 to n} {
+    \For{i = 1 to n-l+1} {
+      $j = i-l+1$ \\
+      $e[i,j] = \infty$ \\ 
+      $w[i,j] = w[i,j-1] + p_j + q_j$ \\
+      \For{r = i to j} {
+        $t = e[i,r-1] + e[r+1,j] + w[i,j]$ \\
+        \If{$t < e[i,j]$} {
+          $e[i,j] = t$ \\
+          $root[i,j] = r$
+        }
+      }
+    }
+  }
+  \caption{Optimal-BST(p,q,n)}
+\end{algorithm}
+
 \end{document}
