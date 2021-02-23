@@ -262,10 +262,38 @@ Since $\Lambda$ is a diagonal matrix, we can find the exponent even faster in $O
 So, the stationary distribution $\mathbf{\Pi}$ is the left eigenvector of $\mathbf{P}$ such that it's eigenvalue is 1.
 
 \begin{definition}
-  If $\lim_{n \rightarrow \infty} \mathbf{P}^n$ is such that all the rows in it are equal, that row is said to be the limiting distribution.
+  The probability distribution $\mathbf{\Pi}$ is called the limiting distribution of a Markov chain if:
+  \[\mathbf{\Pi}_j = \lim_{n \rightarrow \infty} P(X_n = j | X_0 = i)\]
+  for all $i,j \in S$ and 
+  \[\sum_{j \in S} \mathbf{\Pi}_j = 1\]
 \end{definition}
 
-The limiting distribution may not always exist, but if it does, it is equivalent to the stationary distribution.
+The limiting distribution may not always exist, but if it does, it is equivalent to the stationary distribution. In fact, the limiting distribution does not depend on the start state.
+
+The limiting distribution only exists if $\lim_{n \rightarrow \infty} P^n$ has all equal rows, and that row will be equal to the limiting distribution. A limiting distribution always exists in an irreducible and aperiodic matrix!
+
+\begin{exercise}
+  Consider a Markov chain with two possible states $S = \{0,1\}$  and the transition matrix:
+  \[
+  \begin{bmatrix}
+    1-a & a \\
+    b & 1-b \\
+  \end{bmatrix}
+  \]
+  where $0 < a < 1, 0 < b < 1$. Find the limiting distribution $\pi$ of this Markov Chain.
+\end{exercise}
+\begin{solution}
+  Let $\pi = [\pi_0, \pi_1]$. Then, we can write:
+  \[\pi = \pi P\]
+  From this, we get the equation:
+  \[\pi_0 a = \pi_1 b\]
+  Since $\pi$ must be a valid probability distribution,
+  \[\pi_0 + \pi_1 = 1\]
+  Thus, we can obtain a unique solution:
+  \[ \pi =  \begin{bmatrix}
+  \frac{b}{a+b} & \frac{b}{a+b} \\
+\end{bmatrix} \]
+\end{solution}
 
 \section{Occupancy Time and First Entrance Time}
 
