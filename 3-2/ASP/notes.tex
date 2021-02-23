@@ -282,6 +282,12 @@ The limiting distribution may not always exist, but if it does, it is equivalent
   Let $f_{ij}^{(n)}$ be the probability the Markov Chain visits a state $j$ for the first time starting from a state $i$ after $n$ transitions. Then $f$ is the First Entrance Time Matrix.
 \end{definition}
 
+Of course, the probability that a system starting at $i$ will ever reach $j$ is:
+
+\[F_{ij} = \sum_{n=1}^{\infty} f_{ij}^{(n)}\]
+
+$F_{ij}$ is called the probability of eventual return.
+
 \begin{theorem}[First Entrance Theorem]
   \[p_{jk}^{(n)} = \sum_{r=0}^n f_{jk}^{(r)}p_{kk}^{(n-r)}, n \geq 1\]
   where
@@ -289,6 +295,7 @@ The limiting distribution may not always exist, but if it does, it is equivalent
 \end{theorem}
 
 The proof of this is rigorous and uses the strong Markov Property, so it is not included here.
+
 
 \begin{definition}
 The mean time of eventual return is the expected number of transitions to go from $i$ to $j$. This is denoted by $\mu_{ij}$ and is given by:
@@ -330,9 +337,9 @@ If all states communicate with each other, then the chain is said to be \textbf{
   Otherwise, the state is transient.
 \end{definition}
 
-This definition means that if a state is recurrent, then if we start at a state $i$, we will definitely return to that state after some $n > 0$ steps. Since this is essentially a recursive process (start from state $i$, return to state $i$, start again), the process will reenter $i$ again and again and again. 
+This definition means that if a state is recurrent, then if we start at a state $i$, we will definitely return to that state after some $n > 0$ steps, i.e, $F_{ii} = 1$. Since this is essentially a recursive process (start from state $i$, return to state $i$, start again), the process will re-enter $i$ again and again and again. 
 
-However, if a state $i$ is transient, there is some probability $p < 1$ that it will re-enter the state. Hence, the probability that the process will be in state $i$ for exactly $n$ time periods is:
+However, if a state $i$ is transient, there is some probability $p < 1$ ($p$ is in fact $F_{ii}$) that it will re-enter the state. Hence, the probability that the process will be in state $i$ for exactly $n$ time periods is:
 \[p^{n-1} (1-p)\]
 
 A recurrent state is \textbf{null} if $\mu_{ii} = \infty$. Otherwise it is called \textbf{positive} or non null.
@@ -354,6 +361,8 @@ A recurrent state is \textbf{null} if $\mu_{ii} = \infty$. Otherwise it is calle
   \end{align*}
   Hence, if the state is recurrent, this value must be infinite. Otherwise, it would be recurrent.
 \end{proof}
+
+Note that this theorem also implies that if $i$ is transient, $P_{ii}^n \rightarrow 0$ as $n \rightarrow \infty$.
 
 \begin{exercise}
   Prove that in a finite state Markov Chain, all states cannot be transient 
@@ -385,6 +394,9 @@ This means that if $i$ is a recurrent state, then if every state in it's equival
 \begin{theorem}
   If $B$ is a closed set, then $B$ is the union of equivalence classes in the Markov Chain.
 \end{theorem}
+\begin{proof}
+  Assume this is not true. Then, there is some states $i \in B$ and $j \in B^C$ such that $i \leftrightarrow j$. By definition of a closed state, there must be no $j \in B^C$ such that $i \rightarrow j$. This generates a contradiction. Hence, $j \in B$.
+\end{proof}
 
 \begin{definition}
   The period of a state $i$ is $d_i = gcd(\{n : P_{ii}^n > 0\})$. If $d_i > 1$, the state is periodic, and is otherwise aperiodic if $d_i=1$.
@@ -397,6 +409,40 @@ Periodicity is a property of a class. Every state in the same class has the same
 \end{definition}
 
 Ergodism is a class property, since periodicity and persistency are both class properties.
+
+\begin{exercise}
+  Consider a gambler who at each play of the game has probability $p$ of winning one unit and probability $q=1-p$ of losing one unit. Assuming that successive plays of the game are independent , what is the probability that starting with $i$ units, the gambler's fortune will reach $N$ before reaching 0?  
+\end{exercise}
+\begin{solution}
+  Let $\{X_n,n=\{0,1,2,...}\}$ be a Markov chain, where $X_n$ is the player's fortune at time $n$. Then, the transition probability $P$ is given by:
+  \[P_{00} = P_{NN} = 1\]
+  \[P_{i,i+1} = p = 1-P_{i,i-1}, i = 1,2,...,N-1\]
+  As such, our Markov chain has 3 classes - $\{0\}, \{1,2,3,...,N-1\}, \{N\}$. The second class is transient, the others are recurrent. Hence, at some point the gambler will go broke or hit the jackpot of $N$.
+  If $P_i$ is the probability of reaching $N$ from $i$ eventually, then:
+  \[P_i = pP_{i+1} + qP_{i-1}, i = 1,2,...,N-1\]
+  \[pP_i + qP_i = pP_{i+1} + qP_{i-1}\]
+  \[P_{i+1} - P_i = \frac{q}{p}(P_i - P_{i-1})\]
+  Of course, $P_0 = 0, P_N = 1$. From our recurrence, 
+  \[P_i - P_{i-1} = \left( \frac{q}{p} \right)^{i-1} P_1\]
+  Adding these equations over all $i$,
+  \[P_i - P_1 = P_1 \left[\left(\frac{q}{p}\right) + ... + \left(\frac{q}{p} \right)^{i-1}  \right]\]
+  Hence, 
+  \[P_i = \begin{cases}
+    \frac{1-(q/p)^i}{1-(q/p)}P_1 & \frac{q}{p} \neq 1 \\
+    iP_1 & \text{if } \frac{q}{p} = 1
+  \end{cases}\]
+  Using the fact that $P_N = 1$,
+  \[P_1 = \begin{cases}
+    \frac{1-(q/p)}{1-(q/p)^N} & \frac{q}{p} \neq 1 \\
+    \frac{1}{N} & \text{if } \frac{q}{p} = 1
+  \end{cases}\]
+  Hence,
+  \[P_i = \begin{cases}
+    \frac{1-(q/p)^i}{1-(q/p)^N} & p \neq \frac{1}{2} \\
+    \frac{1}{N} & p = \frac{1}{2}
+  \end{cases}\]
+  We can see that if $p \leq \frac{1}{2}$, the gambler will definitely go broke against an infinitely rich adversary. Otherwise, there is a positive probability of increasing indefinitely.
+\end{solution}
 
 \chapter{Poisson Processes}
 
