@@ -498,7 +498,29 @@ Selective Repeat avoids unnecessary retransmissions by having the sender retrans
 
 The SR receiver will also ACK packets even if they are received out of order. Out of order packets are buffered until any missing packets are received, at which point they are delivered to the upper layer.
 
-In SR protocols, the sender and receiver do not always have the same windows. This lack of synchronization can result in issues when we deal with windows of finite sizes.
+In SR protocols, the sender and receiver do not always have the same windows. This lack of synchronization can result in issues when we deal with windows of finite sizes. \textit{Yet to finish...}
+
+\subsection{TCP}
+
+Just like the protocols we have designed before, TCP is a point to point protocol that allows bidirectional flow of data. It provides a reliable in-order byte stream - this means there are no message boundaries. It is a pipeline protocol, where the window size is set by the congestion and flow control in TCP. Unlike UDP, it is connection oriented.
+
+The important fields in a TCP segment are:
+
+\begin{itemize}
+  \item 16 bit Source port number
+  \item 16 bit Destination Port number
+  \item 32 bit sequence number, indicating the sequence number of the first byte.
+  \item 32 bit acknowledgement number. If a 200 byte message is sent with sequence number 100, then the receiver will return a segment with an acknowledgement number of 300, indicating that sequence numbers up to 299 has been received, and we expect to receive sequence number 300 next.
+  \item 4 bit header length. This indicates that the header length is not always fixed, since the options in the header can be of variable length
+  \item Urgent data flag. It is generally unused.
+  \item Valid acknowledgement bit, indicating whether or not the acknowledgement number is to be considered. If it is 0, then the acknowledgement bit can be a garbage number.
+  \item PSH flag, telling to push the data now
+  \item RST,SYN,FIN flags, used to setup and destroy connections.
+  \item 16 bit receive window, which is the number of bytes that the receiver is willing to accept. This is used for flow control.
+  \item 16 bit checksum, used to detect bit errors during transmission.
+\end{itemize}
+
+Before exchanging data, the sender and receiver must do a handshake, agreeing on the parameters of the connection. One way to do this is a 2 way handshake - the sender ``asks'' for a connection with the receiver, and the receiver responds with a ``yes'' or  "no". If it is a ``yes'', then we can establish it.
 
 
 \end{document}
