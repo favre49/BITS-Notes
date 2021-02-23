@@ -270,7 +270,7 @@ So, the stationary distribution $\mathbf{\Pi}$ is the left eigenvector of $\math
 
 The limiting distribution may not always exist, but if it does, it is equivalent to the stationary distribution. In fact, the limiting distribution does not depend on the start state.
 
-The limiting distribution only exists if $\lim_{n \rightarrow \infty} P^n$ has all equal rows, and that row will be equal to the limiting distribution. A limiting distribution always exists in an irreducible and aperiodic matrix!
+The limiting distribution only exists if $\lim_{n \rightarrow \infty} P^n$ has all equal rows, and that row will be equal to the limiting distribution.
 
 \begin{exercise}
   Consider a Markov chain with two possible states $S = \{0,1\}$  and the transition matrix:
@@ -370,7 +370,7 @@ This definition means that if a state is recurrent, then if we start at a state 
 However, if a state $i$ is transient, there is some probability $p < 1$ ($p$ is in fact $F_{ii}$) that it will re-enter the state. Hence, the probability that the process will be in state $i$ for exactly $n$ time periods is:
 \[p^{n-1} (1-p)\]
 
-A recurrent state is \textbf{null} if $\mu_{ii} = \infty$. Otherwise it is called \textbf{positive} or non null.
+A recurrent state is \textbf{null} if $\mu_{ii} = \infty$. Otherwise it is called \textbf{positive} or non null. In a finite state Markov chain, all recurrent states are positive recurrent.
 
 \begin{theorem}
   A state $i$ is recurrent if and only if $\sum_n P_{ii}^n = \infty$. A state $i$ is transient if and only if $\sum_n P_{ii}^n < \infty$  
@@ -438,11 +438,15 @@ Periodicity is a property of a class. Every state in the same class has the same
 
 Ergodism is a class property, since periodicity and persistency are both class properties.
 
+\begin{theorem}
+  An irreducible Markov chain always has a limiting distribution. 
+\end{theorem}
+
 \begin{exercise}
   Consider a gambler who at each play of the game has probability $p$ of winning one unit and probability $q=1-p$ of losing one unit. Assuming that successive plays of the game are independent , what is the probability that starting with $i$ units, the gambler's fortune will reach $N$ before reaching 0?  
 \end{exercise}
 \begin{solution}
-  Let $\{X_n,n=\{0,1,2,...}\}$ be a Markov chain, where $X_n$ is the player's fortune at time $n$. Then, the transition probability $P$ is given by:
+  Let $\{X_n,n=\{0,1,2,...\}\}$ be a Markov chain, where $X_n$ is the player's fortune at time $n$. Then, the transition probability $P$ is given by:
   \[P_{00} = P_{NN} = 1\]
   \[P_{i,i+1} = p = 1-P_{i,i-1}, i = 1,2,...,N-1\]
   As such, our Markov chain has 3 classes - $\{0\}, \{1,2,3,...,N-1\}, \{N\}$. The second class is transient, the others are recurrent. Hence, at some point the gambler will go broke or hit the jackpot of $N$.
