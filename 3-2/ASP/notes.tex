@@ -87,18 +87,17 @@ The moment generating functions of some oft-used distributions are as follows:
 
 \begin{itemize}
   \item Moment generating function of Binomial($n,p$) is:
-    \begin{align*}
-      \phi(t) = (pe^t + 1 - p)^n
-    \end{align*}
+    \[ \phi(t) = (pe^t + 1 - p)^n\]
   \item Moment generating function of Poisson($\lambda$) is:
-    \begin{align*}
-      \phi(t) = e^{\lambda(e^t-1)}
-    \end{align*}
+    \[  \phi(t) = e^{\lambda(e^t-1)}\]
   \item Moment generating function of Exponential($\lambda$) is:
     \begin{align*}
       \phi(t) = \frac{\lambda}{\lambda-t}
     \end{align*}
-  \item TODO more
+  \item Moment generating function for Normal($\mu, \sigma^2$) is:
+    \[e^{t \mu + \frac{1}{2} \sigma^2 t^2}\]
+  \item Moment generating function for Uniform($a,b$) is :
+    \[\frac{e^{tb} - e^{ta}}{t(b-a)}\]
 \end{itemize}
 
 \begin{theorem}
@@ -125,6 +124,12 @@ The conditional expectation of $X$ given $Y$ is:
   Let $X$ be a non-negative random variable and suppose that $E(X)$ exists. For any $t > 0$, 
   \[P(X > t) \leq \frac{E(X)}{t}\]
 \end{theorem}
+\begin{proof}
+  \[E(X) = P(X < a) \cdot E(X|X < a) + P(X \geq a) \cdot E(X|X \geq a)\] 
+  Here, $E(X|X<a)$ is larger than 0 since $X$ is a non negative random variable. $E(X|X \geq a)$ is larger than $a$, since it only considers values larger than $a$. Hence,
+  \[E(X) \geq P(X<a)\cdot 0 + P(X \geq a) \cdot E(X|X \geq a) \geq a \cdot P(X \geq a) \]
+  This directly leads to Markov's Inequality.
+\end{proof}
 
 \begin{theorem}[Chebyshev's Inequality]
   Let $\mu = E(X)$ and $\sigma^2 = V(X)$. Then
@@ -132,6 +137,15 @@ The conditional expectation of $X$ given $Y$ is:
   \[ P(|Z| \geq k) \leq \frac{1}{k^2}\]
   where $Z = (X-\mu) / \sigma$ and $t > 0$.
 \end{theorem}
+\begin{proof}
+  \begin{align*}
+    \sigma^2 &= E((X-\mu)^2)  \\
+             &= E((X-\mu)^2 | k \sigma \leq |X-\mu|) P(k \sigma \leq |X - \mu|) + E((X_\mu)^2 | k \sigma > |X-\mu|)P(k\sigma > |X - \mu|) \\
+             &\geq (k \sigma)^2 P(k \sigma \leq |X-\mu|) + 0 \cdot P(k \sigma > |X-\mu|) \\
+             &= k^2 \sigma^2 P(k \sigma \leq |X-\mu|)
+  \end{align*} 
+  Now the inequality follows from dividing by $k^2 \sigma^2$.
+\end{proof}
 
 Chebyshev's Inequality is a more general version of Markov's Inequality, applicable for any random variable $X$.
 
@@ -207,13 +221,13 @@ Of course, this matrix means that we could represent a Markov Chain by a digraph
 
 \section{State Probabilities}
 
-Let $\mathbf{\Pi}^{(n)}$ be a row vector such that $\mathbf{\Pi}^{n}_i$ is the probability that after $n$ transitions, we are at state $i$. This is known as the \textbf{marginal probability distribution}. This vector can be recursively computed by the formula:
+Let $\mathbf{\Pi}^{(n)}$ be a row vector such that $\mathbf{\Pi}^{(n)}_i$ is the probability that after $n$ transitions, we are at state $i$. This is known as the \textbf{marginal probability distribution}. This vector can be recursively computed by the formula:
 \[ \mathbf{\Pi}^{(n)} = \mathbf{\Pi}^{(n-1)} \mathbf{P} \]
 So, we get
 \[ \mathbf{\Pi}^{(n)} = \mathbf{\Pi}^{(0)} \mathbf{P}^n \]
 
 $\mathbf{P}^n$ is known as the $n^{th}$ step transition probability matrix (denoted by $p^{(n)}$), where:
-\[\mathbf{P}^{n}_{ij} = p_{ij}^{n} = P(X_n = j|X_0 = i)\]
+\[\mathbf{P}^{n}_{ij} = p_{ij}^{(n)} = P(X_n = j|X_0 = i)\]
 This means that $p^{(n)}$ solves the question - after $n$ transitions starting from $i$, what is the probability that I will be in state $j$?
 
 A problem we are facing with this approach is that we have to calculate $\mathbf{P}^{n}$ fast enough. It is not enough to use binary exponentiation and find it in $O(d^3\log{n})$, since we are using matrices with large size, so while it would be fast in exponent, it would be slow doing matrix multiplication. Instead, we use \textbf{Eigendecomposition} (read FDS notes).
@@ -225,8 +239,16 @@ Raising it to power of $n$, we get the decomposition to be:
 Since $\Lambda$ is a diagonal matrix, we can find the exponent even faster in $O(d\log n)$, hence speeding up the process.
 
 \begin{theorem}[Chapman-Kolmogorov Equation]
-  \[p_{jk}^{(m+n)} = \sum p^{(n)}_{rk} p^{(m)}_{jr} = \sum p_{jr}^{(n)} p_{rk}^{(m)}\]
+  \[p_{ij}^{(n+m)} = \sum_{k=0}^{\infty} p_{ik}^{(n)}p_{kj}^{(m)}\]
 \end{theorem}
+\begin{proof}
+  \begin{align*}
+    p_{ij}^{(n+m)} &= P(X_{n+m} = j | X_0 = i) \\
+                   &= \sum_{k=0}^{\infty} P(X_{n+m} = j, X_n = k | X_0 = i) \\ 
+                   &= \sum_{k=0}^{\infty} P(X_{n+m} = j | X_n=k, X_0 = i) P(X_n = k | X_0 =i) \\
+                   &= \sum_{k=0}^{\infty} P_{kj}^m P_{ik}^n
+  \end{align*}  
+\end{proof}
 
 \begin{theorem}
   If $\mathbf{P}$ is a transition matrix for a finite state Markov chain, it has at least one eigenvalue as 1.  All the other eigenvalues have an absolute value $|\lambda_i| \leq$ 1.
@@ -260,9 +282,13 @@ The limiting distribution may not always exist, but if it does, it is equivalent
   Let $f_{ij}^{(n)}$ be the probability the Markov Chain visits a state $j$ for the first time starting from a state $i$ after $n$ transitions. Then $f$ is the First Entrance Time Matrix.
 \end{definition}
 
-\begin{theorem}
-  \[f_{ij}^{(n)} = P_{ij}^{(n)} - \sum_{r=0}^{n-1} f_{ij}^{(r)} P_{jj}^{n-r}\]
+\begin{theorem}[First Entrance Theorem]
+  \[p_{jk}^{(n)} = \sum_{r=0}^n f_{jk}^{(r)}p_{kk}^{(n-r)}, n \geq 1\]
+  where
+  \[p_{kk}^{(0)} = 1, f_{jk}^{(0)} = 0, f_{jk}^{(1)} = p_{jk}\]
 \end{theorem}
+
+The proof of this is rigorous and uses the strong Markov Property, so it is not included here.
 
 \begin{definition}
 The mean time of eventual return is the expected number of transitions to go from $i$ to $j$. This is denoted by $\mu_{ij}$ and is given by:
@@ -304,17 +330,50 @@ If all states communicate with each other, then the chain is said to be \textbf{
   Otherwise, the state is transient.
 \end{definition}
 
+This definition means that if a state is recurrent, then if we start at a state $i$, we will definitely return to that state after some $n > 0$ steps. Since this is essentially a recursive process (start from state $i$, return to state $i$, start again), the process will reenter $i$ again and again and again. 
+
+However, if a state $i$ is transient, there is some probability $p < 1$ that it will re-enter the state. Hence, the probability that the process will be in state $i$ for exactly $n$ time periods is:
+\[p^{n-1} (1-p)\]
+
 A recurrent state is \textbf{null} if $\mu_{ii} = \infty$. Otherwise it is called \textbf{positive} or non null.
 
 \begin{theorem}
   A state $i$ is recurrent if and only if $\sum_n P_{ii}^n = \infty$. A state $i$ is transient if and only if $\sum_n P_{ii}^n < \infty$  
 \end{theorem}
+\begin{proof}
+  From our discussion, it is clear that a state $i$ is recurrent if and only if the expected number of time periods that the process is in state $i$ is infinite. Let $I_n$ be such that:
+  \[I_n = \begin{cases}
+    1, & \text{if } X_n = i \\
+    0, & \text{if } X_n \neq i
+  \end{cases}\]
+  Hence, $\sum_{n=0}^{\infty} I_n$ is the number of periods that a process in a state $i$.
+  \begin{align*}
+    E \left( \sum_{n=0}^{\infty} I_n | X_0 = i\right) &= \sum_{n=0}^{\infty} E(I_n | X_0 = i) \\
+                                                      &= \sum_{n=0}^{\infty} P(X_n = i | X_0 = i) \\
+                                                      &= \sum_{n=0}^{\infty} P_{ii}^n
+  \end{align*}
+  Hence, if the state is recurrent, this value must be infinite. Otherwise, it would be recurrent.
+\end{proof}
 
-This means that if $i$ is a persistent state, then if every state in it's equivalence class is also persistent, i.e. it is a class property.
+\begin{exercise}
+  Prove that in a finite state Markov Chain, all states cannot be transient 
+\end{exercise}
+\begin{solution}
+Let us assume we have a Markov Chain where all states are transient. If this were the case, there would be some finite amount of time after which state $i$, will never be visited, for every state $i$. Hence, after some finite time, no states will be visited. But, the process must be in some state, so we have arrived at a contradiction. Hence all states cannot be transient.
+\end{solution}
 
 \begin{theorem}
-  For a finite Markov Chain, there exists at least one persistent class.
+  If state $i$ is recurrent and $i \leftrightarrow j$, then $j$ is recurrent.
 \end{theorem}
+\begin{proof}
+  To prove this, notice that since $i \leftrightarrow j$, there exists integers $k$ and $m$ such that $P^k_{ij} > 0, P^{m}_{ji}$. For any integer $n$, 
+  \[P_{jj}^{m+n+k} \geq P_{ji}^m P_{ii}^n P_{ij}^k\]
+  This is because the LHS is the probability of going from state $j$ to state $j$ in $m+n+k$ steps, but the RHS requires this to occur along a particular path. Summing over all $n$, 
+  \[\sum_{n=0}^{\infty} P_{jj}^{m+n+k} \geq P_{ji}^m P_{ij}^k \sum_{n=0}^{\infty} P_{ii}^n = \infty\]
+  This is straightforward from theorem 2.7. From that same theorem, $j$ is recurrent.
+\end{proof}
+
+This means that if $i$ is a recurrent state, then if every state in it's equivalence class is also recurrent, i.e. it is a class property.
 
 \begin{theorem}
   A set B is closed if and only if $P_{ij} = 0 \forall j \in B^C, i \in B$.  
@@ -334,7 +393,7 @@ This means that if $i$ is a persistent state, then if every state in it's equiva
 Periodicity is a property of a class. Every state in the same class has the same period.
 
 \begin{definition}
-  A state is ergodic if it is persistent and aperiodic. A chain is ergodic if all it's states are ergodic. 
+  A state is ergodic if it is persistent, non-null and aperiodic. A chain is ergodic if all it's states are ergodic. 
 \end{definition}
 
 Ergodism is a class property, since periodicity and persistency are both class properties.
