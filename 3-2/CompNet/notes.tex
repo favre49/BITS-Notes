@@ -11,6 +11,7 @@
 \usepackage{amsfonts}
 \usepackage[justification=centering]{caption}
 \usepackage{listings}
+\usepackage[hidelinks]{hyperref}
 \usepackage{parskip}
 
 % Formatting
@@ -99,7 +100,7 @@ The performance of a network can be measured by the following parameters:
 
 The Internet is, in fact, a network of networks. The networks must be able to communicate despite using different applications running on different devices - i.e. it is heterogeneous.
 
-As such, the Internet is full of different access ISP networks. How do end hosts on different access ISPs communicate with one another. Of course, if we directly connect them all, it would not be scalable as it would need $O(N^2)$ connections. We also cannot use a single global hub, since it would be difficult to find a single place to put it and connect the entire world.
+As such, the Internet is full of different access ISP networks. How do end hosts on different access ISPs communicate with one another? Of course, if we directly connect them all, it would not be scalable as it would need $O(N^2)$ connections. We also cannot use a single global hub, since it would be difficult to find a single place to put it and connect the entire world.
 
 Since a single global ISP cannot scale to connect the entire world, we use multiple global ISPs. These must be interconnected themselves. One way to do this is using \textbf{peering links}, which directly link two global ISPs. Another is to use \textbf{Internet Exchange Points}, called IXPs, to which multiple global ISPs can connect.
 
@@ -158,7 +159,7 @@ The application architecture can run different application architectures:
 Processes communicate within the same host using interprocess communication, but they must communicate with different hosts by exchanging messages.
 
 \begin{definition}
-  A \textbf{socket} is the interface between the application later and the transport layer within the host.  
+  A \textbf{socket} is the interface between the application layer and the transport layer within the host.  
 \end{definition}
 
 A process (a network application) send and receives messages using it's socket. This is a software entity, not a physical one.
@@ -243,7 +244,7 @@ Hence, using cookies, we can save state with HTTP. This can be used to save user
 
 Proxy servers are also called web caches. Clients send their requests to a proxy server, which would forward it to the destination. The incoming responses are also forwarded to their respective clients. The proxy server can cache information, and hence answer requests itself to save time. This is especially useful in institutions when the content that users access has a large overlap.
 
-One issue with this is that the cached content might turn stale. To fix this we use conditional GETs. When the client sends a request, it adds a header line called \texttt{if-modified-since} which gives the last date at which an access was made. If the object has not been modified since that date, the server will give a cached response along with the status code \texttt{304 Not Modified}. If it has, then the proxy server will query the updated information and return the status code \texttt{200 OK}.
+One issue with this is that the cached data may turn stale. This problem is solved by the means of \textbf{Conditional GETs}. When a proxy server receives a response from the origin server, it will cache it before forwarding it to the end host. This response will have a header line called \texttt{Last-modified}, reflecting the time when that web page was last modified. Now the next time an end host requests that page, the proxy server will forward that GET request but with a header line \texttt{If-modified-since}, along with the date we got from the \texttt{Last-modified} header line. This effectively asks the server the question - has it been modified in the time since I last requested it? If it has, then the server removes the normal response, but otherwise it will get a \texttt{304 Not Modified} response. This response will not have any data, saving on bandwidth and time. This way, the proxy server is able to maintain the freshness of the cached data.
 
 \subsection{HTTP/2 Protocol}
 
@@ -259,7 +260,7 @@ HTTP/2 also allows the server to send additional cacheable information to the cl
 
 When a client requests the URL, it must obtain the IP address of the destination host to send the request to. The \textbf{Domain Name System} maps the name people use to locate a website to the IP address that a computer uses to locate a website.
 
-The DNS is formed by a distributed hierarchical database. The 13 \textbf{root DNS} servers contain reference to the \textbf{top level domain} servers, like the .com servers, the .org servers, etc. These then contain references to the website servers, like the yahoo.com servers, amazon.com servers, etc.
+The DNS is formed by a distributed hierarchical database. The 13 \textbf{root DNS} servers contain reference to the \textbf{top level domain} servers, like the .com servers, the .org servers, etc. These then contain references to the \textbf{authoritative servers}, which are maintained by organizations with publicly accessible hosts to map the hostnames to IP addresses. Examples of this would be servers for yahoo.com or google.com.
 
 One issue we would face is that since we would need to traverse the hierarchy recursively to query a host, it can take a long time to process a DNS query. In practice, instead of traversing the tree on a direct path, the local DNS server would first get information about the TLD DNS server from the root server, and then contact the TLD server directly, instead of letting the root DNS server do this. This is done recursively, contacting lower and lower levels in the hierarchy directly from the local DNS server and getting the IP of the next level.
 
@@ -268,10 +269,10 @@ DNS responses are generally cached to improve the delay performance and to reduc
 DNS provides the following services:
 
 \begin{itemize}
-  \item Host name to IP address mapping
-  \item Host aliasing
-  \item Mail server aliasing
-  \item Load distribution
+  \item \textbf{Host name to IP address mapping} : Websites are generally identified by their hostname. DNS provides a mapping of hostnames to IP addresses, which is what the end host needs to connect to the server.
+  \item \textbf{Host aliasing} : Sometimes, hosts have complicated names, and hence can have one or more alias names. The non-alias hostname is called the canonical hostname. DNS can also be used to find the canonical hostname for a supplied alias.
+  \item \textbf{Mail server aliasing} : It is highly desirable that an email address is easy to remember. The hostname of the Gmail mail server may be very complicated. DNS can be invoked by a mail application to obtain the canonical hostname for the given email address alias.
+  \item \textbf{Load distribution} : DNS is used to perform load distribution in the case of replicated servers, where one canonical hostname is associated with multiple IP address. The DNS server rotates these IP addresses upon every query to ensure load management.
 \end{itemize}
 
 The DNS servers store the necessary information in the form of resource records(RR). They are in the format \texttt{(name, value, type, ttl)}. Here \texttt{ttl} stands for ``time to live'', which tells the DNS resolver how long to cache a query before requesting a new one. The values of the other fields depends on the type of the resource record. There are four types of resource records, depending on the \texttt{type}:
@@ -330,20 +331,20 @@ The user agent could be web-based, like in Hotmail or Gmail. Now, the transfer o
 
 \section{Peer To Peer Architecture}
 
-As mentioned before, there is no always-on server. The end hosts directly communicate, and the peers are intermittently connected.
+As mentioned before, there is no always-on server in peer-to-peer architectures. The end hosts directly communicate, and the peers are intermittently connected.
 
 Let us say we want to send $N$ file copies of size $F$. In a client-server system, ignoring the delays, the time taken to send to a server would be $NF/u_s$, where $u_s$ is the upload rate. Each client must download a file copy, and it the slowest download speed is $d_{min}$, then the slowest download time would be $F/d_{min}$. So, the minimum time to distribute to the $N$ clients would be:
 \[D_{c-s} \geq \max(NF/u_s,F/d_{min})\]
 In the case of P2P system, at least one copy must be uploaded, taking time $F/u_s$. Each client must download a file copy, with the slowest download time once again being $F/d_{min}$. Unlike in the client-server scheme, as the file download gets completed on peers, the number of possible ``providers'' increases. As this happens the maximum upload rate increases, up till $u_s +\sum u_i$. So, the time needed is:
 \[D_{P2P} \geq \max(F/u_s,F/d_{min},NF/(u_s+ \sum u_i))\]
 
-In BitTorrent, the file is divided into chunks, typically 256 KB in size. There are trackers that track peers participating in a torrent. A new peer joins torrent and registers with the tracker to get a list of peers, and connects to some subset of them. While torrenting, a group of peers exchange chunks of a particular file. At any given time, each peer will have a subset of the chunks, and asks its neighbours for a list of which chunks they have. The peer will then take a call on which chunks it should request from the neighbour, and to which of its neighbours it should send requested chunks. Ideally, the peer would request and send the most scarce chunks.
+In BitTorrent, a peer-to-peer application, the file is divided into chunks, typically 256 KB in size. There are trackers that track peers participating in a torrent. A new peer joins a torrent and registers with the tracker to get a list of peers, and connects to some subset of them. While torrenting, a group of peers exchange chunks of a particular file. At any given time, each peer will have a subset of the chunks, and asks its neighbours for a list of which chunks they have. The peer will then take a call on which chunks it should request from the neighbour, and to which of its neighbours it should send requested chunks. Ideally, the peer would request and send the most scarce chunks.
 
-One P2P protocol is Napster. Here, we have a central database where information is available, and the peers contact it for the necessary information. However, if the database is down then the peer-to-peer application cannot run.
+One P2P protocol is \textbf{Napster}. Here, we have a central database where information is available, and the peers contact it for the necessary information. However, if the database is down then the peer-to-peer application cannot run.
 
-Another P2P protocol is Gnutella. Unlike Napster, it is a completely decentralized protocol. On startup, an end host finds at least one other node to connect to. It then queries this node for more nodes to connect to, until it reaches some quota. Due to the completely decentralized network, this protocol is unscalable - searching takes time exponential in the number of nodes, and often end hosts are only connected intermittently.
+Another P2P protocol is \textbf{Gnutella}. Unlike Napster, it is a completely decentralized protocol. On startup, an end host finds at least one other node to connect to. It then queries this node for more nodes to connect to, until it reaches some quota. Due to the completely decentralized network, this protocol is not scalable - searching takes time exponential in the number of nodes, and often end hosts are only connected intermittently.
 
-Yet another P2P protocol is Kazaa, which is the basis for Skype. Kazaa is also a decentralized system. The users are divided into two groups - supernodes and ordinary nodes. Supernodes are powerful computers that act like traffic hubs, processing data requests from ordinary nodes.
+Yet another P2P protocol is \textbf{Kazaa}, which is the basis for Skype. Kazaa is also a decentralized system. The users are divided into two groups - supernodes and ordinary nodes. Supernodes are powerful computers that act like traffic hubs, processing data requests from ordinary nodes.
 
 \section{Distributed Databases}
 
@@ -432,7 +433,7 @@ What if our underlying channel has some bit errors? Then the packet may have som
   \label{fig:}
 \end{figure}
 
-However, this has a fatal flaw. What if ACK/NAK is corrupted? One way to handle this is to be safe, and send the packet again if the ACK/NAK is corrupted. But this creates a new problem of handling duplicate packets, where the receiver is unsure if this is new information of old data. To fix this, the sender adds a sequence number to each packet. The receiver checks this to decide which packet to discard. In this mechanism (called a stop and wait mechanism), we need only 1 bit for the sequence numbers.
+However, this has a fatal flaw. What if ACK/NAK is corrupted? One way to handle this is to be safe, and send the packet again if the ACK/NAK is corrupted. But this creates a new problem of handling duplicate packets, where the receiver is unsure if this is new information of old data. To fix this, the sender adds a sequence number to each packet. The receiver checks this to decide which packet to discard.  For instance, say $A$ sends a packet with sequence number 0 to $B$. $B$ sends back an ACK, but it gets corrupted on the way back. Then, $A$ will send the packet again with the same sequence number. However, $B$ will know this is a duplicate, since it has the same sequence number as the last packet. In this mechanism (called a stop and wait mechanism), we need only 1 bit for the sequence numbers.
 
 This creates a new protocol - \texttt{rdt2.1}. The FSMs are as in Fig 3 and 4.
 
@@ -450,16 +451,16 @@ This creates a new protocol - \texttt{rdt2.1}. The FSMs are as in Fig 3 and 4.
   \label{fig:./assets}
 \end{figure}
 
-TODO: Add explanation for what exactly is going on, stepwise. I'm still confused. Also rdt2.2
+We can remove the need for NAKs by sending ACK for the last correctly received packet instead. If a sender receives two ACKs for the same packet, it knows that the receiver did not correctly receive the packet following the packet that is being ACKed twice. This new protocol is \texttt{rdt2.2}.
 
-Let us now assume that the underlying channel could also lose packets entirely. rdt2.2 gives us the base to start from, but we need to handle the lost packets. We put the burden of detecting and recovering from lost packets on the sender. Suppose that the sender transmits a data packer and either that packet or the receiver's ACK of that packet gets lost. If the sender is willing to wait long enough so that it is certain that a packet has been lost, it can retransmit the data packet. But how long is long enough? We could choose the worst case, but that is difficult to approximate and may be too slow. So we just choose some time value that packet loss is very likely, but not guaranteed to have happened.
+Let us now assume that the underlying channel could also lose packets entirely. \texttt{rdt2.2} gives us the base to start from, but we need to handle the lost packets. We put the burden of detecting and recovering from lost packets on the sender. Suppose that the sender transmits a data packet and either that packet or the receiver's ACK of that packet gets lost. If the sender is willing to wait long enough so that it is certain that a packet has been lost, it can retransmit the data packet. But how long is long enough? We could choose the worst case, but that is difficult to approximate and may be too slow. So we just choose some time value that packet loss is very likely, but not guaranteed to have happened.
 
-Even in this case, we could have duplicate data packets, since the ACK could just have been received very late due to some delays, even if the packet was not lost. Luckily, rdt2.2 can already handle this case. Thus, we now have \texttt{rdt3.0}. Since the sequence numbers are either 0 or 1, it's also called a alternating bit protocol. In Fig 5 we can see the FSM for the sender in \texttt{rdt3.0}.
+Even in this case, we could have duplicate data packets, since the ACK could just have been received very late due to some delays, even if the packet was not lost. Luckily, rdt2.2 can already handle this case using sequence numbers. Thus, we now have \texttt{rdt3.0}. Since the sequence numbers are either 0 or 1, it's also called a alternating bit protocol. In Fig 5 we can see the FSM for the sender in \texttt{rdt3.0}.
 
 \begin{figure}[htpb]
   \centering
   \includegraphics[width=0.8\linewidth]{./assets/rdt3_fsm.png}
-  \caption{rdt3 sender}%
+  \caption{rdt3.0 sender}%
   \label{fig:./assets}
 \end{figure}
 
@@ -467,11 +468,11 @@ Even in this case, we could have duplicate data packets, since the ACK could jus
 \[U = \frac{L/R}{RTT+L/R}\]
 This $U$, if calculated, is generally found to be dismal in the case of \texttt{rdt3.0}. Instead, we use a pipelined protocol.
 
-In a pipelined protocol, the sender may send multiple packets despite not having received the ACK. If one sends $n$ packets at once, we can increase the utilization by a factor of $n$! However, this comes with multiple consequences:
+In a pipelined protocol, the sender may send multiple packets despite not having received the ACK. If one sends $n$ packets at once, we can increase the utilization by a factor of $n$. However, this comes with multiple consequences:
 
 \begin{itemize}
-  \item The range of sequence numbers must be increased
-  \item The sender and receiver sides of the protocols need to buffer more than one packet
+  \item The range of sequence numbers must be increased.
+  \item The sender and receiver sides of the protocols need to buffer more than one packet.
 \end{itemize}
 
 We can have two pipeline protocols - Go-Back-N (GBN) or Selective Repeat (SR).
@@ -502,7 +503,7 @@ Selective Repeat avoids unnecessary retransmissions by having the sender retrans
 
 The SR receiver will also ACK packets even if they are received out of order. Out of order packets are buffered until any missing packets are received, at which point they are delivered to the upper layer.
 
-In SR protocols, the sender and receiver do not always have the same windows. This lack of synchronization can result in issues when we deal with windows of finite sizes. \textit{Yet to finish...}
+In SR protocols, the sender and receiver do not always have the same windows. This lack of synchronization can result in issues when we deal with windows of finite sizes. It is possible to show that the window size should ideally be less than or equal to half the size of the sequence number space.
 
 \section{TCP}
 
