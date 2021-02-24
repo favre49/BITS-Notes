@@ -831,6 +831,8 @@ where $d = (a,b)$ and $n \in \Z$. The initial solution $x_0,y_0$ can be found us
 
 \chapter{Congruence}
 
+\section{Introduction}
+
 \begin{definition}
   Let $m \in \N$. Two integers $a,b$ are said to be congruent modulo $m$ if $m|a-b$. This is denoted by $a \equiv b \mod m$  
 \end{definition}
@@ -904,5 +906,66 @@ So, every integer $a$ is congruent to it's remainder $r$ modulo $m$. We call $r$
   \[(m-1)^2 \equiv 1 \mod m\]
   Thus, this set cannot form a complete set of residues modulo $m$.
 \end{solution}
+
+\section{Square and Multiply Algorithm}
+
+Let $a,l,m$ be integers $\geq 2$. We want to compute $a^l \mod m$. To do this, we could use the following steps:
+
+\begin{enumerate}
+  \item Write the base-2 expansion on $l = (a_l \cdots a_1 a_0)_2$, where $k \geq 0, a_k \neq 0, 0 \leq a_i < 2$.
+  \item Compute $a^{2^i} \mod m$ for $0 \leq i \leq k$. This can be done in $O(k)$ via squaring.
+  \item Multiply the $a^{2^i} \mod m$ for all $i$ with $a_i = 1$ to get the result.
+\end{enumerate}
+
+\section{Cancellation in Congruences}
+\phantom{}
+\begin{theorem}
+  Let $a,b,c,m \in \Z$ with $m \geq 2$. Then,
+  \begin{itemize}
+    \item If $ac \equiv bc \mod m$ and $(c,m) = 1$, then $a \equiv b \mod m$.
+    \item Let $d = (c,m)$. If $ac \equiv bc \mod m$ and $(c,m) = 1$, then $a \equiv b \mod \frac{m}{d}$.
+  \end{itemize}
+\end{theorem}
+\begin{proof}
+  We have $m | (a-b)c$, which implies that $\frac{m}{d} | (a-b) \frac{c}{d}$. Since $(\frac{m}{d},\frac{c}{d})= 1$ , we get that $\frac{m}{d} | (a-b)$. This is the second result. The first result is a consequence of the second.
+\end{proof}
+
+\section{Combining Congruences with different moduli}
+\phantom{}
+\begin{theorem}
+  Let $a,b,m_1,...,m_k \in \Z$ with $m_1,m_2,...,m_k \geq 2$, then.
+\end{theorem}
+
+TODO complete this
+
+\section{Linear Congruences}
+
+Let $a,b,m \in \Z, m \geq 2$. Then $ax \equiv b \mod m$ is called a linear congruence. Our goal is to find possible $x$ that satisfy the given congruence.
+
+\begin{theorem}
+  Let $a,b,m \in Z$ and $d = (a,m)$. The linear congruence $ax \equiv b \mod m$ has a solution of and only if $d | b$. If $d | b$, then there are $d$ mutually incongruent solutions modulo $m$.
+\end{theorem}
+\begin{proof}
+  The linear congruence $ax \equiv b \mod m$ can be expressed as a linear Diophantine equation:
+  \[ax = b + my\]
+  \[ax - my = b\]
+  Hence, it has a solution if and only if that LDE is solvable. This means that the linear congruence is also only solvable if and only if $(a,m) | b$.
+
+  Suppose $d|b$. Then, there are infinitely many solutions to the LDE. If $(x_0,y_0)$ is a particular solution, then the complete solution is given by
+  \[x = x_0 + \frac{m}{d}n, y = y_0 + \frac{a}{d}n\]
+  Then, we will get the solutions:
+\[x_0, x_0 + \frac{m}{d}, x_0 + 2\frac{m}{d},...,x_0 + d\frac{m}{d},...\]
+Here we can see that after that last term, all the solutions will be congruent to one of the first $d$ terms. Hence, if the first $d$ solutions are incongruent, we will have proved our theorem.
+
+Assume 
+\begin{alignat*}{3}
+  &x_0 + \frac{m}{d}n_1 &&\equiv x_0 + \frac{m}{d} n_2 &&\mod m \\
+  &\frac{m}{d}n_1 &&\equiv \frac{m}{d}n_2 &&\mod m \\
+  &n_1 &&\equiv n_2 &&\mod d \text{ (From Theorem 6.3)}
+\end{alignat*}
+
+This means that two solutions will only be congruent if $n_1$ and $n_2$ are congruent modulo $d$. So, $ax \equiv b \mod m$ has $d$ mutually incongruent solutions:
+\[x_0,x_0 + \frac{m}{d}, x_0 + 2\frac{m}{d},..., x_0 + (d-1)\frac{m}{d}\]
+\end{proof}
 
 \end{document}
