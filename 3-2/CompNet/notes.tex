@@ -1,4 +1,4 @@
-\documentclass[12pt,letterpaper]{article}
+\documentclass[12pt,letterpaper]{amsbook}
 
 %%%%%%%%%%%%
 % Includes %
@@ -36,7 +36,9 @@
 
 \maketitle
 
-\section{Networks}
+\chapter{Networks}
+
+\section{Introduction}
 
 \begin{definition}
   A \textbf{network} is a shared infrastructure that allows users to communicate with each other.
@@ -46,7 +48,7 @@ The basic building blocks of a network are \textbf{nodes} and \textbf{links}. No
 
 End hosts are physically connected to the core network via the \textbf{access network}. This consists of many parts, such as the ethernet switch, router, etc.
 
-\subsection{Communication Models}
+\section{Communication Models}
 
 Networks could have multiple communication models:
 
@@ -55,9 +57,9 @@ Networks could have multiple communication models:
   \item \textbf{Peer-peer model}: Here, there is minimal or no use of dedicates servers, as in BitTorrent. The clients directly communicate with one another.
 \end{itemize}
 
-\subsection{Core Network Models}
+\section{Core Network Models}
 
-\subsubsection{Circuit Switching}
+\subsection{Circuit Switching}
 
 How is our core network made? One way to do this is via \textbf{circuit switching}. There are end-to-end resources reserved for a ``call", like on a telephone network. There is no sharing of resources. Call setup needs to be done as a preparatory step. Circuit switching generally can be implemented by two different methods:
 
@@ -66,7 +68,7 @@ How is our core network made? One way to do this is via \textbf{circuit switchin
   \item \textbf{TDM}, which stands for Time Domain Multiplexing. Here the time is divided among the users (perhaps in a round robin fashion). As such, one user gets access to the entire bandwidth of the circuit, but only for a period in time.
 \end{itemize}
 
-\subsubsection{Packet Switching}
+\subsection{Packet Switching}
 
 Another way is through \textbf{packet switching}, where data is sent over the net in discrete ``chunks", called packets. This is how it is done on the Internet. The host takes the application message, and breaks into packets of length $L$ bits. It then transmits packets into the access networks at transmission rate $R$, also called the bandwidth. Of course, this means that each packet faces a transmission delay of $L/R$.
 
@@ -81,7 +83,7 @@ When using packet switching, there may be four sources of packet delay:
   \item \textbf{Transmission} : This is the delay from transmission of packets into the node, i.e. the incoming delay.
 \end{itemize}
 
-\subsection{Performance of a Network}
+\section{Performance of a Network}
 
 The performance of a network can be measured by the following parameters:
 
@@ -91,7 +93,9 @@ The performance of a network can be measured by the following parameters:
   \item Throughput : This is the amount of bits transferred in unit time. This is important in some applications, such as for file transfer. 
 \end{itemize}
 
-\section{The Internet}
+\chapter{The Internet}
+
+\section{Introduction}
 
 The Internet is, in fact, a network of networks. The networks must be able to communicate despite using different applications running on different devices - i.e. it is heterogeneous.
 
@@ -103,7 +107,7 @@ The Internet uses this system in a tiered manner - end hosts might connect to a 
 
 Some corporations, like Google, have their own Content Distribution Networks (CDNs), and have their own network to bring services and content closer to users.
 
-\subsection{Layered Network Model}
+\section{Layered Network Model}
 
 The Internet is based on a Layered Network Model known as \textbf{OSI}. Any device under OSI can have the following layers:
 
@@ -133,13 +137,13 @@ In the context of the Internet, these layers perform the following functions:
   \item \textbf{Application:} This layer supports network applications. It may use FTP, SMTP, HTTP, etc.
 \end{enumerate}
 
-\subsection{IP Hourglass Architecture}
+\section{IP Hourglass Architecture}
 
 One way to imagine the Internet architecture is as a hourglass. The IP interconnects multiple existing networks, and hides the underlying technology from applications. This provides minimal functionality (has a ``narrow waist''). The trade-off of this approach is that there are no assumptions being made, and as such no guarantee that something works.
 
-\section{The Application Layer}
+\chapter{The Application Layer}
 
-\subsection{Network Applications}
+\section{Network Applications}
 
 A \textbf{Network application} is a program that runs on different end systems and communicates over a network. These are run only on the end hosts - core network devices do not run user application code.
 
@@ -161,7 +165,7 @@ A process (a network application) send and receives messages using it's socket. 
 
 To receive messages, each process must have some identifier. The IP address is not enough since it will only uniquely identify the host, but not the individual processes running on the host. So, we also use the port number to identify a process. For instance, an HTTP server would use port number 80, and a mail server would use port number 25.
 
-\subsection{Application Transport Services}
+\section{Application Transport Services}
 
 What transport services does an application need? This changes from application to application. Here are some examples:
 
@@ -171,7 +175,7 @@ What transport services does an application need? This changes from application 
   \item \textbf{Timing} : Another parameter to consider is timing. Some applications, like games, require low delay, but for others this is unnecessary.
 \end{itemize}
 
-\subsection{HTTP}
+\section{HTTP}
 
 The application layer for web pages is HTTP. A web page consists of objects, like HTML files, JPEG images, etc. Each of these objects is addressable by a URL. HTTP applications use TCP as it's transfer protocol. 
 
@@ -251,7 +255,7 @@ HTTP/1 was capable of transmitting only one stream at a time. This made receivin
 
 HTTP/2 also allows the server to send additional cacheable information to the client that isn't requested but is anticipated to be needed in future requests. This mechanism saves a RTT and reduces network latency. This is called \textbf{Server PUSH}.
 
-\subsection{Domain Name System}
+\section{Domain Name System}
 
 When a client requests the URL, it must obtain the IP address of the destination host to send the request to. The \textbf{Domain Name System} maps the name people use to locate a website to the IP address that a computer uses to locate a website.
 
@@ -281,7 +285,7 @@ The DNS servers store the necessary information in the form of resource records(
 
 To insert a record into DNS, a newly created domain name should be first registered at a registrar.
 
-\subsection{File Transfer Protocol}
+\section{File Transfer Protocol}
 
 This protocol is used to transfer file from client to client. It uses the TCP protocol, since it must be reliable and error free.
 
@@ -306,7 +310,7 @@ These commands can give return codes and phrases as in HTTP:
   \item \texttt{452 Error writing to file}
 \end{itemize}
 
-\subsection{eMail}
+\section{eMail}
 
 e-Mail consists of three major components
 
@@ -324,7 +328,7 @@ A more feature-rich protocol is IMAP or the Internet Mail Access Protocol. It al
 
 The user agent could be web-based, like in Hotmail or Gmail. Now, the transfer of the message from the sender to the mail server happens over HTTP. The access of mails by the receiver is also done over HTTP.
 
-\subsection{Peer To Peer Architecture}
+\section{Peer To Peer Architecture}
 
 As mentioned before, there is no always-on server. The end hosts directly communicate, and the peers are intermittently connected.
 
@@ -341,7 +345,7 @@ Another P2P protocol is Gnutella. Unlike Napster, it is a completely decentraliz
 
 Yet another P2P protocol is Kazaa, which is the basis for Skype. Kazaa is also a decentralized system. The users are divided into two groups - supernodes and ordinary nodes. Supernodes are powerful computers that act like traffic hubs, processing data requests from ordinary nodes.
 
-\subsection{Distributed Databases}
+\section{Distributed Databases}
 
 Distributed databases are a common application of the P2P framework. In a distributed database, each peer holds a small subset of the total (key,value) pairs. Any peer can query the distributed database with a particular key. The distributed DB locates the peers that have the corresponding (key,value) pairs and return it to the querying peer. Any peer can insert a new (key,value) pair into the database. 
 
@@ -372,15 +376,15 @@ struct sockaddr {
 
 TODO: complete this.
 
-\section{Transport Layer}
+\chapter{Transport Layer}
 
-\subsection{Introduction}
+\section{Introduction}
 
 The transport layer is responsible for logical communication between the hosts, unlike the network layer which is responsible for logical communication between processes. Since the transport layer works on top of the network layer, it is constrained by the underlying network layer protocol. However, in some cases it can offer services even when the network layer doesn't offer it.
 
 The transport layer provides two protocols - UDP, an unreliable connectionless service, and TCP, a reliable, connection oriented service. The transport layer works with transport layer packets called \textbf{segments}. 
 
-\subsection{Multiplexing and Other Functions}
+\section{Multiplexing and Other Functions}
 
 The transport layer multiplexes messages at sending time by handling data from multiple sockets and adding a transport header for each message. It is also responsible for demultiplexing the received messages by using the header information to deliver the received messages to the correct sockets. These are the only two services UDP provides, but TCP provides some additional services. As mentioned before, it also proved reliable data transfer. Besides this, it provides what is called congestion control. TCP congestion control prevents any one TCP connection from swamping links and routers between hosts with excess traffic, and tries to give every connection an equal share of traffic.
 
@@ -406,7 +410,7 @@ Knowing that UDP is unreliable, one might wonder why we use UDP at all. Some rea
   \item It has no congestion control. While this is undesirable in some cases, it means that UDP can run as fast as desired.
 \end{itemize}
 
-\subsection{Designing a Reliable Data Transfer}
+\section{Designing a Reliable Data Transfer}
 
 Let us assume that the underlying channel is perfectly reliable. Then, let us design a protocol called \texttt{rdt1.0}. We diagrammatically show this as two Finite State Machines - one for the sender, and another for the receiver.
 
@@ -500,9 +504,13 @@ The SR receiver will also ACK packets even if they are received out of order. Ou
 
 In SR protocols, the sender and receiver do not always have the same windows. This lack of synchronization can result in issues when we deal with windows of finite sizes. \textit{Yet to finish...}
 
-\subsection{TCP}
+\section{TCP}
+
+\subsection{Introduction}
 
 Just like the protocols we have designed before, TCP is a point to point protocol that allows bidirectional flow of data. It provides a reliable in-order byte stream - this means there are no message boundaries. It is a pipeline protocol, where the window size is set by the congestion and flow control in TCP. Unlike UDP, it is connection oriented.
+
+\subsection{The TCP Segment}
 
 The important fields in a TCP segment are:
 
@@ -520,7 +528,16 @@ The important fields in a TCP segment are:
   \item 16 bit checksum, used to detect bit errors during transmission.
 \end{itemize}
 
-Before exchanging data, the sender and receiver must do a handshake, agreeing on the parameters of the connection. One way to do this is a 2 way handshake - the sender ``asks'' for a connection with the receiver, and the receiver responds with a ``yes'' or  "no". If it is a ``yes'', then we can establish it.
+\subsection{Handshaking}
+
+Before exchanging data, the sender and receiver must do a handshake, agreeing on the parameters of the connection. One way to do this is a 2 way handshake - the sender ``asks'' for a connection with the receiver, and the receiver responds with a ``yes'' or ``no''. If it is a ``yes'', then we can establish it. However, this is not actually enough. Since the underlying channel is not reliable, the reply (yes or no) could be dropped, and the receiver is unsure if the sender has received the reply. Hence, a third segment is sent, confirming the receipt of the ``yes'' or ``no''. This is called 3-way handshaking. Formally, the steps are as follows:
+
+\begin{enumerate}
+  \item The client chooses an initial sequence number $x$ and sends a TCP SYN message. This message has it's SYN flag set to one. The segment has no application layer data - it is just used to establish a connection.
+  \item The server chooses an initial sequence number $y$ and sends a TCP SYNACK message. This has it's SYN and ACK flags set to 1. The acknowledge number will be equal to $x+1$, indicating the server expects to receive a sequence number $x+1$ next.
+  \item The client on receiving SYNACK believes the server is live. It now sends an ACK for the SYNACK, so the ACK bit is set to 1 and the acknowledgement number is $y+1$. This segment may contain application data. If it does, this is called \textbf{piggybacking}.
+  \item The server receives ACK and believes the client is live. The connection has been established.
+\end{enumerate}
 
 
 \end{document}
