@@ -542,6 +542,10 @@ Before exchanging data, the sender and receiver must do a handshake, agreeing on
   \item The server receives ACK and believes the client is live. The connection has been established.
 \end{enumerate}
 
+\subsection{Sending Data}
+
+When sending data from the client to the server, the client passes a stream of data through the socket, into the hands of the transport layer and the TCP protocol. TCP directs this data to the send buffer of the client, and when possible, will forward chunks of data from it to the network later. The maximum amount of data that can be placed in a segment is called the \textbf{maximum segment size} or MSS. This is decided by considering the length of the largest link-layer packet that can be sent, called the \textbf{maximum transmission unit} or MTU. The MSS is chosen such that the TCP segment and the TCP/IP header length will fit into a single link layer frame. This stream of data is received by the server in the receive buffer and duly processed. This process happens on both sides of the connection, since TCP is bidirectional.
+
 \subsection{Closing The Connection}
 When closing the connection, the following steps are taken:
 
@@ -553,5 +557,31 @@ When closing the connection, the following steps are taken:
 \end{enumerate}
 
 From the above discussion, it is clear that unlike the connection establishment, connection closure is a 4-way handshake.
+
+\subsection{Timeouts}
+
+TCP, just like the \texttt{rdt} protocol, uses a timeout mechanism to recover from lost packets. How do  we decide the length of the timeout interval? It must be larger than the RTT, but how do we estimate it?
+
+To choose the timeout interval, the sender first finds the RTT from the last segment sent, called the $SampleRTT$. TCP only does this for a single transmitted (but yet unacknowledged) segment at a time, and only those which have been transmitted only once. This value will obviously fluctuate with time, and hence TCP maintains an exponential weighted moving average called $EstimatedRTT$ calculated by the formula:
+\[EstimatedRTT = (1-\alpha) EstimatedRTT + \alpha SampleRTT\]
+We also estimate the deviation of $SampleRTT$ from $EstimatedRTT$ in $DevRTT$, using the formula:
+\[DevRTT = (1-\beta)DevRTT + \beta |SampleRTT - EstimatedRTT|\]
+Then, the timeout interval is generally chosen as:
+\[TimeoutInterval = EstimatedRTT + 4 DevRTT\]
+
+In the case of a timeout, TCP retransmits the not-yet-acknowledged segment with the smallest sequence number, and doubles the next timeout interval. Whenever the timer is next started after ACK is received or data is received from the application layer, the timeout interval is restored back to the one derived from our formula.
+
+\subsection{Fast Retransmit}
+
+Let us see how the receiver generates ACKs depending on the situation:
+
+\begin{itemize}
+  \item If an in-order segment arrives with the expected number, such that all data up to the expected sequence number has already been acknowledged, the receiver will delay the sending of the ACK. It does this to wait for the arrival of another in-order segment, so that it can ACK that as well. If no more in-order segments arrive, it will send the ACK
+  \item Assume the previous case, but one more in-order segment arrives. Then the receiver will immediately send a single cumulative ACK
+  \item If an out-of-order segment arrives, that has a higher sequence number than expected, we have a ``gap''. The sequence numbers in the gap have not been received yet. In this case, we send a duplicate ACK, which has an acknowledgement number equal to the sequence number of the next expected byte. That sequence number would be the lower end of the gap.
+  \item If a segment arrives that partially or completely fills the aforementioned gap, we immediately send ACK, as long as it starts at the lower end of the gap.
+\end{itemize}
+
+Since the sender will send a large number of segments at once, it will receive many duplicate ACKs. If the sender receives 3 or more duplicate ACKs, it takes this as indication that the segment following that has been lost. Then, it performs a \textbf{fast retransmit}, retransmitting the segment before the segment's timer expires. This way, we can quickly recover from lost segments.
 
 \end{document}
