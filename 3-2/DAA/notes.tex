@@ -426,4 +426,58 @@ Hence our goal becomes choosing $r$ such that it minimizes $e[i,j]$. This gives 
   \caption{Optimal-BST(p,q,n)}
 \end{algorithm}
 
+\section{Flow Shop Scheduling}
+
+Consider $n$ jobs each having $m$ tasks $T_{1i}, T_{2i}, ... , T_{mi}$ for $1 \leq i \leq n$ where $T_{1i}$ can be executed on processor $p_i$ only. A processor cannot execute two tasks at a time, and $T_{2i}$ cannot be executed before $T_{1i}$.
+
+Say that according to a schedule $S$, we have a job finish at $f_i(S)$. Then the finish time of the schedule is:
+\[F(S) = \max_{1 \leq i \leq n} f_i(S)\]
+
+Let us first solve for $m=2$. Let $a_i = t_{1i}$ and $b_i = t_{2i}$.
+
+TODO, watch video and understand.
+
+\section{Flows}
+
+A flow network is a directed graph $G = (V,E)$ such that:
+
+\begin{itemize}
+  \item Every edge $(u,v) \in E$ has a non-negative capacity $c(u,v)$.
+  \item There are two distinguished vertices, a source $s$ and a sink $t$.
+  \item For each vertex $v \in V$ there exists a path from $s$ to $v$ to $t$.
+  \item Self loops are not allowed.
+  \item No reverse edges
+  \item If $(u,v) \notin E$, $c(u,v) = 0$
+  \item The graph is connected.
+\end{itemize}
+
+The flow in a graph is a real valued function $f : V \times V \rightarrow \R$ such that:
+
+\begin{itemize}
+  \item $\forall u, v \in V, 0 \leq f(u,v) \leq c(u,v)$ (Capacity constraint)
+  \item $\forall y \in V - \{s,t\}, \sum_{v \in V} f(v,u) = \sum_{v \in V} f(u,v)$ (Flow conservation)
+\end{itemize}
+
+The network flow is defined as:
+\[|f| = \sum_{v \in V} f(s,v) - \sum_{v \in V} f(v,s)\]
+Typically, no edge enters the source so $\sum_{v \in V} f(v,s) = 0$.
+
+The maximum flow problem asks us to find the flow of maximum value in a graph $G$.
+
+This can be solved with the Ford Fulkerson method, which has the following steps:
+
+\begin{enumerate}
+  \item Initialize flow $f$ to 0
+  \item While there is an augmenting path in the residual network, augment the flow $f$ along that path
+\end{enumerate}
+
+A residual network is a graph $G_f$ with two types of edges:
+
+\begin{itemize}
+  \item Residual edges, $c_f(u,v) = c(u,v) - f(u,v)$
+  \item Flow edges, $c_f(u,v) = f(v,u)$
+\end{itemize}
+
+If $f$ is a flow in $G$, and $f'$ is the flow in it's residual network $G_f$.
+
 \end{document}

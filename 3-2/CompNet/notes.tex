@@ -207,9 +207,9 @@ Each line is delimited by a carriage return character \textt{\textbackslash r} a
 The request methods could have the following meanings:
 
 \begin{itemize}
-  \item \texttt{GET} : This method is used to transfer from the server to the client
-  \item \texttt{POST} : This is used to upload something to the server
-  \item \texttt{HEAD} : This asks the server to leave requested object out of response
+  \item \texttt{GET} : This method is used to retrieve data from the server.
+  \item \texttt{POST} : This is used to submit an entity to the server.
+  \item \texttt{HEAD} : This asks the server for a response identical to a GET request, but without the response body.
   \item \texttt{PUT} : This is present in HTTP version 1.1. It uploads a file in entity body to the path specified in the URL field.
   \item \texttt{DELETE} : This is present in HTTP version 1.1. It deletes the file specified in the URL field.
 \end{itemize}
@@ -290,7 +290,9 @@ To insert a record into DNS, a newly created domain name should be first registe
 
 This protocol is used to transfer file from client to client. It uses the TCP protocol, since it must be reliable and error free.
 
-In a typical session, FTP will use two connections - a control connection and a data connections. The control connection, which is generally established on port 21, is the primary connection and is used to send commands back and forth between the client and the server. The data connection, established on port 20, is used solely to transfer the requested data. It stays open until the transfer is complete.
+In a typical session, FTP will use two connections - a control connection and a data connections. The control connection, which is generally established on port 21, is the primary connection and is used to send commands back and forth between the client and the server. The data connection, established on port 20, is used solely to transfer the requested data. It stays open until the transfer is complete. Since FTP uses two parallel TCP connections to transfer a file, it is said to send it's control information \textbf{out of band}. This is in contrast to HTTP, which works \textbf{in band}. 
+
+Unlike HTTP, the FTP server must maintain the state of the user. In particular, the server must associate the control connection with a specific user account and keep track of the user's current directory as the user wanders about the remote directory tree. This unfortunately constrains the total number of sessions that FTP can can maintain simultaneously.
 
 Some FTP commands are:
 
@@ -352,7 +354,7 @@ Distributed databases are a common application of the P2P framework. In a distri
 
 A non-scalable way of doing this is as a distributed hash table. The key,value pairs are randomly scattered across all the peers. They maintain a list of the IP addresses of all the peers, and send their queries to all these peers. Those who contain the required (key,value) pairs respond with the matching pairs. This is, as mentioned before, not scalable since all peers must be queried.
 
-Instead we may implement this with the \textbf{Circular DHT}  protocol. A hash function assigns each node and key an $m$ bit identifier using a base hash function such as SHA-1. The node's ID could be a hash of the port and the IP address, while the key's ID can be a hash of the original key. Since there is a finite number of hashes, these ID values will lie on an imaginary circle, ranging values from $0$ to $2^{m-1}$. We now assign (key,value) pairs to the peer that has the closest node ID to the pair's key ID.
+Instead we may implement this with the \textbf{Circular DHT}  protocol. A hash function assigns each node and key an $m$ bit identifier using a base hash function such as SHA-1. The node's ID could be a hash of the port and the IP address, while the key's ID can be a hash of the original key. Since there is a finite number of hashes, these ID values will lie on an imaginary circle, ranging values from $0$ to $2^{m-1}$. We now assign (key,value) pairs to the peer that has the next closest node ID to the pair's key ID.
 
 One protocol that uses this concept is the \textbf{Chord protocol}. Every node keeps track of 2 pointers - the predecessor, a pointer to the previous node on the ID circle, and the successor, a pointer to the next node on the ID circle. When doing a lookup operation, a node will check whether the key's ID is between the ID of the node and it's successor. In this case, it will know that the key is present in the successor. If not, the query is forwarded to the successor, and the same operation is done recursively. The number of messages is $O(n)$, where $n$ is the number of nodes. So, this is not scalable.
 
@@ -540,5 +542,16 @@ Before exchanging data, the sender and receiver must do a handshake, agreeing on
   \item The server receives ACK and believes the client is live. The connection has been established.
 \end{enumerate}
 
+\subsection{Closing The Connection}
+When closing the connection, the following steps are taken:
+
+\begin{enumerate}
+  \item The client sends a closing request using \texttt{clientsocket.close()}. This segment will have a sequence number of $x$ and have the FIN flag set. The client will no longer send data, but will be able to receive data. The client is said to be in the FIN\_WAIT\_1 state.
+  \item The server responds with an ACK. The server enters the CLOSE\_WAIT state, while the client (on reception) enters the FIN\_WAIT\_2 state. The client is now waiting for the server to close.
+  \item The server will enter the LAST\_ACK state, and sends it's own closing segment, where FIN bit is set to 1. The client will acknowledge this with an ACK, which will put the server in a CLOSED state.
+  \item The client now enters a TIMED\_WAIT state, where it will wait for some predetermined time (say 30 seconds) before considering the connection closed. This allows the client time to resend the final acknowledgement in case the ACK is lost.
+\end{enumerate}
+
+From the above discussion, it is clear that unlike the connection establishment, connection closure is a 4-way handshake.
 
 \end{document}

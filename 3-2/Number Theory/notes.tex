@@ -907,6 +907,43 @@ So, every integer $a$ is congruent to it's remainder $r$ modulo $m$. We call $r$
   Thus, this set cannot form a complete set of residues modulo $m$.
 \end{solution}
 
+\begin{exercise}
+  Find all positive integers $x,y,z$ such that:
+  \[3^x + 4^y + 5^z\]
+\end{exercise}
+\begin{solution}
+  Let us first consider this modulo 4. Then,
+  \[3^x \equiv 1 \mod 4\]
+  We can prove that this is only possible if $x$ is even. $3 \equiv 3 \mod 4$ and $3^2 \equiv 1 \mod 4$. This repeats again and again, and can be proved by induction.
+
+  Now let us consider this modulo 4. Then,
+  \[1 \equiv 2^z \mod 3\]
+  From the same argument above, we get that $z$ must be even too.
+
+  From this, we get a new equation:
+  \[3^{2x_1} + 2^{2y} = 5^{2z_1}\]
+  \[2^{2y} = 5^{2z_1} - 3^{2x_1} = (5^{z_1} + 3^{x_1})(5^{z_1} - 3^{x_1})\]
+  From the fundamental theorem of arithmetic, we know that:
+  \[5^{z_1} + 3^{x_1} = 2^s, s \geq 0\]
+  \[5^{z_1} - 3^{x_1} = 2^t, t \geq 0\]
+  From this set of equations, 
+  \[5^{z_1} = \frac{2^t+2^s}{2} = 2^{t-1}(2^{s-t}+1)\]
+  Since the LHS is odd, $t = 1$. So,
+  \[5^{z_1} = 2^{s-1}+1 \text{ and } 3^{x_1} = 2^{s-1}-1\]
+  By considering the $3^{x_1}$ modulo 3, we get that:
+  \[2^{s-1} \equiv 1 \mod 3\]
+  This once again implies that $s-1$ is even.
+  \[3^{x_1} = 2^{2s_1} - 1 = (2^{s_1} - 1)(2^{s_1} + 1)\]
+  Once again we apply the fundamental theorem of arithmetic, and get the equations
+  \[2^{s_1}-1 = 3^a\]
+  \[2^{s_1}+1 = 3^b\]
+  \[3^b-3^a = 2\]
+  This implies that $b = 1, a = 0$. From this we know that $s_1 = 1$ and $s = 3$. These results also tell us that $z = 2$ and $x=2$.
+  \[3^2+4^y = 5^2\]
+  \[4^y = 5^2 - 3^2 = 16\]
+  Hence, the only positive integers satisfying the equation are $x=y=z=2$.
+\end{solution}
+
 \section{Square and Multiply Algorithm}
 
 Let $a,l,m$ be integers $\geq 2$. We want to compute $a^l \mod m$. To do this, we could use the following steps:
