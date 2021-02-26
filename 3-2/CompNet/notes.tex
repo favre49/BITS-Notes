@@ -360,6 +360,8 @@ One protocol that uses this concept is the \textbf{Chord protocol}. Every node k
 
 A scalable way to do this is that each node $n$ contains a routing table with up to $m$ entries ($m$ is the number of bits), known as a \textbf{finger table}. The $i^{th}$ entry in the table at node $n$ contains the first node $s$ that succeeds $n$ by at least $2^{i-1}$, i.e. $s = succ(n+2^{i-1})$. $s$ is called the \textbf{ $i^{th}$ finger} of node $n$. With this information, we can jump to the furthest successor that precedes the key ID.
 
+In a P2P system, peers can connect and disconnect without warning. Thus, when designing the DHT, we have to be able to maintain the correct successor pointers. To achieve this, each node maintains a successor list of its $r$ nearest successors on the ring. If node $n$ notices that it's successor has failed, then it will replace it with the next entry on the list. This checking needs to be done often based on the frequency of nodes leaving and joining.
+
 \section{Socket Programming}
 
 To a kernel, a socket is an endpoint of communication. To an application, a socket is a file descriptor that lets the application read or write to and from the network.
