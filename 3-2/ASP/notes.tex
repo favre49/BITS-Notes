@@ -533,20 +533,22 @@ It is possible to prove that these two definitions are equivalent.
 
 \section{Interarrival times}
 
-Let $Z_i$ be the time between two occurrences $t_{i-1}$ and $t_i$. Then $Z_i$ is called the \textbf{interarrival time}.
+Let $Z_i$ be the time between two occurrences $t_{i-1}$ and $t_i$. Then $Z_i$ is called the \textbf{inter-arrival time}.
 
 \begin{theorem}
   $Z_i$ in a Poisson process (with mean $\lambda t$) are identically independently distributed random variables which follow the negative exponential distribution with mean $1/\lambda$.
 \end{theorem}
 
-The proof of this is beyond the scope of the course. In fact, the converse also holds - if the interarrival times follow the negative exponential distribution, then the process must be a Poisson process.
+The proof of this is beyond the scope of the course. In fact, the converse also holds - if the inter-arrival times follow the negative exponential distribution, then the process must be a Poisson process.
+
+Since inter-arrival times follow an exponential distribution, it also follows that they are memoryless.
 
 \begin{lemma}
   If $Z_1, \cdots, Z_n$ are i.i.d with $Z_i \sim Exp(z;\lambda)$ then $S_n = \sum_{i = 1}^{n}  Z_i$ is distributed according to a Gamma distribution with $n$ and $\lambda$, i.e.,
   \[f_X(t;n,\lambda) = \frac{\lambda^n}{\Gamma (\alpha)} t^{n-1} e^{-\lambda t}\]
 \end{lemma}
 
-TODO: Check the formula for this.
+The condition for the above theorem to apply is always going to be present when considering Poisson processes
 
 \section{Properties of a Poisson Process}
 
