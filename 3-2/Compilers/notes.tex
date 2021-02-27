@@ -9,7 +9,8 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amsthm}
-\usepackage{amsfonts}
+\usepackage{amsfonts} 
+\usepackage[ruled,vlined]{algorithm2e}
 \usepackage[justification=centering]{caption}
 \usepackage[hidelinks]{hyperref}
 
@@ -608,5 +609,126 @@ The parsing operation of $aabb$ can be seen in Table 1. In the 4th step, we see 
   \end{tabular}
 \end{table}
 
+\section{The SLR(1) Parser}
+
+The SLR(1) parser is much like the LR(0) parser, except that the "reduce" operations are only written for terminals which are in Follow of the variable whose production is reduced. 
+
+The algorithm for constructing the parsing table is as follows:
+
+\begin{enumerate}
+  \item Construct $C = \{I_0,\cdots,I_n\}$ the collection of sets of LR(0) items
+  \item If $A \rightarrow \alpha . \beta$ is in $I_i$ and goto($I_i,a$) = $I_j$, then action[$i,a$] = shift $j$.
+  \item If $A \rightarrow \alpha .$ is in $I_i$ then action[$i,a$] = reduce $A \rightarrow \alpha$ for all $a$ in Follow($A$).
+  \item If $S' \rightarrow S.$ is in $I_i$, then action[$i,\$$] = accept
+  \item If goto($I_i,A$) = $I_j$ then goto[$i,A$] = $j$ for all non terminals $A$
+  \item All undefined entries are errors
+\end{enumerate}
+
+As long as there are no conflicts in the parsing table, the grammar is $SLR(1)$.
+
+\section{The Canonical LR(1) Parser}
+
+\subsection{The LR(1) Item}
+
+An LR(1) item has the form $[I,t]$ where $I$ is in LR(0) item and $t$ is a lookahead token. As the dot moves through the right hand side of $I$, token $t$ remains attached to it. When $I$ is of the form $A \rightarrow \alpha . \beta$ and $\beta \neq \epsilon$, the lookahead token has no meaning. However, the LR(1) item $[A \rightarrow \alpha ., t]$ calls for a reduce action if the lookahead is $t$.
+
+\subsection{The Closure Operation}
+
+Closure is done in a different way from LR(0) items. The algorithm is as follows:
+
+\begin{algorithm}[H]
+  \SetAlgoLined
+  \caption{CLOSURE(I)}
+  \While{No more items are added to I} {
+    \For{each item $[A \rightarrow \alpha . B \beta,a]$ in $I$}{
+      \For{each production $B \rightarrow \gamma$ in G'}{
+        \For{each terminal $b$ in First($\beta a$)}{
+          add $[B \rightarrow . \gamma, b]$ to set $I$;
+        }
+      }
+    }
+  }
+  \Return I;
+\end{algorithm}
+
+\subsection{The Goto Operation}
+
+For LR(1) items, the algorithm to find the Goto is:
+
+\begin{algorithm}[H]
+  \SetAlgoLined
+  \caption{GOTO(I)}
+  initialize $J$ to be the empty set; \\
+  \For{each item $[A \rightarrow \alpha . X \beta, a]$ in $I$}{
+    add item $[A \rightarrow \alpha X . \beta, a]$ to set $J$;
+  }
+  \Return Closure(J);
+\end{algorithm}
+
+\subsection{The CLR(1) Automaton}
+
+Just like before, we can create an automaton representing the operation of the parser. The states are the sets of items and the transitions are the goto over terminals and non-terminals. To get the sets of LR(1) items to use as the states, we have the following algorithm:
+
+\begin{algorithm}[H]
+  \SetAlgoLined
+  \caption{items(G')}
+  Let $C = CLOSURE(\{[S' \rightarrow .S, \$]\}) \\
+  \While{no new sets of items are added to $C$} {
+    \For{Each set of items $I$ in $C$}{
+      \For{Each grammar symbol $X$}{
+        \If{GOTO(I,X) is not empty and not in $C$}{
+          add GOTO(I,X) to $C$;
+        }
+      }
+    }
+  }
+\end{algorithm}
+
+\subsection{The CLR(1) Parsing Table}
+
+Just like before, we have to generate a parsing table to encode the automaton. It is generated as follows:
+
+\begin{enumerate}
+  \item Construct $C' = \{I_0,...,I_n\}$, the collection of sets of LR(1) items for $G'$.
+  \item State $i$ of the parser is constructed from $I_i$. The parsing action for state $i$ is determined as follows:
+    \begin{enumerate}
+      \item If $[A \rightarrow \alpha . a \beta, b]$ is in $I_i$ and GOTO($I_i,a$) = $I_j$, then set Action[$i,a$] to shift $j$. Here $a$ is a terminal.
+      \item If $[A \rightarrow \alpha ., a]$ is in $I_i$, $A \neq S'$, then set Action[$i,a$] to reduce $A \rightarrow \alpha$.
+      \item If $[S' \rightarrow S . , \$]$ is in $I_i$, then set Action[$i,\$$] to accept.
+    \end{enumerate}
+  \item The goto transitions for state $i$ are constructed for all nonterminals $A$ using the rule: If $GOTO(I_i,A$) = $I_j$, then GOTO[$i,A$] = $j$.
+  \item All other entries are error.
+  \item The initial state of the parser is the one constructed from the set of items containing $[S' \rightarrow .S,\$]$
+\end{enumerate}
+
+\subsection{Is a Language CLR(1)?}
+
+A language is CLR(1) if and only if the parsing table does not have repeated entries.
+
+\section{The LALR parser}
+
+\subsection{Why Do We Need It?}
+
+Generally, LALR parsers are used over CLR parsers. This is because CLR parsers would have thousands of states for a grammar that an LALR parser could parse with hundreds of states. It is hence more economical to use these in practice. LALR reduces the number of states by merging similiar sets. For instance, if we have two sets:
+\[[A \rightarrow b ., a/b]\]
+\[[A \rightarrow b ., \$]\]
+We could merge them to create
+\[[A \rightarrow b . , a/b/\$]\]
+
+Those two sets are said to share a common \textbf{core}.
+
+\subsection{Parse Table Construction}
+
+The construction of a parse table for LALR works as follows:
+
+\begin{enumerate}
+  \item Construct $C = \{I_0,I_1,\cdots,I_n\}$, the collection of sets of LR(1) items
+  \item For each core present among the set of LR(1) items, find all sets having that core, and replace these sets by their union
+  \item Let $C' = \{J_0,J_1,\cdots,J_m\}$ be the resulting sets. The parsing actions for each of theese statesis the same as in CLR(1).
+  \item The Goto table is constructed as follows. If $J$ is the union of one or more sets of LR(1) items, that is $J = I_1 \cup I_2 \cup \cdots \cup I_k$, then the cores of GOTO($I_1,X$), GOTO($I_2,X$), ... , GOTO($I_k,X$) are the same, since $I_1,I_2,...,I_k$ all have the same core. Let $K$ be the uion of all sets of items having the same core as GOTO($I_1,X$). Then GOTO($J,X$) = $K$.
+\end{enumerate}
+
+
+   
 
 \end{document}
