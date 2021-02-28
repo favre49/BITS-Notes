@@ -77,7 +77,7 @@ In weak induction (like in the steps given above), we only assume that $P(k)$ is
   Prove that the principle of strong induction is true given that the principle of weak induction is true.
 \end{exercise}
 \begin{solution}
-  Let us assume that $P(1),...,P(b)$ is true. If $P(1),...,P(k)$ are true for some $k \geq b$, then $P(k+1)$ is true. Then, we must show that $P(n)$ is true for all $n \geq 1$. 
+  Let us assume that $P(1),...,P(b)$ is true. If $P(1),...,P(k)$ are true for some $k \geq b$, then $P(k+1)$ is true. Then, we must show that $P(n)$ is true for all $n \geq 1$.
 
   Let $Q(n)$ be the statement that $P(1),...P(n)$ are true. Of course, in the base case, $Q(1)$ is true. Let $Q(k)$ be true, where $K \geq 1$. This means that $P(1),...P(k)$ is true, so $P(k+1)$ must be true. Hence, $Q(k+1)$ is true.
 
@@ -133,7 +133,7 @@ Since PMI $\Rightarrow$ WOP and WOP $\Rightarrow$ PMI, PMI $\Leftrightarrow$ WOP
 \phantom{}
 
 \begin{theorem}[Binomial Theorem]
-  Let $x,y \in \C$ and let $n \in \N$, then 
+  Let $x,y \in \C$ and let $n \in \N$, then
   \[(x+y)^n = \sum_{k=0}^{n} {n \choose k} x^ky^{n-k}\]
 \end{theorem}
 
@@ -231,7 +231,7 @@ Some properties of division are:
 \phantom{}
 
 \begin{theorem}
-  Let $b \in \N$   with $b \geq 2$. Then every positive integer can be expressed uniquely as 
+  Let $b \in \N$   with $b \geq 2$. Then every positive integer can be expressed uniquely as
   \[N = a_kb^k + ...+a_1b+a_0\]
   where $k \geq 0, a_k \neq 0$ and $0 \leq a_i < b$ for $i = 0,...k$. This is denoted by $N = (a_k,...a_1a_0)_b$
 \end{theorem}
@@ -275,7 +275,7 @@ This is a trivial result, which can be thought of as a left or right bitwise shi
 \begin{proof}
   It is clear that $e$ is the sum of the no. of positive multiples of $2^i$ which are $\leq n$, for all $i$. So, this can be calculated by:
   \begin{align*}
-    e = \sum_{k=1}^{\infty} \Bigl \lfloor \frac{n}{2^k} \Bigr \rfloor    
+    e = \sum_{k=1}^{\infty} \Bigl \lfloor \frac{n}{2^k} \Bigr \rfloor
   \end{align*}
 \end{proof}
 
@@ -290,7 +290,7 @@ Thus, if $r$ denotes the number of ones in the binary expansion of $n$, then $2^
 \section{Prime and Composite Numbers}
 
 \begin{definition}
-  A positive integer $p > 1$ is called prime if its only positive divisors are 1 and $p$. A positive integer which is not prime is called composite.  
+  A positive integer $p > 1$ is called prime if its only positive divisors are 1 and $p$. A positive integer which is not prime is called composite.
 \end{definition}
 
 The number 1 is neither prime nor composite.
@@ -308,7 +308,7 @@ The number 1 is neither prime nor composite.
 \end{proof}
 
 \begin{theorem}[Euclid]
-  There are infinitely many primes.  
+  There are infinitely many primes.
 \end{theorem}
 
 \begin{proof}
@@ -339,7 +339,7 @@ The number 1 is neither prime nor composite.
 \end{definition}
 
 \begin{definition}
-  Euclid numbers are integers of the form $E_n = p_n\# +1$. 
+  Euclid numbers are integers of the form $E_n = p_n\# +1$.
 \end{definition}
 
 All Euclid numbers are not primes - $E_6$ is not a prime!
@@ -349,7 +349,7 @@ All Euclid numbers are not primes - $E_6$ is not a prime!
 \end{theorem}
 
 \begin{proof}
-  Since $n$ is composite, there exists integers $k,l \in (1,n)$   such that 
+  Since $n$ is composite, there exists integers $k,l \in (1,n)$   such that
   \[n = kl\]
   If $k > \sqrt{n}$ and $l > \sqrt{n}$ then $kl > n$, which is false. So, one of them must be less than or equal to $\sqrt{n}$.
 \end{proof}
@@ -359,7 +359,7 @@ So, if $n > 1$ has no prime factors $\leq \lfloor \sqrt{n} \rfloor$, then $n$ is
 It is faster to do this using the Sieve of Eratosthenes. Using this, we can test primality of the first $n$ integers in $O(n \log{\log{n}})$ instead of $O(n\sqrt{n})$. This is a pretty well known algorithm so it's left to the reader to see it on cp-algorithms.
 
 \begin{theorem}
-  There is no non-constant polynomial $f(x)$ with integer coefficients such that $f(n)$ is prime for all integer $n$.  
+  There is no non-constant polynomial $f(x)$ with integer coefficients such that $f(n)$ is prime for all integer $n$.
 \end{theorem}
 
 \begin{proof}
@@ -390,7 +390,7 @@ This essentially states that $\pi (x) \sim \frac{x}{\log{x}}$. The proof is too 
 The following lemma states that we can find a gap between primes of any arbitrary length.
 
 \begin{lemma}
-  For every $n \in \N$, there are $n$ consecutive integers that are all composite.  
+  For every $n \in \N$, there are $n$ consecutive integers that are all composite.
 \end{lemma}
 
 \begin{proof}
@@ -400,13 +400,13 @@ The following lemma states that we can find a gap between primes of any arbitrar
 \end{proof}
 
 \begin{definition}
-  A pair $(p,q)$ of primes with $p < q$ is called a twin prime pair if $q-p = 2$.  
+  A pair $(p,q)$ of primes with $p < q$ is called a twin prime pair if $q-p = 2$.
 \end{definition}
 
 It is unknown how many twin primes exist. It is conjectured that there are infinitely many twin primes, but this has not yet been proved.
 
 \begin{theorem}[Bertrand's Postulate]
-  For every integer $n \geq 2$, there is always at least one prime between $n$ and $2n$.  
+  For every integer $n \geq 2$, there is always at least one prime between $n$ and $2n$.
 \end{theorem}
 
 This was verified by Bertrand but proved by Chebyshev. It is sometimes called Chebyshev's theorem. The proof of this result goes beyond the scope of this course.
@@ -452,7 +452,7 @@ This was verified by Bertrand but proved by Chebyshev. It is sometimes called Ch
 \end{definition}
 
 \begin{lemma}[Recursive definition]
-  \[f_n = f_{n-1}^2 - 2f_{n-1} + 2\]  
+  \[f_n = f_{n-1}^2 - 2f_{n-1} + 2\]
 \end{lemma}
 
 This result is obvious from expanding the RHS, so the proof is not given here.
@@ -464,14 +464,14 @@ This result is obvious from expanding the RHS, so the proof is not given here.
   Let $P(n)$ be the statement that $f_n$ ends in 7. This is true for our base case $P(2)$. Let us assume that $P(k-1)$ is true, i.e. $f_k \mod 10 = 7$. So, by the recursive definition:
   \begin{align*}
     f_k &= f_{k-1}^2 - 2f_{k-1} + 2 \mod 10 \\
-        &= 7^2 - 2* 7 + 2 \mod 10 \\ 
+        &= 7^2 - 2* 7 + 2 \mod 10 \\
         &= 7 \mod 10
   \end{align*}
   So, by PMI, $P(n)$ is true for all $n \geq 2$.
 \end{solution}
 
 \begin{lemma}[Duncan's Identity]
-  \[f_0f_1...f_{n-1} = f_n - 2\]  
+  \[f_0f_1...f_{n-1} = f_n - 2\]
 \end{lemma}
 \begin{proof}
   Let $P(n)$ be the statement that this is true for $f_n$. This is clearly true for the base case $P(1)$. Let us assume $P(k)$ is true, i.e.
@@ -484,7 +484,7 @@ This result is obvious from expanding the RHS, so the proof is not given here.
   Every prime factor of $f_n$, $n \geq 2$, is of the form $k \cdot 2^{n+2} + 1$.
 \end{theorem}
 \begin{proof}
-  To be discussed later in the course.  
+  To be discussed later in the course.
 \end{proof}
 
 This theorem can be helpful to quickly find the primality of $f_n$. For instance, $f_4$ is prime - we can see this by checking all the numbers of the form $2^6 k+1$ which are less than $\sqrt{f_4}$. This cuts down the search space and makes primality checking faster.
@@ -514,14 +514,14 @@ The proofs of lemmas 3.11 and 3.12 come directly from induction, so I am not dis
   This is a non-trivial case of induction. Let us fix $m \in \N$, and do induction on $n$. For $n=1$, the RHS is:
   \[F_{m-1}F_1 + F_m F_2 = F_{m-1} + F_m = F_{m+1}\]
   This is also true for $n=2$.
-  Assume that the result is true for $k=3,4,...,n$. We want to show that the result is true for $k=n+1$. For $k=n-1$, 
+  Assume that the result is true for $k=3,4,...,n$. We want to show that the result is true for $k=n+1$. For $k=n-1$,
   \[F_{m+n-1} = F_{m-1}F_{n-1} + F_{m}F_n\]
   For $k=n$,
   \[F_{m+n} = F_{m-1}F_n + F_{m}F_{n+1}\]
   Add both sides, we get:
   \[F_{m+n-1} + F_{m+n} = F_{m+n+1} = F_{m-1}F_{n+1} + F_{m}F_{n+2}\]
   Hence Proved.
-\end{proof} 
+\end{proof}
 \section{Lucas Numbers}
 
 \begin{definition}
@@ -536,7 +536,7 @@ The proofs of lemmas 3.11 and 3.12 come directly from induction, so I am not dis
   \[L_n = \alpha^n + \beta^n\]
 \end{theorem}
 \begin{proof}
- TODO  
+ TODO
 \end{proof}
 
 \chapter{Greatest Common Divisor and Least Common Multiple}
@@ -559,7 +559,7 @@ The GCD of two non-zero numbers always exists and is unique. Observe that $(a,b)
 \end{definition}
 
 \begin{exercise}
-  Prove that $(F_n,F_{n+1}) = 1$ for $n \geq 1$.  
+  Prove that $(F_n,F_{n+1}) = 1$ for $n \geq 1$.
 \end{exercise}
 \begin{solution}
   From Cassini's formula, we know that:
@@ -598,7 +598,7 @@ The GCD of two non-zero numbers always exists and is unique. Observe that $(a,b)
 \end{solution}
 
 \begin{exercise}
-  Let $a,b,c \in \N$. Prove that $(ac,bc) = c(a,b)$.  
+  Let $a,b,c \in \N$. Prove that $(ac,bc) = c(a,b)$.
 \end{exercise}
 \begin{solution}
   Let $d = (a,b)$. Then $d|a$ and $d|b$, so $d|ca$ and $d|cb$.  There exist integers $x,y$ such that:
@@ -609,11 +609,11 @@ The GCD of two non-zero numbers always exists and is unique. Observe that $(a,b)
 \end{solution}
 
 \begin{theorem}
-  Let $a,v \in \Z$, not both zero. Then $(a,b) = 1$ if and only if there exist integers $x_0,y_0$ such that $ax_0 + by_0 = 1$.  
+  Let $a,v \in \Z$, not both zero. Then $(a,b) = 1$ if and only if there exist integers $x_0,y_0$ such that $ax_0 + by_0 = 1$.
 \end{theorem}
 \begin{proof}
   If $(a,b) = 1$, there must exist $x_0,y_0$ such that $ax_0+by_0$ = 1, from Theorem 4.1.
-  Conversely, suppose there exists $x_0,y_0 \in \Z$, such that 
+  Conversely, suppose there exists $x_0,y_0 \in \Z$, such that
   \[ax_0 + by_0 = 1\]
   Let $d = (a,b)$. Then $d|ax_0+by_0$, which means that $d|1|$. Since $d \in \N$, $d=1$.
 \end{proof}
@@ -623,12 +623,12 @@ The GCD of two non-zero numbers always exists and is unique. Observe that $(a,b)
 \end{corollary}
 
 \begin{corollary}
-  If $(a,b) = 1$, and $a$ and $b$ both divide $c$, then $ab|c$.  
+  If $(a,b) = 1$, and $a$ and $b$ both divide $c$, then $ab|c$.
 \end{corollary}
 
 % I know, it's called a lemma and now we are calling it a theorem!
 \begin{theorem}[Euclid's Lemma]
-  If $a|bc$ and $(a,b) = 1$, then $a|c$.  
+  If $a|bc$ and $(a,b) = 1$, then $a|c$.
 \end{theorem}
 \begin{proof}
   \[ax+by = 1\]
@@ -643,12 +643,12 @@ The GCD of two non-zero numbers always exists and is unique. Observe that $(a,b)
   We know that:
   \[F_n = F_{n-m}F_{m-1} + F_{n-m+1}F_m\]
   Since $F_m|F_n$ and $F_m|F_{n-m+1}F_m$, we get $F_m|F_n-F_{n-m+1}F_m$ and hence $F_m|F_{n-m}F_{m-1}$. But, we also know that $(F_m,F_{m-1}) = 1$. By Euclid's Lemma, $F_m|F_{n-m}$.
-  
+
   From the division algorithm, let $n = mq+r$. Suppose $r > 0$. From our previous result, $F_m|F_{n-m}$, so $F_m|F_{n-2m}...F_m|F_r$. This means that $F_m \leq F_r$. But $r < m$, so $F_r < F_m$. This is a contradiction. So $r = 0$. Hence proved.
 \end{proof}
 
 \begin{definition}
-  Let $n \geq 2$ and let $a_1,...a_n \in \Z$, not all zero. The GCD of $a_1,...,a_n$ is the largest positive integer that divides each $a_i$. This is denoted by $a_1,...,a_n$.  
+  Let $n \geq 2$ and let $a_1,...a_n \in \Z$, not all zero. The GCD of $a_1,...,a_n$ is the largest positive integer that divides each $a_i$. This is denoted by $a_1,...,a_n$.
 \end{definition}
 
 This has the following properties:
@@ -668,17 +668,17 @@ We are given $a,b \in \Z$, not both zero, and want to compute $(a,b)$. The algor
   \item If $a$ or $b$ are negative, replace with their absolute value.
     \item If $a > b$, then swap $a$ and $b$.
     \item If $a = 0$, then $(a,b) = b$.
-    \item If $a >0$, write $b = aq+r$. Then, 
+    \item If $a >0$, write $b = aq+r$. Then,
       \[(a,b) = (r,a)\]
       Go to step 3 with $a = r$ and $b=a$ respectively.
 \end{enumerate}
 
-This is called the Euclidean Algorithm. 
+This is called the Euclidean Algorithm.
 
 To express $(a,b)$ as a linear combination of $a$ and $b$ where $0 \leq a \leq b$, we create a table with four columns with headings $x,y,r,q$. We denote the rows as $R_{-1}, R_0, R_1, ... R_{i-1}$ and the entries in $R_i$ as $x_i,y_i,r_i,q_i$. Suppose we have filled $R_{i-1}$ for some $i \geq 1$. To fill $R_i$, we first compute $q_i$, which is the quotient obtained on dividing $r_{i-2}$ by $r_{i-1}$. Next, $R_i = R_{i-2} - q_iR_{i-1}$. This is known as the Extended Euclidean Algorithm.
 
 \begin{theorem}[Lame's theorem]
-  Let $b \geq a \geq 2$. The number of divisions required to compute $(a,b)$ by the Euclidean algorithm is at most 5 times the number of decimal digits in $a$.  
+  Let $b \geq a \geq 2$. The number of divisions required to compute $(a,b)$ by the Euclidean algorithm is at most 5 times the number of decimal digits in $a$.
 \end{theorem}
 
 \begin{proof}
@@ -689,7 +689,7 @@ To express $(a,b)$ as a linear combination of $a$ and $b$ where $0 \leq a \leq b
   \[r_{n-1} = r_n \cdot q_n + 0\]
 
   We can prove that $q_i \geq 1$ for $1 \leq i \leq n-1$ and $q_n \geq 2$. This is because if $q_n$ is 1, then $r_{n-1} = r_n$, which is a contradiction. If $q_i = 0$, then $r_{i-1} = r_{i+1}$, which is also a contradiction.
-  We claim that $r_{n-i} \geq F_{i+2}$ for $1 \leq i \leq n-1$. This is true for the base case, where $r_{n-1} \geq F_3 = 2$. 
+  We claim that $r_{n-i} \geq F_{i+2}$ for $1 \leq i \leq n-1$. This is true for the base case, where $r_{n-1} \geq F_3 = 2$.
   \begin{align*}
     r_{n-j} &= r_{n-(j-1)}q_{n-(j-1)} + r_{n-(j-2)}\\
             &\geq r_{n-(j-1)} + r_{n-(j-2)}\\
@@ -703,7 +703,7 @@ To express $(a,b)$ as a linear combination of $a$ and $b$ where $0 \leq a \leq b
   \[(a^n-1,a^m-1) = a^{(n,m)}-1\]
 \end{exercise}
 \begin{solution}
-  Let $f_n = a^n-1$. Our goal is to prove that $(f_n,f_m) = f_{(n,m)}$. 
+  Let $f_n = a^n-1$. Our goal is to prove that $(f_n,f_m) = f_{(n,m)}$.
   \begin{align*}
     f_n &= a^n-1 \\
         &= a^{n-m}(a^m-1) + a^{n-m} - 1 \\
@@ -715,7 +715,7 @@ To express $(a,b)$ as a linear combination of $a$ and $b$ where $0 \leq a \leq b
 \section{Least Common Multiple}
 
 \begin{definition}
-  Let $a,b \in \N$. We say that a positive integer $l$ is the least common multiple of $a$ and $b$ if 
+  Let $a,b \in \N$. We say that a positive integer $l$ is the least common multiple of $a$ and $b$ if
   \begin{itemize}
     \item $a$ and $b$ both divide $l$
     \item $c$ is a positive integer divisible by both $a$ and $b$, then $l \leq c$.
@@ -727,7 +727,7 @@ To express $(a,b)$ as a linear combination of $a$ and $b$ where $0 \leq a \leq b
   Prove that $(a,b)[a,b] = ab$.
 \end{exercise}
 \begin{solution}
-  Let $d = (a,b)$ and let $k = ab/d$. Obviously, $k \in \N$. We have to show that $k = [a,b]$. We first prove that $a$ and $b$ both divide $k$. Write 
+  Let $d = (a,b)$ and let $k = ab/d$. Obviously, $k \in \N$. We have to show that $k = [a,b]$. We first prove that $a$ and $b$ both divide $k$. Write
   \[a = da_1,b=db_1,a_1,b_1 \in \Z\]
   Then,
   $k = \frac{ab}{d} = ab_1 = ba_1$.
@@ -736,7 +736,7 @@ To express $(a,b)$ as a linear combination of $a$ and $b$ where $0 \leq a \leq b
   \[c = aa', c = bb', a',b' \in \Z\]
   Since $d = (a,b)$, there exists integers $x$ and $y$ such that:
   \[d = ax+by\]
-  Then 
+  Then
   \[\frac{c}{k} = \frac{cd}{ab} = \frac{c(ax+by)}{ab} = \frac{c}{b}x + \frac{c}{a}y = b'x+a'y \in \Z\]
   Hence $k$ divides $c$. Since $c \neq 0$, this implies $k \leq c$. Therefore, by definition, $k = [a,b]$ and $(a,b)[a,b] = ab$.
 \end{solution}
@@ -752,7 +752,7 @@ To express $(a,b)$ as a linear combination of $a$ and $b$ where $0 \leq a \leq b
   Let $P(n)$ be the statement that $n$ can be written as a product of primes. $P(2)$ is true, since it is a prime. Let $k \geq 2$ and $P(2), \cdots , P(k)$ is true.
   If $k+1$ is prime, then $P(k+1)$ is immediately true. If it is composite, then $k+1$ is of the form $a \cdot b$ where $2 \leq a,b \geq k$. By induction hypothesis, since $P(a)$ and $P(b)$ is true, $P(k+1)$ is also true.
 
-  Suppose that 
+  Suppose that
   \[n = p_1p_2..p_r = q_1...q_s\]
   Assume $r \leq s$. Since if $p_1|q_1...q_s$, $p_1 = q_i$ for some $i, 1 \leq i \leq s$. We can cancel this out and keep doing this till we get
   \[1 = q_{i_1}q_{i_2}q_{i_{s-r}}\]
@@ -783,7 +783,7 @@ where $d = (a,b)$ and $n \in \Z$. The initial solution $x_0,y_0$ can be found us
   \[x=-F_{k-1}c + F_kn, y = F_kc - F_{k+1}n\]
 \end{theorem}
 \begin{proof}
-  $(F_k,F_{k+1}) = 1$, so the solution always exists. 
+  $(F_k,F_{k+1}) = 1$, so the solution always exists.
   If $k$ is even, then:
   \[x_0 = F_{k-1}c, y_0 = -F_kc\]
   always solves it (prove it via Cassini's Formula). If $k$ is odd, then:
@@ -820,7 +820,7 @@ where $d = (a,b)$ and $n \in \Z$. The initial solution $x_0,y_0$ can be found us
 \end{solution}
 
 \begin{exercise}
-  Suppose we have a coin system. Let's say we use 4 rupee and 9 rupee coins only. Then which amounts can be exchanged? For instance, 1 rupee cannot be exchanged; 17 rupees can be exchanged. 
+  Suppose we have a coin system. Let's say we use 4 rupee and 9 rupee coins only. Then which amounts can be exchanged? For instance, 1 rupee cannot be exchanged; 17 rupees can be exchanged.
 \end{exercise}
 \begin{solution}
   This problem can be expressed as - what numbers can be expressed as a linear combination of 4 and 9 with positive coefficients.
@@ -834,7 +834,7 @@ where $d = (a,b)$ and $n \in \Z$. The initial solution $x_0,y_0$ can be found us
 \section{Introduction}
 
 \begin{definition}
-  Let $m \in \N$. Two integers $a,b$ are said to be congruent modulo $m$ if $m|a-b$. This is denoted by $a \equiv b \mod m$  
+  Let $m \in \N$. Two integers $a,b$ are said to be congruent modulo $m$ if $m|a-b$. This is denoted by $a \equiv b \mod m$
 \end{definition}
 
 Congruence has the following properties:
@@ -848,7 +848,7 @@ Congruence has the following properties:
 As such, it is an equivalence relation. The set of all integers congruent to $a$ modulo $m$ is denoted by $[a]$, and is called the congruence class of $a \mod m$
 
 \begin{lemma}
-  Two integers are congruent modulo $m$ if and only if $a,b$ have the same remainder upon division by $m$ 
+  Two integers are congruent modulo $m$ if and only if $a,b$ have the same remainder upon division by $m$
 \end{lemma}
 \begin{proof}
 Suppose $a$ and $b$ have the same remainder upon division by $m$. Then:
@@ -876,13 +876,13 @@ So, every integer $a$ is congruent to it's remainder $r$ modulo $m$. We call $r$
 \end{lemma}
 
 \begin{exercise}
-  Find the remainder when $1!+2!+...+100!$ is divided by 15. 
+  Find the remainder when $1!+2!+...+100!$ is divided by 15.
 \end{exercise}
 \begin{solution}
-  If $n \geq 5$, then $n!$ is divisible by 15. So, $n! \equiv 0 \mod 15$. Hence, this sum modulo 15 is equivalent to $1!+2!+3!+4!$ modulo 15. So, the remainder is 3. 
+  If $n \geq 5$, then $n!$ is divisible by 15. So, $n! \equiv 0 \mod 15$. Hence, this sum modulo 15 is equivalent to $1!+2!+3!+4!$ modulo 15. So, the remainder is 3.
 \end{solution}
 \begin{exercise}
-  Find the positive integers $n$ for which $\sum_{k=1}^n k!$ is a square.  
+  Find the positive integers $n$ for which $\sum_{k=1}^n k!$ is a square.
 \end{exercise}
 \begin{solution}
   If $k \geq 5$, then $k! \equiv 0 \mod 10$. So,
@@ -891,11 +891,11 @@ So, every integer $a$ is congruent to it's remainder $r$ modulo $m$. We call $r$
 \end{solution}
 
 \begin{definition}
-  A set $a_1,...,a_m$ is said to be a compete set of residues modulo $m$ if every integer is congruent to modulo $m$ to exactly one of them. 
+  A set $a_1,...,a_m$ is said to be a compete set of residues modulo $m$ if every integer is congruent modulo $m$ to exactly one of them.
 \end{definition}
 
 \begin{remark}
-  A set of $m$ integers form a complete set of residues modulo $m$ if and only if no two of the integers are congruent modulo $m$. 
+  A set of $m$ integers form a complete set of residues modulo $m$ if and only if no two of the integers are congruent modulo $m$.
 \end{remark}
 
 \begin{exercise}
@@ -926,7 +926,7 @@ So, every integer $a$ is congruent to it's remainder $r$ modulo $m$. We call $r$
   From the fundamental theorem of arithmetic, we know that:
   \[5^{z_1} + 3^{x_1} = 2^s, s \geq 0\]
   \[5^{z_1} - 3^{x_1} = 2^t, t \geq 0\]
-  From this set of equations, 
+  From this set of equations,
   \[5^{z_1} = \frac{2^t+2^s}{2} = 2^{t-1}(2^{s-t}+1)\]
   Since the LHS is odd, $t = 1$. So,
   \[5^{z_1} = 2^{s-1}+1 \text{ and } 3^{x_1} = 2^{s-1}-1\]
@@ -942,6 +942,15 @@ So, every integer $a$ is congruent to it's remainder $r$ modulo $m$. We call $r$
   \[3^2+4^y = 5^2\]
   \[4^y = 5^2 - 3^2 = 16\]
   Hence, the only positive integers satisfying the equation are $x=y=z=2$.
+\end{solution}
+
+\begin{exercise}
+  Show that $x^2 + 2y^2 = 8z + 5$ has no integral solution.
+\end{exercise}
+\begin{solution}
+  This equation is solvable if and only if there $\exists x,y$ such that
+  \[x^2 + 2y^ \equiv 5 \mod 8\]
+  If $a$ is an integer, we can show that $a^2 \equiv 0,1,4 \mod 8$. So if $x$ and $y$ are integers, $x^2$ is equivalent to $0,1,4$, and $2y^2$ is equivalent to $0,2$. The sum cannot be equivalent to 5. Hence, no integral solution exists.
 \end{solution}
 
 \section{Square and Multiply Algorithm}
@@ -978,13 +987,12 @@ Let $a,l,m$ be integers $\geq 2$. We want to compute $a^l \mod m$. To do this, w
   then $a \equiv b \mod [m_1,m_2,\cdots,m_k]$
 \end{theorem}
 
-
 \section{Linear Congruences}
 
 Let $a,b,m \in \Z, m \geq 2$. Then $ax \equiv b \mod m$ is called a linear congruence. Our goal is to find possible $x$ that satisfy the given congruence.
 
 \begin{theorem}
-  Let $a,b,m \in Z$ and $d = (a,m)$. The linear congruence $ax \equiv b \mod m$ has a solution of and only if $d | b$. If $d | b$, then there are $d$ mutually incongruent solutions modulo $m$.
+  Let $a,b,m \in Z$ and $d = (a,m)$. The linear congruence $ax \equiv b \mod m$ has a solution if and only if $d | b$. If $d | b$, then there are $d$ mutually incongruent solutions modulo $m$.
 \end{theorem}
 \begin{proof}
   The linear congruence $ax \equiv b \mod m$ can be expressed as a linear Diophantine equation:
@@ -998,7 +1006,7 @@ Let $a,b,m \in \Z, m \geq 2$. Then $ax \equiv b \mod m$ is called a linear congr
 \[x_0, x_0 + \frac{m}{d}, x_0 + 2\frac{m}{d},...,x_0 + d\frac{m}{d},...\]
 Here we can see that after that last term, all the solutions will be congruent to one of the first $d$ terms. Hence, if the first $d$ solutions are incongruent, we will have proved our theorem.
 
-Assume 
+Assume
 \begin{alignat*}{3}
   &x_0 + \frac{m}{d}n_1 &&\equiv x_0 + \frac{m}{d} n_2 &&\mod m \\
   &\frac{m}{d}n_1 &&\equiv \frac{m}{d}n_2 &&\mod m \\
