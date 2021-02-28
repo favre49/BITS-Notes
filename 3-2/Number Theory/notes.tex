@@ -650,13 +650,13 @@ The GCD of two non-zero numbers always exists and is unique. Observe that $(a,b)
 \begin{exercise}
   Let $m, n \in \N, m > 2$. If $F_m|F_n$, prove that $m|n$.
 \end{exercise}
-\begin{proof}
+\begin{solution}
   We know that:
   \[F_n = F_{n-m}F_{m-1} + F_{n-m+1}F_m\]
   Since $F_m|F_n$ and $F_m|F_{n-m+1}F_m$, we get $F_m|F_n-F_{n-m+1}F_m$ and hence $F_m|F_{n-m}F_{m-1}$. But, we also know that $(F_m,F_{m-1}) = 1$. By Euclid's Lemma, $F_m|F_{n-m}$.
 
   From the division algorithm, let $n = mq+r$. Suppose $r > 0$. From our previous result, $F_m|F_{n-m}$, so $F_m|F_{n-2m}...F_m|F_r$. This means that $F_m \leq F_r$. But $r < m$, so $F_r < F_m$. This is a contradiction. So $r = 0$. Hence proved.
-\end{proof}
+\end{solution}
 
 \begin{definition}
   Let $n \geq 2$ and let $a_1,...a_n \in \Z$, not all zero. The GCD of $a_1,...,a_n$ is the largest positive integer that divides each $a_i$. This is denoted by $a_1,...,a_n$.
@@ -835,9 +835,12 @@ where $d = (a,b)$ and $n \in \Z$. The initial solution $x_0,y_0$ can be found us
 \end{exercise}
 \begin{solution}
   This problem can be expressed as - what numbers can be expressed as a linear combination of 4 and 9 with positive coefficients.
-  In fact, only finitely many integers cannot be exchanged. Generally, if $a,b \in \N$ with $(a,b) = 1$, then the largest integer which cannot be represented as $ax+by$ with $x,y \in \Z, y,y \geq 0$ is $ab-a-b$.
 
-  TODO complete proof
+  In fact, only finitely many integers cannot be exchanged. Generally, if $p,q \in \N$ with $(p,q) = 1$, then the largest integer which cannot be represented as $ap+bq$ with $a,b \in \Z, a,b \geq 0$ is $pq-p-q$.
+
+  Let $x = ap+bq$. Since $(p,q) = 1$, each multiple of $q$ leaves a different remainder when divided by $p$ which does not change when one adds multiples of $p$ to it. This means that if $x$ leaves a remainder $r$ when divided by $q$, there has been some $ap$ that leaves the same remainder. The last remainder to be taken is $q$ with $p(q-1)$.
+
+  \textit{TO FIX}
 \end{solution}
 
 \chapter{Congruence}
