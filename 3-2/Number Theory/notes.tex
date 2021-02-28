@@ -334,6 +334,17 @@ The number 1 is neither prime nor composite.
   So, $P(k+1)$ is true. So, by PSI, the result has been proven.
 \end{solution}
 
+\begin{exercise}
+  Prove that there are infinitely many primes of the form $6n+5$.  
+\end{exercise}
+\begin{solution}
+  Suppose that there are finitely many primes of the form $6n+5$, called $p_1,\cdots pp_n$. Consider $q = 6p_1\cdots p_n+5$.
+
+  For our first case, consider that $q$ is a prime. This would mean there is a new prime of the form $6n+5$, which would be a contradiction.
+
+  Now consider that $q$ is a composite number. All odd primes besides 3 are of the form $6n+1$ or $6n+5$. We can prove (by checking) that the product of two numbers of the form $6n+1$ will only be of the form $6n+1$. Hence, at least one of the prime factors of $q$ must be of the form $6n+5$. However, the primes $p_i$ cannot divide $q$. Hence, this is a contradiction, since there must be a new prime.
+\end{solution}
+
 \begin{definition}
   The product of the first $n$ prime numbers is called the $n^{th}$ primorial and is denoted by $p_n\#$.
 \end{definition}
