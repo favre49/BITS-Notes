@@ -686,7 +686,7 @@ We are given $a,b \in \Z$, not both zero, and want to compute $(a,b)$. The algor
 
 This is called the Euclidean Algorithm.
 
-To express $(a,b)$ as a linear combination of $a$ and $b$ where $0 \leq a \leq b$, we create a table with four columns with headings $x,y,r,q$. We denote the rows as $R_{-1}, R_0, R_1, ... R_{i-1}$ and the entries in $R_i$ as $x_i,y_i,r_i,q_i$. Suppose we have filled $R_{i-1}$ for some $i \geq 1$. To fill $R_i$, we first compute $q_i$, which is the quotient obtained on dividing $r_{i-2}$ by $r_{i-1}$. Next, $R_i = R_{i-2} - q_iR_{i-1}$. This is known as the Extended Euclidean Algorithm.
+To express $(a,b)$ as a linear combination of $a$ and $b$ where $0 \leq a \leq b$, we create a table with four columns with headings $x,y,r,q$. We denote the rows as $R_{-1}, R_0, R_1, ... R_{i-1}$ and the entries in $R_i$ as $x_i,y_i,r_i,q_i$. $R_{-1} = (0,1,b,0)$ and $R_0 = (1,0,a,0)$. Suppose we have filled till $R_{i-1}$ for some $i \geq 1$. To fill $R_i$, we first compute $q_i$, which is the quotient obtained on dividing $r_{i-2}$ by $r_{i-1}$. Next, $R_i = R_{i-2} - q_iR_{i-1}$. We continue this until $r=0$. Then, the GCD is the value of $r$ in the row before, and the coefficients are the values of $x$ and $y$ in the row before. This is known as the Extended Euclidean Algorithm.
 
 \begin{theorem}[Lame's theorem]
   Let $b \geq a \geq 2$. The number of divisions required to compute $(a,b)$ by the Euclidean algorithm is at most 5 times the number of decimal digits in $a$.
