@@ -81,7 +81,7 @@ When using packet switching, there may be four sources of packet delay:
   \item \textbf{Nodal processing} : The node performs error checking and checks the header for the destination of the packet.
   \item \textbf{Queueing} : When the arrival rate of the packets is faster than the sending rate, the node will keep the packets in a buffer queue. As such, there is a delay when the packet wait in the node queue.
   \item \textbf{Propagation} : This is the delay from propagation of the packets from a node to the next node, i.e., the outgoing delay. This depends on the medium of the wire, and is given by $d/s$, where $d$ is the length of the connection and $s$ is the speed.
-  \item \textbf{Transmission} : This is the delay from transmission of packets into the node, i.e. the incoming delay.
+  \item \textbf{Transmission} : This is the delay from transmission of packets into the link. If the transmission rate is $R$, the delay for one packet of length $L$ will be $L/R$.
 \end{itemize}
 
 \section{Performance of a Network}
@@ -364,22 +364,57 @@ In a P2P system, peers can connect and disconnect without warning. Thus, when de
 
 \section{Socket Programming}
 
-To a kernel, a socket is an endpoint of communication. To an application, a socket is a file descriptor that lets the application read or write to and from the network.
+A socket is created whenever we desire communication between two applications running on different machines. In UNIX, this is merely another file descriptor.
 
-Sockets can be of two types depending on the transport service - UDP or TCP. UDP is unreliable, while TCP is reliable and byte-stream oriented. By reliable, it means that all the packets sent will be received, in the correct order. 
+To establish a connection, the client does the following:
 
-In UDP, there is no ``connection'' between client and server - there is no handshaking before sending data. The sender attaches the destination address and the port number to each packet, which the receiver extracts upon receiving. The transmitted data may be lost or received out of order.
+\begin{enumerate}
+  \item Create a socket
+  \item Connect the socket to the address of the server
+  \item Send/Receive data
+  \item Close the socket
+\end{enumerate}
 
-A socket structure looks like this:
+To establish a connection, the server does the following:
 
-\begin{lstlisting}[language=C]
-struct sockaddr {
-  unsigned short int sa_family; // Address family
-  unsigned in_addr sin_addr // Internet address
+\begin{enumerate}
+  \item Create a socket
+  \item Bind the socket to the port number known to all clients
+  \item Listen for the connection request
+  \item Accept the connection request
+  \item Send/receive data
+\end{enumerate}
+
+The socket address is stored in the following struct
+
+\begin{lstlisting}[language=c]
+  struct sockaddrs {
+    unsigned short sa_family; // address family, AF_xxx or PF_xxx
+    char sa_data[14]; // 14 bytes protocol address
+  };
+\end{lstlisting}
+
+AF stands for address family and PF stands for protocol family. For IPv4 internet protocols, we use AF_INET.
+
+There is also the following construct, that contains information about the address family, port number, internet address and the size of the struct sockaddr.
+
+\begin{lstlisting}[language=c]
+struct sockaddr_in{
+  short int sin_family; // Address family
+  unsigned short int sin_port // Port number
+  struct in_addr sin_addr; // Internet address
+  unsigned char sin_zero[8]; // same size as struct sockaddr
 }
 \end{lstlisting}
 
-TODO: complete this.
+Some systems are little endian, while others could be big endian. To communicate between these two systems, a standard has been defined for the data representation in the network called \textbf{Network Byte Order}, which is big endian. The system calls that help us convert a short/long from host byte order to NBO and vice versa are:
+
+\begin{itemize}
+  \item \texttt{htons()} : Host to Network short
+  \item \texttt{htonl()} : Host to Network long
+  \item \texttt{ntohs()} : Network to Host short
+  \item \texttt{ntohl()} : Network to Host long
+\end{itemize}
 
 \chapter{Transport Layer}
 
@@ -538,15 +573,27 @@ The important fields in a TCP segment are:
 Before exchanging data, the sender and receiver must do a handshake, agreeing on the parameters of the connection. One way to do this is a 2 way handshake - the sender ``asks'' for a connection with the receiver, and the receiver responds with a ``yes'' or ``no''. If it is a ``yes'', then we can establish it. However, this is not actually enough. Since the underlying channel is not reliable, the reply (yes or no) could be dropped, and the receiver is unsure if the sender has received the reply. Hence, a third segment is sent, confirming the receipt of the ``yes'' or ``no''. This is called 3-way handshaking. Formally, the steps are as follows:
 
 \begin{enumerate}
-  \item The client chooses an initial sequence number $x$ and sends a TCP SYN message. This message has it's SYN flag set to one. The segment has no application layer data - it is just used to establish a connection.
-  \item The server chooses an initial sequence number $y$ and sends a TCP SYNACK message. This has it's SYN and ACK flags set to 1. The acknowledge number will be equal to $x+1$, indicating the server expects to receive a sequence number $x+1$ next.
-  \item The client on receiving SYNACK believes the server is live. It now sends an ACK for the SYNACK, so the ACK bit is set to 1 and the acknowledgement number is $y+1$. This segment may contain application data. If it does, this is called \textbf{piggybacking}.
-  \item The server receives ACK and believes the client is live. The connection has been established.
+  \item The client chooses an initial sequence number $x$ and sends a TCP SYN message. This message has it's SYN flag set to one. The segment has no application layer data - it is just used to establish a connection. After doing this, the client enters the SYNSENT state.
+  \item On receiving the SYN message, the server enters the SYN RCVD state. The server chooses an initial sequence number $y$ and sends a TCP SYNACK message. This has it's SYN and ACK flags set to 1. The acknowledge number will be equal to $x+1$, indicating the server expects to receive a sequence number $x+1$ next.
+  \item The client on receiving SYNACK believes the server is live, and enters the ESTAB state. It now sends an ACK for the SYNACK, so the ACK bit is set to 1 and the acknowledgement number is $y+1$. This segment may contain application data. If it does, this is called \textbf{piggybacking}.
+  \item The server receives ACK and believes the client is live. The connection has been established, and the server also enters the ESTAB state.
 \end{enumerate}
 
 \subsection{Sending Data}
 
 When sending data from the client to the server, the client passes a stream of data through the socket, into the hands of the transport layer and the TCP protocol. TCP directs this data to the send buffer of the client, and when possible, will forward chunks of data from it to the network later. The maximum amount of data that can be placed in a segment is called the \textbf{maximum segment size} or MSS. This is decided by considering the length of the largest link-layer packet that can be sent, called the \textbf{maximum transmission unit} or MTU. The MSS is chosen such that the TCP segment and the TCP/IP header length will fit into a single link layer frame. This stream of data is received by the server in the receive buffer and duly processed. This process happens on both sides of the connection, since TCP is bidirectional.
+
+To prevent the sender from overflowing the receiver's buffer, TCP provides \textbf{flow control}. The sender maintains a variable called a \textbf{receive window}, used to give the sender an idea of how much free buffer space is available to the receiver. Let \texttt{LastByteRead} be the number of last byte in the data stream read from the buffer by the application process in B, and \texttt{LastByteRvcd} be the number of the last byte in the data stream that has arrived from the network and has been placed in the receive buffer at B. Since TCP must not overflow the allocated buffer, we must have:
+
+\texttt{LastByteRvcd - LastByteRead <= RcvBuffer}
+
+The receive window denoted by \textt{rwnd} is then the amount of spare room in the buffer, given by
+
+\texttt{rwnd = RcvBuffer - (LastByteRvcd - LastByteRead)}
+
+While the receiver B keeps track of \texttt{rwnd}, A keeps track of two variables - \texttt{LastByteSent} and \texttt{LastByteAcked}. \texttt{LastByteSent - LastByteAcked} is obviously the amount of unacknowledged data A has sent into the connection. A makes sure this amount is less than the value of \texttt{rwnd} to ensure that the receive buffer is not being overflowed.
+
+If \texttt{rwnd} is ever 0, A will keep sending segments with one data byte to B to check whether space has freed up in the receive buffer.
 
 \subsection{Closing The Connection}
 When closing the connection, the following steps are taken:
