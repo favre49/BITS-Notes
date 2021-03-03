@@ -23,6 +23,7 @@
 \newtheorem{theorem}{Theorem}[section] % Big result
 \newtheorem{corollary}{Corollary}[theorem] % Follows from a theorem
 \newtheorem{lemma}[theorem]{Lemma} % Minor result
+\newtheorem*{remark}{Remark}
 
 % New commands
 \newcommand{\R}{\mathbb{R}}
@@ -75,6 +76,8 @@ Another way is through \textbf{packet switching}, where data is sent over the ne
 
 Packet switching uses \textbf{store and forward}. The packets are stored at intermediate nodes before sending to the next node. The intermediate node checks for errors in the packets before transmitting, assuring the integrity of the packets.
 
+Unlike circuit switching, packet switching does not provide guarantees of the bandwidth remaining constant. This is because it does not have any reserved end-to-end resources for a ``call''.
+
 When using packet switching, there may be four sources of packet delay:
 
 \begin{itemize}
@@ -126,7 +129,7 @@ Each of these layers depend on the one below (lower number) and export their ser
 
 The end hosts implement all 7 layers of the model. Those which implement the first 3 layers are called \textbf{routers} or Layer 3 devices. Routers are used to connect two different networks. Those which implement the first 2 layers are called \textbf{switches} or Layer 2 devices. They connect devices within a network, i.e., in Local Area Networks.
 
-The Internet stack does not actually use all 7 layers - in fact it uses only 5. It removes the Presentation layer, which allows applications to interpret the meaning of data. It also removes the Session layer, which is used for synchronization, check pointing and recovery of data exchange. These functions are generally performed by the Application layer and/or the Transport layer. This Internet stack is known as \textbf{TCP/IP model}.
+The Internet stack does not actually use all 7 layers - in fact it uses only 5. It removes the Presentation layer, which allows applications to interpret the meaning of data. It also removes the Session layer, which is used for synchronization, check pointing and recovery of data exchange. These functions are generally performed by the Application layer. This Internet stack is known as \textbf{TCP/IP model}.
 
 In the context of the Internet, these layers perform the following functions:
 
@@ -364,7 +367,7 @@ In a P2P system, peers can connect and disconnect without warning. Thus, when de
 
 \section{Socket Programming}
 
-A socket is created whenever we desire communication between two applications running on different machines. In UNIX, this is merely another file descriptor.
+A socket is created whenever we desire communication between two applications running on different machines. In UNIX, this is merely another file descriptor. The socket is created with the \texttt{socket(domain, type, protocol)} system call. The domain contains the address family, the type specifies the semantics of communication, e.g. SOCK\_STREAM for stream sockets, SOCK\_DGRAM for datagram sockets, etc. The protocol specifies whether it is UDP (IPPROTO\_UDP) or TCP(IPPROTO\_TCP).
 
 To establish a connection, the client does the following:
 
@@ -379,7 +382,7 @@ To establish a connection, the server does the following:
 
 \begin{enumerate}
   \item Create a socket
-  \item Bind the socket to the port number known to all clients
+  \item Bind the socket to the port number known to all clients.
   \item Listen for the connection request
   \item Accept the connection request
   \item Send/receive data
@@ -507,6 +510,12 @@ Even in this case, we could have duplicate data packets, since the ACK could jus
 \[U = \frac{L/R}{RTT+L/R}\]
 This $U$, if calculated, is generally found to be dismal in the case of \texttt{rdt3.0}. Instead, we use a pipelined protocol.
 
+\begin{remark}
+  As an aside, we can also define the utilization as the fraction of the bandwidth being used. So if we take $T$ time to send $L$ bits, the amount of bandwidth being used is $L/T$. This is also called the effective bandwidth or the throughput. As such, we can define the utilization as:
+\[U = \frac{Throughput}{R}\]
+where $R$ is the total bandwidth of the connection.
+\end{remark}
+
 In a pipelined protocol, the sender may send multiple packets despite not having received the ACK. If one sends $n$ packets at once, we can increase the utilization by a factor of $n$. However, this comes with multiple consequences:
 
 \begin{itemize}
@@ -529,7 +538,7 @@ So, the window of permissible numbers transmitted but not yet acknowledged packe
 
 In the GBN protocol, an ACK for a packet with sequence number $n$ will be taken as cumulative acknowledgement, indicating that all packets with a sequence number up to and including $n$ have been correctly received at the receiver. Just like in \texttt{rdt3.0}, a timer is used to recover from lost data or acknowledgement protocols. If a timeout occurs, the sender resends all packets that have been previously sent but not acknowledged.
 
-In GBN, the receiver also discards out of order packets. This means that the receiver need not buffer out of order packets. The receiver hence maintains the sequence number of the next in order packet, called \texttt{expectedseqnum}. If an out of order packet is received, it is discarded.
+In GBN, the receiver also discards out of order packets. This means that the receiver need not buffer out of order packets. The receiver hence maintains the sequence number of the next in order packet, called \texttt{expectedseqnum}. If an out of order packet is received, it is discarded. This is equivalent to saying that GBN has a receiver's window of size 1.
 
 GBN has it's downsides:
 
@@ -538,7 +547,7 @@ GBN has it's downsides:
   \item A single packet error can cause retransmission of many packets
 \end{itemize}
 
-Selective Repeat avoids unnecessary retransmissions by having the sender retransmit only the packets that it suspects were received in error at the receiver. This means that the receiver must individually acknowledge the correctly received packets. Like in GBN, a window of size $N$ will limit the number of outstanding unacknowledged packets in the pipeline, but unlike GBN, the sender will have already received ACK for some of the packets in the window.
+Selective Repeat avoids unnecessary retransmissions by having the sender retransmit only the packets that it suspects were received in error at the receiver. This means that the receiver must individually acknowledge the correctly received packets. Like in GBN, a window of size $N$ will limit the number of outstanding unacknowledged packets in the pipeline, but unlike GBN, the sender will have already received ACK for some of the packets in the window. Of course, the window will not move past any unacknowledged packets until they have been acknowledged.
 
 The SR receiver will also ACK packets even if they are received out of order. Out of order packets are buffered until any missing packets are received, at which point they are delivered to the upper layer.
 
@@ -581,7 +590,7 @@ Before exchanging data, the sender and receiver must do a handshake, agreeing on
 
 \subsection{Sending Data}
 
-When sending data from the client to the server, the client passes a stream of data through the socket, into the hands of the transport layer and the TCP protocol. TCP directs this data to the send buffer of the client, and when possible, will forward chunks of data from it to the network later. The maximum amount of data that can be placed in a segment is called the \textbf{maximum segment size} or MSS. This is decided by considering the length of the largest link-layer packet that can be sent, called the \textbf{maximum transmission unit} or MTU. The MSS is chosen such that the TCP segment and the TCP/IP header length will fit into a single link layer frame. This stream of data is received by the server in the receive buffer and duly processed. This process happens on both sides of the connection, since TCP is bidirectional.
+When sending data from the client to the server, the client passes a stream of data through the socket, into the hands of the transport layer and the TCP protocol. TCP directs this data to the send buffer of the client, and when possible, will forward chunks of data from it to the network later. The maximum amount of data that can be placed in a segment is called the \textbf{maximum segment size} or MSS. This is decided by considering the length of the largest link-layer packet that can be sent, called the \textbf{maximum transmission unit} or MTU. The MSS is a multiple of 8 bytes chosen such that the TCP segment and the TCP/IP header length will fit into a single link layer frame. This stream of data is received by the server in the receive buffer and duly processed. This process happens on both sides of the connection, since TCP is bidirectional.
 
 To prevent the sender from overflowing the receiver's buffer, TCP provides \textbf{flow control}. The sender maintains a variable called a \textbf{receive window}, used to give the sender an idea of how much free buffer space is available to the receiver. Let \texttt{LastByteRead} be the number of last byte in the data stream read from the buffer by the application process in B, and \texttt{LastByteRvcd} be the number of the last byte in the data stream that has arrived from the network and has been placed in the receive buffer at B. Since TCP must not overflow the allocated buffer, we must have:
 
