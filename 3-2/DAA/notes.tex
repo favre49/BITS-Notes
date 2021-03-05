@@ -12,6 +12,7 @@
 \usepackage{parskip}
 \usepackage[justification=centering]{caption}
 \usepackage[ruled,vlined]{algorithm2e}
+\usepackage[hidelinks]{hyperref}
 
 % Formatting
 \renewcommand{\baselinestretch}{1.25}
@@ -22,6 +23,11 @@
 \newtheorem{theorem}{Theorem}[section] % Big result
 \newtheorem{corollary}{Corollary}[theorem] % Follows from a theorem
 \newtheorem{lemma}[theorem]{Lemma} % Minor result
+\newtheorem*{exercise}{Exercise}
+
+\newenvironment{solution}
+  {\renewcommand\qedsymbol{$\blacksquare$}\begin{proof}[Solution]}
+  {\end{proof}}
 
 % New commands
 \newcommand{\R}{\mathbb{R}}
@@ -83,6 +89,36 @@ Here, we redo DSA despite it being a prerequisite of the course. This recap has 
   \item Average case analysis of bucket sort
 \end{itemize}
 
+\section{Karatsuba Multiplication}
+
+Karatsuba multiplication is a divide and conquer method to speed up multiplication of large integers. Usually if multiplying two numbers $x$ and $y$ with $n$ digits each takes $O(n^2)$ time, but Karatsuba multiplication does it in $O(n^{1.59})$.
+
+Let us consider the strings in some base $B = 10$. Then, we can write
+\[x = x_1 B^m + x_0\]
+\[y = y_1 B^m + y_0 \]
+where $m = n/2$.
+The product will be given by:
+\[xy = z_2 B^{2m} + z_1 B^m + z_0\]
+where 
+\[z_2 = x_1y_1\]
+\[z_1 = x_1y_0 + x_0y_1\]
+\[z_0 = x_0y_0\]
+This seems to need 4 multiplications, but it can in fact be done only in 3, by observing that:
+\[z_1 = (x_1 + x_0)(y_1 + y_0) - z_2 - z_0\]
+
+So, we get the algorithm:
+
+\begin{algorithm}[H]
+  \SetAlgoLined
+  p = KMul(x_1+x_0,y_1+y_0) \\
+  x_1y_1 = KMul(x_1,y_1) \\ 
+  x_0y_0 = KMul(x_0,y_0) \\
+  \Return x_1y_1 \times 10^n + (p-x_1y_1 - x_0y_0)\times 10^{n/2} + x_0y_0
+  \caption{KMul(x,y)}
+\end{algorithm}
+
+The time complexitu of this is $T(n) = 3T(n/2) + cn$, which gives the aforementioned complexity.
+
 \section{Matrix Multiplication}
 
 Naive Matrix multiplication is $\Theta(N^3)$, since we can express the result $A \cdot B  = C$ as:
@@ -93,7 +129,7 @@ We can improve this using a divide-and-conquer approach with \textbf{Strassen's 
 
 \begin{enumerate}
   \item Divide the input matrices $A$ and $B$ and the output matrix $C$ into four $n/2 \times n/2$ submatrices. This takes $\Theta(1)$ time.
-  \item Create 10 matrices $S_1,S_2,...S_10$, each of which is of size $n/2 \times n/2$ and is the sum or difference of two matrices created in step 1.
+  \item Create 10 matrices $S_1,S_2,...S_{10}$, each of which is of size $n/2 \times n/2$ and is the sum or difference of two matrices created in step 1.
   \item Using these submatrices, we can recursively compute seven matrix products $P_1,P_2,...P_7$, each of which is $n/2$.
   \item Compute the desired submatrices $C_{11},C_{12},C_{21},C_{22}$ by adding and subtracting various combinations of the $P_i$ matrices. We can compute all four in $\Theta(N^2)$ time.
 \end{enumerate}
@@ -111,13 +147,13 @@ By master method, this is $T(n) = \Theta(n^{\log7})$
 
 Polynomials are functions of the form:
 
-\[f(x) = a_0 + a_1x + a_x^2 + ... a_{n-1}x^{n-1}\]
+\[f(x) = a_0 + a_1x + a_2x^2 + ... a_{n-1}x^{n-1}\]
 
 One way to express this is as a vector of coefficients  - this is called the \textbf{Coefficient form}. This form also allows us to evaluate $f(x)$ in $O(n)$ using Horner's rule, where we express the polynomial as:
 
 \[a_0 + x(a_1 + x(a_2 + ...x(a_n-1)...))\]
 
-Another way to express this is using the \textbf{point value form} , where we express it as $n$ point of the form $(x_i,f(x_i))$. This point value form uniquely identifies a polynomial. Generally this would take $\Theta(N^2)$ time , but with FFT we can do it in $O(N\log N)$.
+Another way to express this is using the \textbf{point value form} , where we express it as $n$ point of the form $(x_i,f(x_i))$. This point value form uniquely identifies a polynomial. Generally finding the point value form from a coefficient form would take $\Theta(N^2)$ time , but with FFT we can do it in $O(N\log N)$.
 
 The process of getting the coefficient form from the point value form is known as $\textbf{interpolation}$.  We can do this in $O(n^3)$ using Gaussian Elimination, or in $O(n^2)$ with Lagrange Interpolation.
 
@@ -138,6 +174,8 @@ From now on, $w_n^k$ will denote the $k^{th}$ solution of $x^n=1$, i.e. the $n^{
 \end{enumerate}
 
 We call the vector $y = (y_0,y_1,...y_{n-1})$ the \textbf{discrete Fourier Transform}  of the polynomial $A$ if $y_k = A(w_n^k)$.
+
+In our case of polynomial multiplication, we will pad the polynomials with zero to the closest power of 2, such that it is at least double the size, and then compute DFT with this new size. This will help us since we need $2n$ point values to find the coefficient form of the product.
 
 \subsubsection{Fast Fourier Transform}
 
@@ -161,18 +199,33 @@ It is easy to see that:
 
 These polynomials have only half as many coefficients as the polynomial $A$. So, if we can compute $DFT(A)$ from $DFT(A_1)$ and $DFT(A_0)$ in linear time, we would be able to do this in $O(n \log n)$ (direct from master method).
 
-We find that do this with the equations:
+We find that we can do this with the equations:
 
 \[y_k = y_k^0 + w_n^k y_k^1\]
 \[y_{k+n/2} = y_k^0 - w_n^k y_k^1\]
 
-Here, $k \in [0,n/2-1]$. The proof of this can be seen on cp-algorithms.
+Here, $k \in [0,n/2-1]$. The first equation is clear, and comes directly from the formula. The proof for the second is as follows:
+
+\begin{align*}
+  y_{k+n/2} &= A(w_n^{k+n/2}) \\
+            &= A_0(w_n^{2k+n}) + w_n^{k+n/2}A_1(w_n^{2k+n}) \\
+            &= A_0(w_n^{2k} w_{n}^n) + w_n^k w_n^{n/2} A_1(w_n^{2k} w_n^{n}) \\
+            &= A_0 (w_n^{2k}) - w_n^kA_1(w_n^{2k}) \\
+            &= y_k^0 - w_n^k y_k^1
+\end{align*}
 
 As such, we have found the DFT of the polynomial in $O(n \log n)$ time.
 
 After performing the pointwise multiplication of the DFT of our polynomials $A$ and $B$, we have to interpolate to find the coefficient form of our resulting polynomial $C$.
 
 \textit{TODO: Add interpolation with Vandermonde matrix, can be seen on cp-algorithms} 
+
+In short, the formula is:
+\[a_k = \frac{1}{n} \sum_{j=0}^{n-1} y_j w_n^{-kj}\]
+
+The coefficients can be found via the same divide and conquer algorithm as in the direct FFT, except we use $w_n^{-k}$ instead of $w_n^k$.
+
+I know I've done a poor job of explaining it, but I don't want to copy paste the entirety of the cp-algorithms post here. Check it out.
 
 \section{Greedy algorithms}
 
@@ -225,6 +278,11 @@ The algorithm for Huffman Coding creates this tree. Say we are given a set $C$ o
 
 If we use a heap, we can do this in $O(n \log n)$. It can actually be faster using van Emde Boas Tree, which would make it $O(n \log \log n)$
 
+In a Huffman coding, the average bit length is given by:
+\[\frac{\sum_{c \in A} |H_c| f_c}{\sum_{c \in S} f_c}\]
+
+where $A$ is the alphabet, $H_c$ is the Huffman code for $c$, and $f_c$ is the frequency of $c$.
+
 \section{Matroids}
 
 A \textbf{matroid}  is an ordered pair $M = (S,I)$ satisfying the following conditions:
@@ -234,6 +292,10 @@ A \textbf{matroid}  is an ordered pair $M = (S,I)$ satisfying the following cond
   \item $I$ is a non empty family of subsets of $S$ called the independent subsets of $S$, such that if $B \in I$ and $A \subseteq B$, then $A \in I$. This is the Hereditary Property.
   \item If $A \in I$, $B \in I$, and $|A| \leq |B|$ then there exists some element $x\in B-A$ such that $A \cup \{x\} \in I$. This is the exchange property.
 \end{itemize}
+
+In more simple terms, the matroid gives a classification of each subset of $S$ to be independent or dependent. The empty set is always independent and any subset of an independent set is independent. If an independent size $A$ has smaller size than $B$, then there exists some element in $B$ that can be added into $A$ without loss of independency.
+
+Given a matroid $M$, we call an element $x \notin A$ an \textbf{extension} of $A \in I$ if we can add $x$ to $A$ while preserving its independence, i.e. $A \cup \{x\} \in I$. 
 
 The graphic matroid $M_G = (S_G, I_G)$ is defined as follows:
 
@@ -250,16 +312,15 @@ The graphic matroid $M_G = (S_G, I_G)$ is defined as follows:
   All maximal independent subsets in a matroid have the same size.
 \end{theorem}
 
-Given a matroid $M$, we call an element $x \notin A$ an \textbf{extension} of $A \in I$ if we can add $x$ to $A$ while preserving its independence, i.e. $A \cup \{x\} \in I$. 
+This is obvious given that if a maximal independent subset had a smaller size, it could be extended using the exchange property.
 
-A matroid $M = (S,I)$ is said to be weighted if it is associated with weight function $w(x)$ for all $x \in S$. $w(A)$ is defined as :
+A matroid $M = (S,I)$ is said to be \textbf{weighted} if it is associated with a strictly positive weight function $w(x)$ for all $x \in S$. $w(A)$ is defined as :
 
 \[w(A) = \sum_{x \in A} w(x)\]
 
-The independent set with maximum $w(A)$ is called an optimal subset of a matroid. An optimal subset is always a maximal independent subset.
+The independent set with maximum $w(A)$ is called an \textbf{optimal subset} of a matroid. An optimal subset is always a maximal independent subset.
 
 Let us consider the Minimum Spanning Tree problem, where we seek the subset of edges that connects all the vertices together and has minimum total length. This is like finding the optimal subset of a weighted matroid $M_G$ where weight function $w'(e) = w_0 - w(e)$, where $w(e)$ is the weight of the edge and $w_0$ is some constant greater than all the weights. A greedy algorithm for a weighted matroid is:
-
 
 \begin{algorithm}[H]
   \SetAlgoLined
@@ -275,6 +336,8 @@ Let us consider the Minimum Spanning Tree problem, where we seek the subset of e
   \caption{Greedy(M,w)}
 \end{algorithm}
 
+Notice, that this is basically Kruskal's algorithm for finding a minimum spanning tree. In graph theory terms, we are sorting all the edges in increasing order of edge weight, and choosing these edges one by one as long as they do not form a cycle (not in the independent set). The check for cycle can be done with a disjoint set union, in this case.
+
 \begin{lemma}[Greedy Choice Property]
   Consider $M = (S,I)$ with weight function $w$. Let $S$ be sorted in decreasing order. Consider $x$, the first element of $S$ such that $\{x\} $ is independent. If this exists then there exists an optimal subset $A$ containing $x$.
 \end{lemma}
@@ -287,6 +350,8 @@ Let us consider the Minimum Spanning Tree problem, where we seek the subset of e
   Let $M = (S,I)$ be any matroid. If $x$ is an element of $S$ such that $x$ is not an extension of $\phi$, then $x$ is not an extension of any independent set $A$ of $S$. 
 \end{corollary}
 
+These lemmas tell us that at any point, choosing the minimum is optimal, as long as it does not create a cycle.
+
 \begin{lemma}[Optimal substructure property]
   Let $x$ be the first element of $S$ chosen by GREEDY for the weighted matroid $M = (S,I)$. We can reduce this problem to $M' = (S',I')$, such that:
   \begin{itemize}
@@ -295,10 +360,17 @@ Let us consider the Minimum Spanning Tree problem, where we seek the subset of e
   \end{itemize}
 \end{lemma}
 
+This lemma tells us that removing the edge $x$ with minimum edge weight yields a new matroid for us to continue our greedy choices on.
+
+From the above lemmas, we can be sure that our greedy solution is optimal.
 
 \section{0-1 Knapsack}
 
 No notes for this, it's too simple. $O(N*W)$ algorithm. For general information, there are lots of faster algorithms if you add some extra constraints.
+
+The transitions are:
+
+\[M(i,w) = \max\{M(i-1,w), M(i-1,w-w_i) + p_i\}\]
 
 \section{Travelling Salesman Problem}
 
@@ -314,7 +386,7 @@ From this, we can design the TSP algorithm:
 \begin{algorithm}[H]
   \SetAlgoLined
   \For{$i = 2$ to $n$} {
-    $g(i,\phi) = c_{j1}$
+    $g(i,\phi) = c_{i1}$
   }
   \For{$k = 1$ to $n-2$}{
     \For{$i=2$ to $n$} {
@@ -364,7 +436,7 @@ A more efficient approach to solve this is DP. Let us assume every matrix $A_i$ 
       $j=i+l-1$ \\
       $m[i][j] = \infty$ \\
       \For{k=i to j-1} {
-        $q = m[i][k] + m[k+1[j] + p_{i-1}p_kp_j$ \\
+        $q = m[i][k] + m[k+1][j] + p_{i-1}p_kp_j$ \\
         \If{$q < m[i][j]$}{
           $m[i][j] = q$ \\
           $s[i][j] = k$ 
@@ -375,11 +447,25 @@ A more efficient approach to solve this is DP. Let us assume every matrix $A_i$ 
   \caption{Matrix-Chain-Order(p)}
 \end{algorithm}
 
-This is a standard DP by length. The idea is, if we are given a range of matrices $[l .. r]$, the best parenthesization will always involve splitting the range into two parts - a prefix and a suffix, and multiplying it. So, for every range, we store the best achievable cost for every subrange of a length $l$, and to find the cost of a current subrange, try every prefix to find the minimum cost.
+This is a standard DP by length. First we realize that in any range $A_{i..j}$ we can split the range between $A_k$ and $A_{k+1}$, in such a way that the parenthesization of the prefix $A_{i..k}$ is optimal. This is because if there was a less costly way to parenthesize $A_{i..k}$, we could replace it with that and reduce the total cost. From this, we can split a range into two parts - a prefix and a suffix, and solve recursively on it. To combine two solutions, we would use the equation:
+\[m[i,j] = m[i,k] + m[k+1,j] + p_{i-1} p_k p_j\]
+By memoizing these values, we can generate this DP.
 
 \section{Longest Common Subsequence}
 
-This is also very common and standard, read GFG or something. Interesting fact is that the longest palindromic subsequence in a string is the LCS of the string and it's reverse.
+This is very common and standard, so I'm only writing the transitions here.
+
+\[
+  LCS(X_i,Y_j) = \begin{cases}
+    0 & \text{ if } i = 0 \text{ or } j = 0 \\
+    LCS(X_{i-1},Y_{j-1})+1 & x_i = y_j \\
+    \max \{LCS(X_i, Y_{j-1}), LCS(X_{i-1},Y_j)\} & x_i \neq y_j
+  \end{cases}
+\]
+
+This only gives lengths, but the exact LCS can be found by moving backwards on the DP table.
+
+Interesting fact is that the longest palindromic subsequence in a string is the LCS of the string and it's reverse.
 
 \section{Optimal Binary Search Trees}
 
@@ -391,9 +477,10 @@ Formally, we are given $n$ keys $K = k_1,k_2,...,k_n$ in sorted order and wish t
 
 The expected cost in a tree T is given by:
 
-\[E[T] = \sum_{i=1}^n (depth_{T}(k_i) + 1) \times p_i + \sum_{i=0}^n (depth_{T}(d_i) + 1)\times q_i \]
+\[E[T] = \sum_{i=1}^n (depth_{T}(k_i) + 1) \cdot p_i + \sum_{i=0}^n (depth_{T}(d_i) + 1)\cdot q_i \]
+\[E[T] = 1 + \sum_{i=1}^n depth_{T}(k_i) \cdot p_i + \sum_{i=0}^n depth_{T}(d_i) \cdot q_i \]
 
-Any non-leaf subtree of our BST must contain keys in a continuous range $k_i \cdots k_j$. Each subtree must be optimal. Let $e[i,j]$ be the expected cost for an optimal BST of keys $k_i,\cdots,k_j$, and let $w[i,j]$ be such that:
+Any non-leaf subtree of our BST must contain keys in a continuous range $k_i \cdots k_j$. Each subtree must be optimal, since if it were not, then we could replace it with the more optimal version and create a better tree. This creates our subproblems to divide into and DP on. Let $e[i,j]$ be the expected cost for an optimal BST of keys $k_i,\cdots,k_j$, and let $w[i,j]$ be such that:
 
 \[w[i,j] = \sum_{v=i}^j p_v + \sum_{v=i-1}^j q_v\]
 
@@ -403,7 +490,7 @@ Then if $k_r$ is root,
          &= e[i,r-1] + e[r+1,j] + w[i,j]
 \end{align*}
 
-Hence our goal becomes choosing $r$ such that it minimizes $e[i,j]$. This gives us the following algo
+Hence our goal becomes choosing $r$ such that it minimizes $e[i,j]$. This gives us the following algorithm
 
 \begin{algorithm}[H]
   \SetAlgoLined
@@ -429,12 +516,60 @@ Hence our goal becomes choosing $r$ such that it minimizes $e[i,j]$. This gives 
 
 \section{Flow Shop Scheduling}
 
-Consider $n$ jobs each having $m$ tasks $T_{1i}, T_{2i}, ... , T_{mi}$ for $1 \leq i \leq n$ where $T_{1i}$ can be executed on processor $p_i$ only. A processor cannot execute two tasks at a time, and $T_{2i}$ cannot be executed before $T_{1i}$.
+Consider $n$ jobs each having $m$ tasks $T_{1i}, T_{2i}, ... , T_{mi}$ for $1 \leq i \leq n$ where $T_{ji}$ can be executed on processor $p_j$ only. A processor cannot execute two tasks at a time, and $T_{2i}$ cannot be executed before $T_{1i}$.
 
-Say that according to a schedule $S$, we have a job finish at $f_i(S)$. Then the finish time of the schedule is:
+This is essentially a scheduling problem. As is common in scheduling, we have two variants - preemptive and non-preemptive.
+
+For a given schedule, $f_i(S)$ is the time taken to complete a job $i$. Then the finish time of a schedule $S$ is given by:
 \[F(S) = \max_{1 \leq i \leq n} f_i(S)\]
+Our goal is to get the optimal non-preemptive schedule, which would have minimum $F(S)$.
 
-Let us first solve for $m=2$. Let $a_i = t_{1i}$ and $b_i = t_{2i}$.
+This is difficult to solve for $m > 2$, so let us solve for $m=2$. Let us simplify the notation by using $a_i$ for $t_{1i}$ and $b_i$ for $t_{2i}$. This can be represented by the matrix
+
+\[\begin{bmatrix}
+  a_1 & a_2 & a_3 & a_4 & a_5 \\
+  b_1 & b_2 & b_3 & b_4 & b_5
+\end{bmatrix}\]
+
+When $m=2$, we find that there is nothing to gain by using different schedules for $A$ and $B$. This is because before executing $b_i$, we need to execute $a_i$. So, after finishing the first task for $A$, we would want to immediately start the task for $B$, otherwise we would be wasting time.
+
+Hence, we want a single optimal permutation. We find that in the optimal permutation, given the first job in the permutation, the remaining permutation is optimal. This is because if it were not, we could rearrange it to get the optimal permutation and only improve.
+
+Let $g(S,t)$ be the length of the optimal schedule for the subset of jobs $S$ under the assumption that the processor 2 is not available until time $t$. We want $g(\{1,2,3,\cdots, n\},0)$.
+\[g(\{1,2,3,\cdots,n\},0) = \min_{1 \leq i \leq n} \{a_i + g(\{1,2,3,\cdots,n\} - \{i\},b_i)\}\]
+
+Here, we assume that $g(\phi,t) = t$ and $a_i \neq 0$.
+
+Generalizing this,
+\[g(S,t) = \min_{i \in S} \{a_i + g(S-\{i\},b_i + \max\{t-a_i,0\})\}\]
+
+If $i$ and $j$ are the first two jobs of the schedule and $B$ is not available for time $t$,
+
+\begin{align*}
+  g(S,t) &= a_i + g(S- \{i\},b_i + \max \{t-a_i,0\}) \\
+         &= a_i + a_j + g(S-\{i,j\},b_j + \max \{b_i + \max\{t-a_i,0\}-a_j,0\}) \\
+\end{align*}
+Now, let
+\begin{align*}
+  t_{ij} &= b_j + \max \{b_i + \max \{t-a_i,0\} - a_j,0\} \\
+         &= b_j + b_i -a_j + \max \{ \max \{t-a_i,0\}, a_j - b_i \} \\ 
+         &= b_j + b_i - a_j + \max \{t-a_i,0,a_j-b_i\} \\
+         &= b_j + b_i - a_j - a_i + \max \{t,a_i,a_j+a_i -b_i\}
+\end{align*}
+
+From the above discussion,
+\[g(S,t) = a_i + a_j + g(S-\{i,j\},t_{ij})\]
+
+If $i$ and $j$ are interchanged, we get
+\[g'(S,t) = a_j + a_i + g(S-\{j,i\},t_{ji})\]
+
+Hence, we can see that
+\[g(S,t) < g'(S,t) \Leftrightarrow t_{ij} \leq t_{ji}\]
+
+This should hold for all $t$, so after some reduction, 
+\[\min\{a_i,b_i\} \geq \min \{a_j,b_j\}\]
+
+So, if $\min\{a_1,a_2,...,a_n,b_1,b_2,...,b_n\}$ is $a_i$, then $i$ should be the first job. If $\min\{a_1,a_2,...,a_n,b_1,b_2,...,b_n\} = b_j$ then $j$ should be the last job.
 
 \section{Flows}
 
@@ -506,5 +641,77 @@ The minimum cut of a network is the cut whose capacity is minimum across all cut
   \end{itemize}
 \end{theorem}
 
+
+\section{Problems}
+
+\begin{exercise}
+  Tile a $n \times n$ chessboard with one tile missing using L shaped triominoes, where $n$ is a power of 2.
+\end{exercise}
+\begin{solution}
+  This can be done using divide and conquer. In the case that $n = 2$, it is trivial to fill with the triomino.
+  In any other case, we can divide the chessboard into 4 equal subsquares. We then place a $L$ shaped tile such that it does not cover the subsquare containing the missing cell. Now the problem can be solved recursively, since each of the subsquares now have a missing square.
+\end{solution}
+
+\begin{exercise}
+  Solve the recurrence $T(n) = T(n/3) + T(2n/3) + 1$.
+\end{exercise}
+\begin{solution}
+  We guess that $T(n) = O(n)$ and substitute accordingly. $T(n) \leq cn-d$. Then:
+  \begin{align*}
+    T(n) & \leq c(\frac{n}{3}) - d + c(\frac{2n}{3})  - d + 1 \\ 
+         &\leq cn -2d + 1 \\
+         &\leq cn-d
+  \end{align*}
+  The above holds as long as $d \geq 1$.
+
+  As for the base case, if $T(1) = 1$, we can choose a suitably large value for $c$ and $d$ for it to be true.
+\end{solution}
+
+\begin{exercise}
+  Solve the recurrence $T(n) = T(n/3) + T(2n/3) + cn$
+\end{exercise}
+\begin{solution}
+  At each level, we can see that the sum of the ``work done''  is $cn$, up till some point. After that, since the right subtree would be doing more work, it would go deeper than the left subtree. 
+
+  First let us consider a lower bound. The lower bound on the height of the tree is obviously $\log_3n$, using the leftmost path. So, considering a full binary tree with that height,
+  \[T(n) \geq n \log_3n\]
+
+  Now to consider the deepest path, which would be $\log_{3/2}n$. This tells us that:
+  \[T(n) \leq n \log_{3/2}n\]
+
+  From this, we find that $T(n) = \Theta(n \log n)$.
+\end{solution}
+
+\begin{exercise}
+  How do you use Strassen's algorithm when $n$ is not a power of 2? 
+\end{exercise}
+\begin{solution}
+  You can pad the matrices $A$ and $B$ with 0 until it is a power of 2. This won't affect the complexity since $N > 2n$, where $N$ is the new dimension.
+\end{solution}
+
+\begin{exercise}
+  How quickly can you multiply a $kn \times n$ matrix by a $n \times kn$ matrix, using Strassen's algorithm? What if the input is reversed?  
+\end{exercise}
+\begin{solution}
+  If we consider the first case, we can see that the $kn \times n$ matrix is composed of $k$ $n \times n$ matrices. We can say the same for $n \times kn$. Therefore, we can write both matrices as $k \times 1$ and $1 \times k$, by assuming each $n \times n$ matrix as a single element. So the running time will be:
+  \[T(kn \times n, n \times kn) = k^2 T(n \times n, n \times n)\]
+Using Strassen's algorithm, 
+\[T(kn \times n, n \times kn) = k^2 n^{\log 7}\]
+
+In the second case, we find that using the same arguments and multiplying a $1 \times k$ and a $k \times 1$ matrix, we would also need to do $k$ multiplications and $k-1$ additions. Therefore,
+\[T(n \times kn, kn \times n) = kT(n \times n) + O(k)\]
+Which equals
+\[T(n \times kn) = k n^{\log 7}\]
+\end{solution}
+
+\begin{exercise}
+  What are the transitions for the Josephus problem? 
+\end{exercise}
+\begin{solution}
+  The transitions are:
+  \[J(n,k) = (J(n-1,k) + k - 1)\%n + 1\]
+  \[J(1,k) = 1\]
+  $J(n,k)$ is the number of the person who would survive if there were $n$ people and every $k^{th}$ person was killed.
+\end{solution}
 
 \end{document}
