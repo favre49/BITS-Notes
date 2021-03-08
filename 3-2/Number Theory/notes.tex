@@ -1048,4 +1048,56 @@ This means that two solutions will only be congruent if $n_1$ and $n_2$ are cong
 \[x_0,x_0 + \frac{m}{d}, x_0 + 2\frac{m}{d},..., x_0 + (d-1)\frac{m}{d}\]
 \end{proof}
 
+\section{System of Linear Congruences}
+
+Let $a_1,...,a_k \in Z$. Let $n_1,...,n_k$ be integers $\geq 2$. We want to find integers $x$ that satisfy the system of linear congruences
+\[x \equiv a_1 \mod n_1\]
+\[ \cdots \]
+\[x \equiv a_k \mod n_k\]
+
+\begin{theorem}[Chinese Remainder Theorem]
+  If $n_1,\cdots, n_k$ are pairwise coprime, then the system:
+  \[x \equiv a_1 \mod n_1\]
+  \[ \cdots \]
+  \[x \equiv a_k \mod n_k\]
+  has a unique solution modulo $n_1n_2 \cdots n_k$
+\end{theorem}
+\begin{proof}
+  Let $n = n_1n_2\cdots n_k$. For $i = 1,\cdots,k$ let $N_i = \frac{n}{n_i}$. Note that $(N_i,n_i) = 1$. Let the unique solution of the congruence
+  \[N_i x \equiv 1 \mod n_i\]
+  be $x_i$.
+
+  Let us prove that $x = a_1Nx_1 + \cdots + a_kN_k x_k$ satisfies the given system of congruences. First, let us prove that it satisfies the first congruence. Since $N_i \equiv 0 \mod n_1$ for $i = 2, \cdots, k$, we get:
+  \[x \equiv a_1 N_1 x_1 + 0 \mod n_1\]
+  We have already assumed that $N_1x_1 \equiv 1 \mod n_1$. So, 
+  \[x \equiv a_1 \mod n_1\]
+  Hence proved. The same argument can be made for all the congruences.
+
+  Now let us prove that the solution is unique. Suppose $x,y$ satisfy the system of congruences. Then
+  \[x \equiv a_1 \equiv y \mod n_1\]
+  \[\cdots\]
+  \[x \equiv a_1 \equiv y \mod n_k\]
+  \[x \equiv y \mod [n_1,n_2,...,n_k]\]
+  Since $(n_i,n_j) = 1$, $x \equiv y \mod n_1n_2...n_k$. Hence the solution is unique.
+\end{proof}
+
+\begin{exercise}
+  Solve the following system of congruences:
+  \[x \equiv 11 \mod 12\]
+  \[x \equiv 1 \mod 5\]
+  \[x \equiv 0 \mod 7\]
+\end{exercise}
+\begin{solution}
+  \[n = 12 \times 5 \times 7 = 420 \]
+  \[N_1 = \frac{n}{12} = 35\]
+  \[N_2 = 84\]
+  \[N_3 = 60\]
+  First, let us solve $N_1 x \equiv 1 \mod n_1$. Then,
+  \[35x \equiv 1 \mod 12\]
+  \[x \equiv -1 mod 12\]
+  Let $x_1 = -1$. The same way, we find $x_2 = -1$ and $x_3 = 0$. So,
+  \[x = 11 \times 35 \times (-1) + 1 \times 84 \times (-1) + 0\]
+  \[x \equiv 371 \mod 420\]
+\end{solution}
+
 \end{document}
