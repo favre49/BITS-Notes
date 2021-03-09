@@ -642,4 +642,24 @@ Let us see how the receiver generates ACKs depending on the situation:
 
 Since the sender will send a large number of segments at once, it will receive many duplicate ACKs. If the sender receives 3 or more duplicate ACKs, it takes this as indication that the segment following that has been lost. Then, it performs a \textbf{fast retransmit}, retransmitting the segment before the segment's timer expires. This way, we can quickly recover from lost segments.
 
+\subsection{Congestion Control}
+
+Congestion can be created when there are links of different bandwidths going in and out of a node. For instance, say a node is receiving two links of bandwidths 10 Mbps and 100 Mbps, but it has an outgoing link of bandwidth 1.5 Mbps.  This results in queueing, and packets could even be lost when the queue exceeds capacity. As such congestion is the result of sending too much data too fast for the node to handle.
+
+Let us consider a theoretical case. We have two senders and two receivers, using one router with infinite buffers. The output link capacity is $R$. Since the router has infinite buffers, there is no possibility of packet loss, since they can be queued indefinitely. The senders will also never need to retransmit due to timeout, since it would be queued in the router.
+
+Obviously, the outgoing throughput will increase along with the incoming throughput, until the incoming throughput is $R/2$. After that, the extra packets will be queued, but the outgoing throughput will remain stagnant at $R/2$.
+
+Now let us remove some degree of impossibility from our scenario - let our router have finite buffers. Since packets can be dropped, the sender needs to retransmit packets on timeout. This means that while at the application layer, the incoming throughput ($\lambda_{in}$) will be equal to the outgoing throughput ($\lambda_{out}$), the transport layer will face a higher incoming throughput ($\lambda_{in}'$). Hence, $\lambda_{in}' \geq \lambda_{in}$.
+
+Due to the retransmission of the dropped packets, the outgoing throughput decreases:
+\[\lambda_{out} + \text{Cost of retransmission} = \frac{R}{2}\]
+
+The basic principle behind TCP congestion control is that sending rate is a function of perceived congestion. Congestion is perceived by measuring the amount of packet loss. This is quantified in the form a \textbf{congestion window} denoted by \texttt{cwnd}. The number of sequence numbers that have not been ACKed cannot exceed this congestion window, i.e.:
+\[LastByteSent - LastByteAcked \leq \min \{cwnd,rwnd\}\]
+
+
+
+
+
 \end{document}
