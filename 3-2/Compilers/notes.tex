@@ -754,4 +754,55 @@ The relative power of LALR(1) is actually less than CLR(1), since it merges some
 \[LR(0) \subset SLR \subset LALR(1) \subset CLR(1)\]
 The LL(1) parser has no direct relation to them - however, $LL(1) \subset LR(1)$. This relation is in fact true for all $k$ in LL(k) and LR(k).
 
+\chapter{Semantic Analysis}
+
+\section{Introduction}
+
+A parser cannot catch all the program errors. Some language features cannot be modelled using context free grammars. For instance, a parser cannot find whether an identifier has been declared before use, and cannot check scoping rules.
+
+The semantic analyzer takes the generated parse tree as input and gives an unambiguous program representation in the form of the disambiguated parse tree.
+
+Some semantic errors could be:
+
+\begin{itemize}
+  \item Type errors
+  \item Use of undeclared variables
+  \item An identifier may refer to different variables in different parts of the program
+  \item An identifier may be usable in one part of the program but not another.
+\end{itemize}
+
+\section{Attribute Grammar Framework}
+
+The attribute grammar framework is the generalization of CFGs where each grammar symbol has an associated set of attributes. The semantic attributes are computed according to some semantic rules.
+
+The attribute grammar framework is generally notated by the \textbf{syntax directed definition}. Attributes are associated with grammar symvols and rules are associated with productions. If $X$ is a symbol and $a$ is one of its attributes, then we write $X.a$ to denote the value of $a$ at a particular parse tree node labeled $X$.
+
+Non terminals can have two types of attributes:
+
+\begin{itemize}
+  \item A \textbf{synthesizes attribute} for a non terminal $A$ at a parse tree node $N$ is defined by a semantic rule associated with the production at $N$. Note that the production must have $A$ as it's head.
+  \item An \textbf{inherited attribute} for a non terminal $B$ at a parse tree node $N$ is defined by a semantic rule associated with the production at the parent of $N$. The production must have $B$ as a symbol in it's body.
+\end{itemize}
+
+An SDD that uses only synthesized attributes is said to be an S-attributed definition.
+
+Let us consider the following example grammar for arithmetic expressions:
+\[L \rightarrow E\]
+\[E \rightarrow E + T\]
+\[E \rightarrow T\]
+\[T \rightarrow T \times F\]
+\[T \rightarrow F\]
+\[F \rightarrow (E)\]
+\[F \rightarrow id\]
+
+The associated SDD, in order will be:
+\[Print(E.val)\]
+\[E.val = E.val + T.val\]
+\[E.val = T.val\]
+\[T.val = T.val \times F.val\]
+\[T.val = F.val\]
+\[F \rightarrow E.val\]
+\[F.val \rightarrow id.lexval\]
+
+
 \end{document}
