@@ -66,7 +66,7 @@ Networks could have multiple communication models:
 How is our core network made? One way to do this is via \textbf{circuit switching}. There are end-to-end resources reserved for a ``call", like on a telephone network. There is no sharing of resources. Call setup needs to be done as a preparatory step. Circuit switching generally can be implemented by two different methods:
 
 \begin{itemize}
-  \item \textbf{FDM}, which stands for Frequency Domain Multiplexing. The total frequency bandwidth is divided among the users, allowing them to send data simultaneously. 
+  \item \textbf{FDM}, which stands for Frequency Domain Multiplexing. The total frequency bandwidth is divided among the users, allowing them to send data simultaneously.
   \item \textbf{TDM}, which stands for Time Domain Multiplexing. Here the time is divided among the users (perhaps in a round robin fashion). As such, one user gets access to the entire bandwidth of the circuit, but only for a period in time.
 \end{itemize}
 
@@ -94,7 +94,7 @@ The performance of a network can be measured by the following parameters:
 \begin{itemize}
   \item Delay
   \item Packet loss : This is the number of packets lost when transmitting. Some applications, like streaming, might not care too much about this.
-  \item Throughput : This is the amount of bits transferred in unit time. This is important in some applications, such as for file transfer. 
+  \item Throughput : This is the amount of bits transferred in unit time. This is important in some applications, such as for file transfer.
 \end{itemize}
 
 \chapter{The Internet}
@@ -162,7 +162,7 @@ The application architecture can run different application architectures:
 Processes communicate within the same host using interprocess communication, but they must communicate with different hosts by exchanging messages.
 
 \begin{definition}
-  A \textbf{socket} is the interface between the application layer and the transport layer within the host.  
+  A \textbf{socket} is the interface between the application layer and the transport layer within the host.
 \end{definition}
 
 A process (a network application) send and receives messages using it's socket. This is a software entity, not a physical one.
@@ -181,10 +181,10 @@ What transport services does an application need? This changes from application 
 
 \section{HTTP}
 
-The application layer for web pages is HTTP. A web page consists of objects, like HTML files, JPEG images, etc. Each of these objects is addressable by a URL. HTTP applications use TCP as it's transfer protocol. 
+The application layer for web pages is HTTP. A web page consists of objects, like HTML files, JPEG images, etc. Each of these objects is addressable by a URL. HTTP applications use TCP as it's transfer protocol.
 
 \begin{enumerate}
-  \item Client initiates the TCP connection on port 80. The time taken to establish this is called the \textbf{Round Trip Time} or RTT. 
+  \item Client initiates the TCP connection on port 80. The time taken to establish this is called the \textbf{Round Trip Time} or RTT.
   \item Client sends a request to the server
   \item Server receives message through it's socket and sends the response.
   \item Server attempts to close the TCP connection. The client may refuse to do so if the client has not received the message.
@@ -252,7 +252,7 @@ One issue with this is that the cached data may turn stale. This problem is solv
 \subsection{HTTP/2 Protocol}
 
 \begin{definition}
-  A stream is a bidirectional sequence of text format frames sent over the HTTP/2 protocol exchanged between the server and client.  
+  A stream is a bidirectional sequence of text format frames sent over the HTTP/2 protocol exchanged between the server and client.
 \end{definition}
 
 HTTP/1 was capable of transmitting only one stream at a time. This made receiving large amount of media content inefficient and time consuming. HTTP/2 allows transmission of parallel multiplexed requests and responses. A binary framing layer is created, which allows the client and sever to disintegrate the HTTP payload into small independent and manageable interleaved sequence of frames. This information is then reassembled at the other end.
@@ -293,15 +293,15 @@ To insert a record into DNS, a newly created domain name should be first registe
 
 This protocol is used to transfer file from client to client. It uses the TCP protocol, since it must be reliable and error free.
 
-In a typical session, FTP will use two connections - a control connection and a data connections. The control connection, which is generally established on port 21, is the primary connection and is used to send commands back and forth between the client and the server. The data connection, established on port 20, is used solely to transfer the requested data. It stays open until the transfer is complete. Since FTP uses two parallel TCP connections to transfer a file, it is said to send it's control information \textbf{out of band}. This is in contrast to HTTP, which works \textbf{in band}. 
+In a typical session, FTP will use two connections - a control connection and a data connections. The control connection, which is generally established on port 21, is the primary connection and is used to send commands back and forth between the client and the server. The data connection, established on port 20, is used solely to transfer the requested data. It stays open until the transfer is complete. Since FTP uses two parallel TCP connections to transfer a file, it is said to send it's control information \textbf{out of band}. This is in contrast to HTTP, which works \textbf{in band}.
 
 Unlike HTTP, the FTP server must maintain the state of the user. In particular, the server must associate the control connection with a specific user account and keep track of the user's current directory as the user wanders about the remote directory tree. This unfortunately constrains the total number of sessions that FTP can can maintain simultaneously.
 
 Some FTP commands are:
 
 \begin{itemize}
-  \item \texttt{USER username} 
-  \item \texttt{PASS password} 
+  \item \texttt{USER username}
+  \item \texttt{PASS password}
   \item \texttt{LIST} returns list of file in current directory
   \item \texttt{RETR filename} retrieves file
   \item \texttt{STOR filename} stores file onto remote host
@@ -353,7 +353,7 @@ Yet another P2P protocol is \textbf{Kazaa}, which is the basis for Skype. Kazaa 
 
 \section{Distributed Databases}
 
-Distributed databases are a common application of the P2P framework. In a distributed database, each peer holds a small subset of the total (key,value) pairs. Any peer can query the distributed database with a particular key. The distributed DB locates the peers that have the corresponding (key,value) pairs and return it to the querying peer. Any peer can insert a new (key,value) pair into the database. 
+Distributed databases are a common application of the P2P framework. In a distributed database, each peer holds a small subset of the total (key,value) pairs. Any peer can query the distributed database with a particular key. The distributed DB locates the peers that have the corresponding (key,value) pairs and return it to the querying peer. Any peer can insert a new (key,value) pair into the database.
 
 A non-scalable way of doing this is as a distributed hash table. The key,value pairs are randomly scattered across all the peers. They maintain a list of the IP addresses of all the peers, and send their queries to all these peers. Those who contain the required (key,value) pairs respond with the matching pairs. This is, as mentioned before, not scalable since all peers must be queried.
 
@@ -425,7 +425,7 @@ Some systems are little endian, while others could be big endian. To communicate
 
 The transport layer is responsible for logical communication between the hosts, unlike the network layer which is responsible for logical communication between processes. Since the transport layer works on top of the network layer, it is constrained by the underlying network layer protocol. However, in some cases it can offer services even when the network layer doesn't offer it.
 
-The transport layer provides two protocols - UDP, an unreliable connectionless service, and TCP, a reliable, connection oriented service. The transport layer works with transport layer packets called \textbf{segments}. 
+The transport layer provides two protocols - UDP, an unreliable connectionless service, and TCP, a reliable, connection oriented service. The transport layer works with transport layer packets called \textbf{segments}.
 
 \section{Multiplexing and Other Functions}
 
@@ -531,7 +531,7 @@ In a GBN protocol, the sender is  allowed to send multiple packets without waiti
   \item \texttt{[0,base-1]} : corresponds to the packets that have already been transmitted and acknowledged.
   \item \texttt{[base,nextseqsum-1]} corresponds to packets that have been sent but not acknowledged.
   \item \texttt{[nextseqnum,base+N-1]} can be used for packets that can be sent immediately
-  \item \texttt{base+N} and greater cannot be used until an unacknowledged packet currently in the pipeline has been acknowledged 
+  \item \texttt{base+N} and greater cannot be used until an unacknowledged packet currently in the pipeline has been acknowledged
 \end{itemize}
 
 So, the window of permissible numbers transmitted but not yet acknowledged packets can be viewed as a sliding window of size $N$.
@@ -657,8 +657,19 @@ Due to the retransmission of the dropped packets, the outgoing throughput decrea
 
 The basic principle behind TCP congestion control is that sending rate is a function of perceived congestion. Congestion is perceived by measuring the amount of packet loss. This is quantified in the form a \textbf{congestion window} denoted by \texttt{cwnd}. The number of sequence numbers that have not been ACKed cannot exceed this congestion window, i.e.:
 \[LastByteSent - LastByteAcked \leq \min \{cwnd,rwnd\}\]
+Generally, \texttt{rwnd} is far larger than \texttt{cwnd}. We can make this assumption unless otherwise mentioned from here on. Because of this, the sender's send rate is roughly $cwnd/RTT$.
 
+When a TCP connection begins, the value of \texttt{cwnd} is typically initialized to a small value of 1 MSS. This is known as \textbf{slow start}. Every time a transmitted segment is acknowledged, \texttt{cwnd} increases by 1 MSS. This in fact leads to an exponential growth rate - for instance, if \texttt{cwnd} is 2, then it will increase to 4 when receiving ACK for the 2 transmitted segments, and then double again, and so on.
 
+ When will our slow start end? If there is a loss event (indicated by timeout), the TCP sender will set the value to 1 again. It also sets the value of a second state variable, \texttt{ssthresh} or slow start threshold, to \texttt{cwnd/2}. Of course, it would not be wise to exceed this \texttt{ssthresh}, since we know congestion happened last time we did. So, if \texttt{cwnd} is equal to \texttt{ssthresh}, we leave the slow start state and enter \textbf{congestion avoidance}. If we ever experience fast retransmit, we will enter the \textbf{fast recovery state}.
+
+ When we start congestion avoidance, TCP is far more conservative. The TCP sender will increase the value by a single MSS every RTT. If we experience time out, then the TCP sender sets the value of \texttt{cwnd} to 1, \texttt{ssthresh} to \texttt{cwnd/2} and goes back to slow start.
+
+ Just like in slow start, if we experience fast retransmit, we begin fast recovery. However in this case, we only half the value of \texttt{cwnd} instead of setting it back to 1, and add 3 MSS to account for the triple duplicate ACKs. \texttt{ssthresh} is set to half the value of the old \texttt{cwnd}.
+
+ In fast recovery, the value of \texttt{cwnd} is increased by 1 MSS for every duplicate ACK received for the missing segment that caused TCP to enter the fast recovery state. Eventually, when an ACK arrives for that missing segment, TCP enters the congestion avoidance state after deflating \texttt{cwnd} (by how much?). If there is a timeout event, we go back to the slow start state by setting \texttt{cwnd} to 1 MSS and \texttt{ssthresh} to half the value of the old \texttt{cwnd}.
+
+ Fast recovery is not actually necessary according to the standard. \textbf{TCP Tahoe} has no fast recovery state, while \textbf{TCP Reno}  has fast recovery.
 
 
 
