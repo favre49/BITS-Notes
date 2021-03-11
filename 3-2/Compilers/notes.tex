@@ -795,7 +795,7 @@ Let us consider the following example grammar for arithmetic expressions:
 \[F \rightarrow (E)\]
 \[F \rightarrow id\]
 
-The associated SDD, in order will be:
+The associated S-attributed SDD, in order will be:
 \[Print(E.val)\]
 \[E.val = E.val + T.val\]
 \[E.val = T.val\]
@@ -803,6 +803,5 @@ The associated SDD, in order will be:
 \[T.val = F.val\]
 \[F \rightarrow E.val\]
 \[F.val \rightarrow id.lexval\]
-
 
 \end{document}
