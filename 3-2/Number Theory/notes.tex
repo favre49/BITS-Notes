@@ -1100,4 +1100,47 @@ Let $a_1,...,a_k \in Z$. Let $n_1,...,n_k$ be integers $\geq 2$. We want to find
   \[x \equiv 371 \mod 420\]
 \end{solution}
 
+
+\section{Modular Inverse}
+
+\begin{definition}
+  Let $p$ be a prime and let $a \in Z$ with $(a,p) = 1$. Then $a$ is invertible modulo $p$ and it's inverse is a number $x$ such that:
+  \[a \cdot x \equiv 1 \mod p\]
+\end{definition}
+
+\begin{lemma}
+  $a$ is self-invertible modulo $p$ if and only if $a \equiv \pm 1 \mod p$.
+\end{lemma}
+\begin{proof}
+  By definition of being ``self invertible'',
+  \[a^2 \equiv 1 \mod p\]
+  \[(a-1)(a+1) \equiv 0 \mod p\]
+  So, $(a-1) \equiv 0 \mod p$ or $(a+1) \equiv \mod p$. From this, $a \equiv \pm 1 \mod p$.
+\end{proof}
+
+\begin{theorem}[Wilson's Theorem]
+  If $p$ is a prime number, then $(p-1)! \equiv -1 \mod p$  
+\end{theorem}
+\begin{proof}
+  If $p = 2$, then $(p-1)! = 1$, which is $-1 \mod p$.
+
+  Suppose $p > 2$. We group the $p-3$ integers, namely $2,\cdots,p-2$ into pairs of inverses $(a,b)$ such that $ab \equiv 1 \mod p$. Hence,
+  \[(p-1)! \equiv 1.2.3 \cdots (p-2)(p-1) \equiv (p-1) \equiv -1 \mod p\]
+\end{proof}
+
+The following are some consequences of Wilson's theorem:
+\begin{itemize}
+  \item The product of $p-1$ integers between any two consecutive multiples of $p$ is congruent to -1 modulo $p$.
+  \item Let $p$ be a prime and $0 \leq r \leq p-1$. Then :
+    \[r! (p-1-r)! + (-1)^r \equiv 0 \mod p\]
+\end{itemize}
+
+\begin{exercise}
+  Let $p$ be a prime and let $n \in \N$. Prove that 
+  \[\frac{(np)!}{n!p^n} \equiv (-1)^n \mod p\]
+\end{exercise}
+\begin{solution}
+  
+\end{solution}
+
 \end{document}
