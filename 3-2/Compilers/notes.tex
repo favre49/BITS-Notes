@@ -804,4 +804,33 @@ The associated S-attributed SDD, in order will be:
 \[F \rightarrow E.val\]
 \[F.val \rightarrow id.lexval\]
 
+\section{Dependency Graphs}
+
+To evaluate an SDD, we generally use \textbf{dependency graphs}. A dependency graph shows the interdependencies among the attributes of the various nodes of a parse tree. If an attribute $b$ depends on an attribute $c$, we add an edge $c \rightarrow b$ in the dependency graph. If $c \rightarrow b$, then we need for use the semantic rule of $c$ first, and then the semantic rule for $b$.
+
+As an example, let us consider the following grammar:
+\[D \rightarrow TL\]
+\[T \rightarrow real\]
+\[T \rightarrow int\]
+\[L \rightarrow L_1,id\]
+\[L \rightarrow id\]
+
+The associated SDD (in order) will be:
+\[L.in = T.type\]
+\[T.type = real\]
+\[T.type = int\]
+\[L_1.in = L.in\]
+\[addtype(id.entry,L.in)\]
+
+Here, the first rule is an inherited attribute. We can always write a grammar with only synthesized attributes, but including inherited attributes makes it simpler.
+
+Then, the parse tree and associated dependence graph (shown in green) for an input \texttt{real x,y,z} will be:
+
+\begin{figure}[htpb]
+  \centering
+  \includegraphics[width=0.8\linewidth]{./assets/dep_graph_eg.png}
+  \caption{Dependency graph for the given grammar}%
+  \label{fig:}
+\end{figure}
+
 \end{document}
