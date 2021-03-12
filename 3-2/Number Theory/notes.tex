@@ -889,6 +889,17 @@ So, every integer $a$ is congruent to it's remainder $r$ modulo $m$. We call $r$
   \end{itemize}
 \end{lemma}
 
+\begin{lemma}
+  Let $p$ be a prime and let $a \in \Z$ with $(a,p) = 1$. Then the least residues of:
+  \[a, 2a, \cdots, (p-1)a\]
+  modulo $p$ are a permutation of the integers $1,2,\cdots, p-1$.
+\end{lemma}
+\begin{proof}
+  Let $i \in \{1,2,...,p-1\}$. Suppose $ia \equiv 0 \mod p$. Then, $i \equiv 0 \mod p$, which is false. So, $ia$ cannot be congruent to 0 modulo $p$.
+
+  Let $i,j \in \{1,2,\cdots, p-1\}, i \neq j$. Suppose that $ia \equiv ja \mod p$. Since $(a,p) = 1$, $i \equiv j \mod p$. However, $|i-j| \leq p-1$. Then, $p||i-j|$ if and only if $i=j$, but this is a contradiction. Hence, $ia$ for $i \in \{1,2,\cdots, p-1\}$ are all incongruent to one another. Hence, they will all have different least residues, none of which are equal to 0. So, the least residues must be a permutation of $\{1,2, \cdots, p-1\}$.
+\end{proof}
+
 \begin{exercise}
   Find the remainder when $1!+2!+...+100!$ is divided by 15.
 \end{exercise}
@@ -1140,7 +1151,61 @@ The following are some consequences of Wilson's theorem:
   \[\frac{(np)!}{n!p^n} \equiv (-1)^n \mod p\]
 \end{exercise}
 \begin{solution}
-  
+TODO  
+\end{solution}
+
+\begin{theorem}[Fermat's Little Theorem]
+  Let $p$ be a prime and let $a \in \Z$ with $(a,p) = 1$. Then,
+  \[a^{p-1} \equiv 1 \mod p\]
+\end{theorem}
+\begin{proof}
+  From Lemma 6.3, 
+\begin{alignat*}{3}
+  & a \cdot 2a \cdots (p-1)a && \equiv 1 \cdot 2 \cdots (p-1) && \mod p \\
+  &(p-1)! a^{p-1} && \equiv (p-1)! &&\mod p \\
+  & a^{p-1} && \equiv 1 &&\mod p
+\end{alignat*}
+The last step follows from the fact that $(p,(p-1)!) = 1$.
+\end{proof}
+
+An important consequence of this result is that the inverse of any number $a$ modulo $p$ is $a^{p-2}$. By using this result, we can solve any congruence of the form:
+\[ax \equiv b \mod p\]
+by multiplying both sides by the inverse of $a$, getting the equation:
+\[x \equiv a^{p-2} b \mod p\]
+
+\begin{theorem}
+  Let $p$ be a prime and let $a \in \Z$. Then:
+  \[a^p \equiv a \mod p\]
+\end{theorem}
+\begin{proof}
+  If $(a,p) = 1$, then by Fermat's little theorem,
+  \[a^{p-1} \equiv 1 \mod p\]
+  \[a^p \equiv a \mod p\]
+  If $(a,p) \neq 1$, then $p|a$. Hence $a \equiv a^p \equiv 0 \mod p$.
+\end{proof}
+
+Theorem 6.11 gives us the base for Fermat's test for non primality. Let $n \in \N$. If $a^n \not \equiv a \mod n$, then $n$ must be composite. Clearly, the converse does not hold - if $a^n \equiv a \mod n$, this is not proof that $n$ is prime! Composite numbers that follow the result in Fermat's little theorem are called Carmichael numbers.
+
+\begin{theorem}
+  Let $p_1, p_2, \cdots p_k$ be distinct prime numbers. Let $a \in \N$ and let
+  \[l = [p_1-1,p_2-1, \cdots, p_k-1]\]
+  Then,
+  \[a^{l+1} \equiv a \mod p_1p_2 \cdots p_k\]
+\end{theorem}
+\begin{proof}
+  Let $i \in \{1,2,\cdots, k\}$. By Fermat's little theorem,
+  \[a^{p_i-1} \equiv 1 \mod p_i\]
+  \[a^l = a^{(p_i-1) \times \frac{l}{p_i-1}} \equiv 1 \mod p_i\]
+  \[a^{l+1} \equiv a \mod p_i\]
+  The above result is also true if $(a,p) \neq 1$ since then $p|a$, so $a^{l+1} \equiv a \equiv 0 \mod p_i$. The result now follows from Theorem 6.5.
+\end{proof}
+
+\begin{exercise}
+  Let $p$ be a prime number with $p \geq 5$. Let $a \in \Z$. Prove that:
+  \[a^p \equiv a \mod 6p\]
+\end{exercise}
+\begin{solution}
+  TODO, let $k =3, p_1 = 2, p_2 = 3, p_3 = p$. 
 \end{solution}
 
 \end{document}
