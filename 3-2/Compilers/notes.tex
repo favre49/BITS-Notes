@@ -824,7 +824,7 @@ The associated SDD (in order) will be:
 
 Here, the first rule is an inherited attribute. We can always write a grammar with only synthesized attributes, but including inherited attributes makes it simpler.
 
-Then, the parse tree and associated dependence graph (shown in green) for an input \texttt{real x,y,z} will be:
+Then, the parse tree and associated dependence graph (shown in green) for an input \texttt{real x,y,z} will be as seen in Fig 1.
 
 \begin{figure}[htpb]
   \centering
@@ -832,5 +832,70 @@ Then, the parse tree and associated dependence graph (shown in green) for an inp
   \caption{Dependency graph for the given grammar}%
   \label{fig:}
 \end{figure}
+
+\section{Abstract Syntax Tree}
+
+AST is condensed form of parse tree. Chains of single productions can be collapsed, and operators move to the parent nodes. An example can be seen in Fig 2.
+
+\begin{figure}[htpb]
+  \centering
+  \includegraphics[width=0.8\linewidth]{assets/ast_eg.png}
+  \caption{Abstract Syntax Tree}%
+  \label{fig:}
+\end{figure}
+
+Each node can be represented as a record. In the above grammar, the operators can be represented by a record with a field for the operator type and remaining fields as pointers to operands. Every identifier can be a record with the label id and another pointer to the symbol table. Numbers can be records with a field for the label num and another to keep the number's value.
+
+Consider the grammar:
+\[E \rightarrow E_1 + T\]
+\[E \rightarrow T\]
+\[T \rightarrow T_1 * F\]
+\[T \rightarrow F\]
+\[F \rightarrow (E)\]
+\[F \rightarrow id\]
+\[F \rightarrow num\]
+
+The respective operations to build the AST would be:
+\[E.ptr = mknode(+,E_1.ptr,T.ptr)\]
+\[E.ptr = T.ptr\]
+\[T.ptr = mknode(*,T_1.ptr,F.ptr)\]
+\[T.ptr = F.ptr\]
+\[F.ptr = E.ptr\]
+\[F.ptr = mkleaf(id,entry.id)\]
+\[F.ptr = mkleaf(num,val)\]
+
+We use $mkleaf$ to create leaf nodes and $mknode$ to make internal nodes.
+
+\section{L Attributed Definitions}
+
+L attributed definitions contain both synthesized and inherited attributes. A syntax directed definition is L attributed if each inherited attribute of $X_j$ in a production:
+\[A \rightarrow X_1 \cdots X_j \cdots X_n\]
+depends only on
+\begin{itemize}
+  \item The attributes of the symbols to the left of $X_j$
+    \irem The inherited attributes of $X_j$
+\end{itemize}
+
+$A \rightarrow BC \{B.S = A.S\}$ is an example of an L-attributed definition.
+
+In an L-attributed definition, attributes can be evaluated in depth first order, which is natural for both top down and bottom up parsing.
+
+The following SDD is a L-attributed definition
+\[A \rightarro LM\]
+\[L.i = f_1(A.i)\]
+\[M.i = f_2(L.s)\]
+\[A.s = f_3(M.s)\]
+
+The following SDD is not a L-attributed definition
+\[A \rightarrow QR\]
+\[R.i = f_4(A.i)\]
+\[Q.i = f_5(R.s)\]
+\[A.s = f_6(Q.s)\]
+
+(why?)
+
+\section{Translation Scheme}
+
+
 
 \end{document}
