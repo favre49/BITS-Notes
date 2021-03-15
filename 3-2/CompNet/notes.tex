@@ -671,6 +671,13 @@ When a TCP connection begins, the value of \texttt{cwnd} is typically initialize
 
  Fast recovery is not actually necessary according to the standard. \textbf{TCP Tahoe} has no fast recovery state, while \textbf{TCP Reno}  has fast recovery.
 
+ \subsection{AIMD and TCP}
 
+ If you ignore the initial slow start period and assume that losses are indicated by triple duplicate ACKs rather than timeouts, TCP's congestion control consists of linear increase in \texttt{cwnd} and then a halving of \texttt{cwnd} on a triple duplicate ACK event. For this reason, we sometimes refer to TCP congestion control as \textbf{AIMD} (additive increase, multiplicative decrease). 
+
+ AIMD congestion control is characterized by the ``sawtooth'' behaviour of the bandwidth graph. Given this sawtooth behaviour, what is the average throughput of a TCP connection over a long period of time?
+
+ Let us assume that the RTT and the window size when a loss event occurs (denoted by $W$) both remain approximately constant over time. Then, the TCP transmission rate will be in a range from $W/2RTT$ (when loss occurs) to $W/RTT$ (right before loss occurs). In between these values, the transmission rate will increase linearly. Hence, the average throughput will be:
+ \[\frac{0.75 \cdot W}{RTT}\]
 
 \end{document}
