@@ -573,6 +573,8 @@ So, if $\min\{a_1,a_2,...,a_n,b_1,b_2,...,b_n\}$ is $a_i$, then $i$ should be th
 
 \section{Flows}
 
+\subsection{Introduction}
+
 A \textbf{flow network} is a directed graph $G = (V,E)$ such that:
 
 \begin{itemize}
@@ -599,6 +601,8 @@ Typically, no edge enters the source so $\sum_{v \in V} f(v,s) = 0$. However, th
 When solving problems with flow, we need to design a flow network. Doing this is at times trivial (see e.g. in CLRS) and at times not (see any Codeforces flow problem). For one, sometimes it may be natural to have antiparallel edges in a graph while modelling - however this is not allowed in flow networks. Remove it by  breaking any one of the edges $(u,v)$ into two - $(u,v'), (v',v)$. Both of these new edges will have the same capacity.
 
 Another issue is when handling a network that could have multiple sources or multiple sinks. In that case, we create supersources and supersinks, nodes which have edges with infinite capacity to other sources or from other sinks.
+
+\subsection{Maximum Flow}
 
 The \textbf{maximum flow problem} requires us to find a flow of maximum value in the graph. Before looking at the algorithm for this, we need to look at some preliminary concepts.
 
@@ -628,9 +632,9 @@ The Ford Fulkerson method in fact refers to a class of algorithms, which have th
 
 A \textbf{cut} $(S,T)$ of a graph is a partition of $V$ into two disjoint sets $S$ and $T$ such that $s \in S$ and $t \in T$. The net flow across a cut is given by:
 \[f(S,T) = \sum_{u \in S}\sum_{v \in T} f(u,v) - \sum_{u \in S} \sum_{v \in T} f(v,u)\]
-The capacity of the cut is:
+The \textbf{capacity of the cut} is:
 \[c(S,T) = \sum_{u \in S} \sum_{v \in T} c(u,v)\]
-The minimum cut of a network is the cut whose capacity is minimum across all cuts.
+The \textbf{minimum cut} of a network is the cut whose capacity is minimum across all cuts.
 
 \begin{theorem}[Max Flow Min Cut Theorem]
   If $f$ is a flow in a flow network $G=(V,E)$ with source $s$ and sink $t$, then the following conditions are equivalent:
@@ -641,6 +645,29 @@ The minimum cut of a network is the cut whose capacity is minimum across all cut
   \end{itemize}
 \end{theorem}
 
+This means that the value of the maximum flow is equal to the capacity of the minimum cut.
+
+\subsection{Maximum Bipartite Matching}
+
+A \textbf{matching}  is a subset of edges $M \subseteq E$ such that for all vertices $v \in V$, at most one edge in $M$ is incident on $v$.
+
+A matching is said to be \textbf{complete}  when the number of edges is the same as the number of nodes in one side. A matching is \textbf{maximal} if it is impossible to add any more edges.
+
+In our problem, we seek to find the \textbf{maximum matching}, i.e., the matching of maximum size in a bipartite graph.
+
+To solve this, we can reduce it to a flow network. Define new nodes $s$ and $t$. Add directed edges from $s$ to all $u \in L$, and from all $v \in R$ to $t$. Here $L,R$ are the two sets of the bipartite graph. This creates a new graph $G'(V',E')$, which will be our flow network. In this flow network, all the edges will have a  capacity of 1.
+
+If this is our flow network, then the cardinality of the maximal matching is equal to the max flow in the graph.
+
+\subsection{Edge Disjoint Paths}
+
+A set of paths is edge disjoint if their edge set is different. Our goal is to find the set of edge disjoint paths from $s$ to $t$ of maximum size.
+
+In $G(V,E)$ with it's two distinguished nodes $s$ and $t$ define a flow network with capacity of each edge being 1. Then, the maximum flow in this network is the number of disjoint edge paths in the graph. The paths would actually be the augmenting paths in the graph.
+
+It is important to mention \textbf{Menger's Theorem} - the maximum number of edge-disjoint $s-t$ paths equals the minimum number of edges whose removal separates $s$ from $t$.
+
+TODO: Cycles and undirected paths
 
 \section{Problems}
 
