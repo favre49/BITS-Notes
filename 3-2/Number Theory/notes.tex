@@ -1154,6 +1154,10 @@ The following are some consequences of Wilson's theorem:
 TODO  
 \end{solution}
 
+\section{Fermat's Little Theorem}
+
+\phantom{}
+
 \begin{theorem}[Fermat's Little Theorem]
   Let $p$ be a prime and let $a \in \Z$ with $(a,p) = 1$. Then,
   \[a^{p-1} \equiv 1 \mod p\]
@@ -1206,6 +1210,61 @@ Theorem 6.11 gives us the base for Fermat's test for non primality. Let $n \in \
 \end{exercise}
 \begin{solution}
   TODO, let $k =3, p_1 = 2, p_2 = 3, p_3 = p$. 
+\end{solution}
+
+Fermat's Little Theorem can be generalized to create Euler's theorem. As a prerequisite, we need to know about \textbf{Euler's totient function}, $\phi(m)$. $\phi(m)$ is the number of integers less than $m$ which are coprime to $m$. Some properties are:
+
+\begin{itemize}
+  \item $\phi(p) = p-1$ if and only if $p$ is prime
+  \item $\phi(p^k)$ = $p^k - p^{k-1}$
+  \item A closed form formula for $\phi(n)$ is:
+    \[\phi(n) = n \cdot \prod_{p|n} \left (1 - \frac{1}{p} \right )\]
+    This formula allows us to compute all the values from $1$ to $n$ quickly using the Sieve of Eratosthenes.
+\end{itemize}
+
+\begin{theorem}[Euler's Theorem]
+  If $\phi(m)$ is Euler's totient function, and $a$ and $m$ are coprime integers, then:
+  \[a^{\phi(m)} \equiv 1 \mod m\]
+\end{theorem}
+\begin{proof}
+  Consider the following lemma - let $r_1, \cdots , r_{\phi(m)}$ denote the positive integers less than $m$ and coprime to $m$. Then the least residues of the integers:
+  \[ar_1, ar_2, \cdots, ar_{\phi(m)}\]
+  are a permutation of the integers $r_1, \cdots r_{\phi(m)}$.
+  To prove this, it is enough to prove:
+  \begin{enumerate}
+    \item $(ar_i, m) = 1 \forall i \in \{1, \cdots, \phi(m)\}$
+    \item $ar_i \not \equiv ar_j \mod m$ if $i \neq j$, $i,j \in \{1, \cdots, \phi(m)\}$
+  \end{enumerate}
+  (1) is simple to prove with Fundamental Theorem of Arithmetic. To prove (2), let us suppose that it is false. Then:
+  \[ar_i \equiv ar_j \mod m\]
+  \[r_i \equiv r_j \mod m\]
+  However, $|r_i-r_j| \leq m-1$ , so that cannot be true. So, by contradiction, (2) is also true, and so is our lemma.
+
+  Using this lemma, 
+  \[ar_1 \cdot ar_2 \cdots ar_{\phi(m)} \equiv r_1 \cdot r_2 \cdots r_{\phi(m)} \mod m\]
+  \[a^{\phi(m)} \cdot r_1 \cdot r_2 \cdots r_{\phi(m)} \equiv r_1 \cdot r_2 \cdots r_\phi(m) \mod m\]
+  \[a^{\phi(m)} \equiv 1 \mod m\]
+\end{proof}
+
+In particular, if $p$ is prime, then $\phi(p) = p-1$, and we have Fermat's Little Theorem.
+
+\begin{lemma}
+  Let $m \in \N$ and let $a$ be an integer coprime to $m$. Let $k,l$ be non negative integers with:
+  \[k \equiv l \mod \phi(m)\]
+  then:
+  \[a^k \equiv a^l \mod m\]
+\end{lemma}
+\begin{proof}
+  WLOG, suppose $k \leq l$. Then, $l-k = \phi(m) q, q \in \Z, q \geq 0$.
+  \[a^l \equiv a^{l-k}a^k \equiv a^{\phi(m)q}a^k \equiv a^k \mod m\]
+\end{proof}
+
+\begin{exercise}
+  Let $p$ be an odd prime and let $a \in \Z$ with $p \not | a$. Show that:
+  \[\sum_{i=1}^{p-1} ai \equiv 0 \mod p\]
+\end{exercise}
+\begin{solution}
+  TODO 
 \end{solution}
 
 \end{document}
