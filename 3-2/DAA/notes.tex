@@ -669,6 +669,36 @@ It is important to mention \textbf{Menger's Theorem} - the maximum number of edg
 
 TODO: Cycles and undirected paths
 
+\section{The Complexity Class P}
+
+\subsection{Prerequisites}
+
+Before we can talk about this complexity class, we need to revise some definitions.
+
+\textbf{Alphabet} is a finite set of symbols. \textbf{Strings} are a concatenation of zero or more symbols from the alphabet. A set of string is called a \textbf{Language}.
+
+Also see TOC to learn about Turing Machines. A Turing Machine can be deterministic (DTM) or non-deterministic (NTM).
+
+\subsection{Turing Machines and Time Complexity}
+
+DTMs encode some algorithm, and hence have a time complexity. Consider an example DTM that accepts the language $L = \{0,1,10,11,...\}$, i.e., the set of all binary strings. Such a DTM would have a $\Theta(n)$ complexity, to read the entire input. The time complexity of a DTM is independent of an input, and only depends on the size $n$.
+
+\subsection{Deterministic Time and the class P}
+
+A \textbf{complexity class}  is a set of functions that can be computed with a given resource. In this course we will most pay attention to the classification of \textbf{decision problems}, which are Boolean functions that give a ``yes'' or ``no'' answer to a question. These can also be expressed as languages. A Boolean function $f$ can be expressed as a language $L_f = \{x : f(x) = 1\}$. Let us now look at our first class.
+
+Let $T : \N \rightarrow \N$ be some function. Then \textbf{DTIME}($T(N)$) is the set of all Boolean functions that are computable in $c \cdot T(n)$ time for some constant $c > 0$, i.e. $O(T(n))$. By ``computable'', we mean that there exists some DTM that is capable of recognizing the desired language $L$ in $O(T(n))$ time.
+
+The \textbf{DTIME}  class serves as the base upon which we can define the class \textbf{P}. The class \textbf{P} is defined as:
+\[\mathbf{P} = \gcup_{c \geq 1} \mathbf{DTIME}(n^c)\]
+Now it's clear that \textbf{P} defines the class of problems that can be solved in polynomial time.
+
+A simple example of a problem in \mathbf{P} is the problem of multiplying two integers $x$ and $y$ of $n$ bits each. We can multiply them in $O(n^2)$ time on a RAM Turing machine (a Turing Machine with RAM). A $T(n)$ time RAM TM can be simulated in $T(n^2)$ by a multitape DTM. Since this will not change the time complexity class \textbf{P} , we can prove that a given language is in \textbf{P} by checking if it has a polynomial time algorithm using a RAM Turing Machine.
+
+The multiplication problem can be defined as a decision problem with the language $L_{mult} = \{(x,y,z)|x,y,z \text{ are binary integers such that } z = xy\}$. A RAM TM for accepting $L_{mult}$ would calculate $z' = xy$ in time $O(n^2)$ and check whether $z' = z$ in time $O(n)$, allowing for a total time complexity of $O(n^2)$. Hence, $L_{mult} \in \mathbf{P}$.
+
+An interesting property of \textbf{P} is that it is closed under complementation. We define the time complexity class $Co-P$ as the set such that $L \in Co-P$ if $\overline{L} \in P$. Notice that $Co-P$ is not actually the complement of $P$. We can prove that $Co-P = P$.
+
 \section{Problems}
 
 \begin{exercise}
