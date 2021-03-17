@@ -675,9 +675,96 @@ When a TCP connection begins, the value of \texttt{cwnd} is typically initialize
 
  If you ignore the initial slow start period and assume that losses are indicated by triple duplicate ACKs rather than timeouts, TCP's congestion control consists of linear increase in \texttt{cwnd} and then a halving of \texttt{cwnd} on a triple duplicate ACK event. For this reason, we sometimes refer to TCP congestion control as \textbf{AIMD} (additive increase, multiplicative decrease). 
 
- AIMD congestion control is characterized by the ``sawtooth'' behaviour of the bandwidth graph. Given this sawtooth behaviour, what is the average throughput of a TCP connection over a long period of time?
+ AIMD congestion control is characterized by the ``sawtooth'' behaviour of the bandwidth graph. This behaviour is what TCP uses to probe the bandwidth of the connection over time. Given this sawtooth behaviour, what is the average throughput of a TCP connection over a long period of time?
 
  Let us assume that the RTT and the window size when a loss event occurs (denoted by $W$) both remain approximately constant over time. Then, the TCP transmission rate will be in a range from $W/2RTT$ (when loss occurs) to $W/RTT$ (right before loss occurs). In between these values, the transmission rate will increase linearly. Hence, the average throughput will be:
  \[\frac{0.75 \cdot W}{RTT}\]
+
+ The key to congestion avoidance is the control function used to increase or decrease their sending window. So, why should we use AIMD instead of MIAD or some other scheme for control? Before this, we should understand some desires of any congestion control scheme:
+
+ \begin{itemize}
+   \item \textbf{Distributedness} : The congestion control mechanism should not be centralized, as that would create additional bottlenecks.
+   \item \textbf{Efficiency} : This refers to the total utilization of the link capacity by the end hosts. In a system with $n$ end hosts, where each end host has a utilization $x_i$, the efficiency is given by $\sum_{i=1}^n x_i$.
+   \item \textbf{Fairness} : The principle of fairness says that if $k$ TCP session share the same bottleneck link of bandwidth $R$, each should have average rate of $R/K$. The fairness index is given by $(\sum x_i)^2 / n (\sum x_i^2)$.
+   \item \textbf{Convergence} : The control system must be stable and reach to goal state from any starting state quickly.
+ \end{itemize}
+
+ Let us look particularly at efficiency and fairness. If we graph the fairness and efficiency with respect to the utilizations, we get the graph in Fig 6.
+
+ \begin{figure}[htpb]
+   \centering
+   \includegraphics[width=0.5\linewidth]{./assets/util_graph.png}
+   \caption{Utilization graph}%
+   \label{fig:}
+ \end{figure}
+
+ A good congestion control system would move towards the optimal point. Consider an AIAD (Additive Increase, Additive Decrease) scheme. Then, both $X_1$ and $X_2$ increase and decrease by the same amount over time. If you use a policy where you increase both user's allocations by the same amount, then the point moves along a $45^{\circ}$ line, not towards the optimal point.
+
+ If we use an MIMD scheme, both $X_1$ and $X_2$ increase or decrease by the same factor over time. This is equivalent to a point extending from origin. As this movement happens, fairness remains constant.
+
+ Now we can see why TCP chose an AIMD model - it moves towards the optimal point. During the increase, the point moves along a $45^{\circ}$, and during the decrease the point moves towards the origin. This will eventually converge to the fairness optimal point.
+
+\subsection{TCP Modelling}
+
+Given the congestion control behaviour of TCP, a TCP model predicts our performance. The factors it needs to take into account are:
+\begin{itemize}
+  \item \textbf{Loss rate} : This affects how often the window is reduced
+  \item \textbf{RTT} : This affects the rate of increase.
+  \item \textbf{RTO} : This affects performance during loss recovery (what is it?)
+  \item \textbf{MSS} : This affects the rate of increase of the congestion window
+\end{itemize}
+
+One such model is the \textbf{Simple TCP Model}. We assume that the RTT remains fixed, and we do not receive any delayed ACKs. Then when in steady state, the TCP loses a packet each time the window reaches $W$ packets, and drops to $W/2$ packets. In each RTT, the window will increase by 1 packet, so $W/2 \times RTT$ time will pass before the next loss. This gives us an estimation of the loss rate - the number of segments transferred would be equal to:
+\[\frac{0.75 W}{RTT} \times \frac{W \cdot RTT}{2} = \frac{3W^2}{8}\]
+This gives us a loss rate :
+\[L = \frac{8}{3W^2}\]
+\[W = \sqrt{\frac{8}{3L}}\]
+Finally, we can calculate the desired bandwidth:
+\begin{align*}
+  R &= \frac{0.75 \cdot MSS \cdot W}{RTT} \\
+  R &= \frac{MSS}{RTT \sqrt{\frac{2L}{3}}} \\
+  R &= \frac{1.22 \times MSS}{RTT \sqrt{L}}
+\end{align*}
+
+\subsection{Silly Window Syndrome}
+
+TODO
+
+\subsection{TCP Fairness}
+
+The goal of fairness is that if $K$ TCP sessions share some bottleneck link of bandwidth $R$, each should have average rate of $R/K$. 
+
+TCP congestion control is desirable in many application but not in multimedia applications like streaming. They do not want their transmission rate throttled even if the network is congested. Instead, the use UDP, so that they can pump their audio and video at a constant rate and occasionally lose some packets. In doing so, they are not acting ``fair'', since they do not cooperate with other connections to adjust the transmission rate accordingly. This allows UDP sources to crowd out TCP traffic on a bottleneck link. Currently, research is being done into ways to prevent UDP traffic from lowering the Internet's throughput.
+
+Even if we somehow were to make UDP fair, we cannot stop a TCP based application from running parallel TCP connections. Parallel TCP connections are, for example,  used to transfer multiple objects for a Web page. When an application does this, it gets a larger fraction of the bandwidth in the congested link, which is unfair to the other users of the bottleneck link.
+
+Finally, TCP is not fair in cases when the end hosts sharing a bottleneck link have different RTTs. When multiple connections share a bottleneck link, the sessions with smaller RTT are able to grab the available bandwidth in the link more quickly, and thus enjoy higher throughputs.
+
+\subsection{Compound TCP}
+
+Compound TCP is an algorithm designed by Microsoft that is designed to aggressively adjust the sender's congestion window to optimize TCP for connections with large bandwidth delay products, while trying not to harm fairness. It makes congestion decisions that reduces the transmission rate based on RTT variations.
+
+In addition to the normal congestion window, Compound TCP also maintains a delay based window \texttt{dwnd}. Then, the sender's window is given by:
+\[Win = \min\{cwnd+dwnd, awnd\}\]
+
+When the delay is small, the delay based window increases rapidly. When queueing is experienced, the delay window gradually decreases. The aim is to keep the sum of \texttt{cwnd} and \texttt{dwnd} approximately constant, equivalent to the bandwidth-delay product of the system.
+
+\subsection{Cubic TCP}
+
+Cubic TCP is a network congestion avoidance algorithm which can achieve high bandwidth connections over networks more quickly and reliably in the face of high latency. 
+
+Cubic TCP is actually real-time dependent, not RTT dependent. The following variables are defined:
+
+\begin{itemize}
+  \item $\beta$, the multiplicative decrease factor
+  \item $w_{max}$, the window size before last reduction
+  \item $T$, the tie elapsed since the last window reduction
+  \item $C$, a scaling constant,
+  \item $cwnd$, the current congestion window
+\end{itemize}
+
+The standard dictates that $\beta = 0.7, C = 0.4$. Then $cwnd$ is modelled by:
+\[cwnd = C(T-K)^3 + w_{max}\]
+\[K = \sqrt[3]{\frac{w_{max} (1 - \beta)}{C}}\]
 
 \end{document}
