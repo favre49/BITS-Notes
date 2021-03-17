@@ -561,5 +561,58 @@ A Poisson process has the following properties:
   \item A random selection from a Poisson process yields a Poisson Process. Suppose that $N(t)$, the number of occurrences of an event $E$ in an interval length $t$ is a Poisson process with parameter $\lambda$. Suppose also that each occurrence of $E$ has a constant probability $p$ of being recorded and that that the recording of an occurrence is independent of that of other occurrences and also of $N(t)$. If $M(t)$ is the number of occurrences recorded in an interval of length $t$, then $M(t)$ is also a Poisson process with parameter $\lambda p$
 \end{enumerate}
 
+\section{Poisson Cluster Process}
+
+Let us suppose that several events can happen simultaneously at an instance, i.e. we have a cluster of occurrences at a point. We assume that:
+\begin{enumerate}
+  \item The number $N(t)$ of clusters in time $t$ constitute a Poisson process with mean rate $\lambda$
+  \item Each cluster has a random number of occurrences, i.e. the number $X_i$ of occurrences in the $i^{th}$ cluster is a random variable. The number of occurrences in the different clusters are independent and follow the same probability distribution $Pr(X_i = k) = p_k$, having probability generating function:
+    \[P(s) = \sum_{k = 1}^{\infty} p_ks^k\]
+\end{enumerate}
+
+\begin{theorem}
+  If $M(t)$ denotes the total number of occurrences in an interval of length $t$ under the given conditions, then the generating function is given by:
+  \[G(P(s)) = \exp [\lambda t \{P(s)-1\}]\]
+\end{theorem}
+\begin{proof}
+  To prove this, we use the lemma that the sum $S_n = X_1 + \cdots + X_n$ of a fixed number $n$ of identically and independently distributed random variables $X_i$ has the probability generating function $\{P(s)\}^n$, each $X_i$ having probability generating function $P(s)$.
+\end{proof}
+
+\section{Non-homogeneous Poisson Processes}
+
+In a non-homogeneous Poisson process, the rate $\lambda$ varies with time, i.e. $\lambda(t)$ is a function of $t$. $P_n(t)$ is the probability that $n$ events occur by time $t$.
+
+\begin{theorem}
+  \[P_n(t) = \frac{1}{n!} (m(t))^k e^{-m(t)}\] 
+  where
+  \[m(t) = \int_0^t \lambda(x) dx\]
+\end{theorem}
+\begin{proof}
+  TODO 
+\end{proof}
+
+
+\section{Yule-Furry Process}
+
+Here we consider that $\lambda$ is a function of $n$, the population size at an instant. We assume that:
+
+\begin{align*}
+  p_k(h) = Pr(N(t+h) - N(t) = k | N(t) = n) &= \lambda_n h + o(h), k = 1
+                                            &= o(h), k \geq 2
+                                            &= 1 - \lambda_nh + o(h), k = 0
+\end{align*}
+
+where $\lambda_n = n \lambda$ and the initial condition is $p_1(0), p_i(0) = 0$ for $i \neq 1$. The general process where $\lambda$ is a function of $n$ is called a pure birth process, but if $\lambda_n = n \lambda$, then it is a Yule-Furry Process.
+
+An example of such a process is a population of bacteria that can give birth to new members but cannot die. 
+
+\begin{theorem}
+  \[p_n(t) = e^{-\lambda t} (1 - e^{-\lambda t})^{n-1}\] 
+  \[E[N(t)] = e^{\lambda t}\] 
+\end{theorem}
+\begin{proof}
+  TODO 
+\end{proof}
+
 
 \end{document}
