@@ -699,6 +699,48 @@ The multiplication problem can be defined as a decision problem with the languag
 
 An interesting property of \textbf{P} is that it is closed under complementation. We define the time complexity class $Co-P$ as the set such that $L \in Co-P$ if $\overline{L} \in P$. Notice that $Co-P$ is not actually the complement of $P$. We can prove that $Co-P = P$.
 
+\section{The Complexity Class NP}
+
+\subsection{Non-Deterministic Turing Machine}
+
+Non-deterministic Turing Machines (NTM) are generalizations of DTM in which at each step, the Turing Machine may have more than one possible choice of moves. Since there is more than one applicable transitions at a state, the NTM will make a guess as to which transition to choose. Importantly, NTMs will always make the choice that would make it possible to accept the input. We assume it is capable of doing this without any lookahead of future moves.
+
+We say that a given NTM $M$ runs in $T(n)$ time if for every input $x \in L$,  and every sequence of non deterministic choices, $M$ reaches a halting state within $T(|x|)$ steps.
+
+\subsection{Non-deterministic Time and the class NP}
+
+For every function $T : \N \rightarrow \N$ and $L \subseteq \{0,1\}^*$ we say that $L \in \mathbf{NTIME}(T(n))$ if there is a constant $c$ and a $cT(n)$ time NDTM $M$ such that for every $x \in \{0,1\}^*, x \in L \Leftrightarrow M(x) = 1$.
+
+Then the complexity class \textbf{NP} is defined as:
+\[\mathbf{NP} = \bigcup_{c \in \N} \mathbf{NTIME}(n^c)\]
+
+Obviously, \textbf{P} $\subseteq$ \textbf{NP}, since a DTM is a special case of an NTM, and hence any DTM part of $\mathbf{P}$ will also be part of $\mathbf{NP}$.
+
+\subsection{The Certificate Definition of NP}
+\textbf{P} can be views as a set of problems that can be solved efficiently. \textbf{NP} can be viewed as a set of problems that can be efficiently verified given a possible solution. This gives us an alternate definition of \textbf{NP}.
+
+A language $L$ is in \textbf{NP} is there exists a polynomial $p$ and a polynomial time DTM $M$ called the verifier for $L$ such that for every $x \in \{0,1\}^*, x \in L \Leftrightarrow \exists u \in \{0,1\}^{p(|x|)}$ such that $M$ accepts $x,u$. If $M$ does accept $x,u$, then $u$ is the \textbf{certificate} of $x$. 
+
+The meaning of this definition is that we are given an input $x$ and a possible solution $u$, and we should be able to devise a DTM that can verify $u$ in polynomial time. The restriction of polynomial time also restricts the length of $u$ to a polynomial in $|x|$.
+
+\subsection{The Independent Set Problem}
+
+A well known NP problem is the independent set problem. A language corresponding to the decision version of the problem is:
+
+INDSET = \{$(G,k) | G$ is the adjacency matrix of an undirected graph having a subset of at least $K$ vertices having no edge between them \}
+
+First let us show the polynomial time solution with an NTM:
+\begin{enumerate}
+  \item On input $G_{n \times n, k$, append a string of length $n$ after the input by using the first non-deterministic choice as writing 0, and the second non deterministic choice as writing 1.
+    \item Deterministically verify that the vertices corresponding to 1 make an independent set of size at leat $k$.
+\end{enumerate}
+
+If the input is in INDSET, then step 1 will correctly guess an independent set of at least $k$, and the NTM will verify it correctly and accept the input.
+
+If it is not in INDSET, then every guess in steo 1 will not be able to make an independent set of size at least $k$. NTM will reject the input in step 2 after verifying it to be either not an independent set or an independent set of size less then $k$.
+
+We can also verify it with the second definition and desigining a polynomial time DTM that takes certificates as input. First the DTM will verify that the size of $|u| = n$ and that the vertices whose values are set to 1 are an independent set of $G$ of size at least $|k|$. The DTM obviously runs in polynomrial time and $|u| = n$ is polynomially bounded. 
+
 \section{Problems}
 
 \begin{exercise}
