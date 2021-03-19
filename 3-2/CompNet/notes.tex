@@ -767,4 +767,30 @@ The standard dictates that $\beta = 0.7, C = 0.4$. Then $cwnd$ is modelled by:
 \[cwnd = C(T-K)^3 + w_{max}\]
 \[K = \sqrt[3]{\frac{w_{max} (1 - \beta)}{C}}\]
 
+\chapter{Network Layer}
+
+\section{Forwarding and Routing} 
+
+The role of the network layer is to move packets from a sending host to a receiving host. To do so, it performs two important network layer functions:
+
+\begin{itemize}
+  \item \textbf{Forwarding:} When a packet arrives at a router's input link, it must move the packet to the appropriate output link.
+
+  \item \textbf{Routing:} The network layer must determine the route or path taken by packets as they flow from a sender to a receiver. This is done by specific routing algorithms.
+\end{itemize}
+
+The routers contain \textbf{forwarding tables}. It is a lookup table that decides which output link interface to use depending on the destination address. This is usually done in ranges - 0 to $r_1$ will be sent on link interface 0, $r_1$ to $r_2$ will be sent on link interface 1, and so on. So that we need not have a table of size $2^{32}$, we instead use \textbf{prefix matching}. For every link interface, we store a prefix of the minimum address that would use the link interface. The length of the prefix is the minimum necessary to differentiate between entries. In case there is more than one match, we use the longest prefix matching rule.
+
+\section{IP Addressing}
+
+The boundary between a host and a physical link is called an \textbf{interface}. An end host would only have one interface, but a router would necessarily have more than one interface.
+
+An IP address is associated with a single interface. In IPv4, it is 32 bits long, and hence has $2^{32}$ unique values. We generally write them in dotted decimal notation, in which each byte is written in it's decimal form and then separated by a dot from the other bytes.
+
+The IP address number is not meaningless. To know that it means, we need to understand \textbf{subnets}. Say we had a network of multiple endhosts and routers. Then, we could detach each interface from it's host or router(imagine the device was deleted but the interfaces remained), creating islands of isolated networks, with interfaces terminating the endpoints of the isolated networks. Each of these isolated networks form a subnet.
+
+IP addressing assigns an address to each subnet. An example is 223.1.1.0/24. The /24 notation, called the \textbf{subnet mask} indicates that the leftmost 24 bits of the 32 bit quantity identify the subnet address. This is known as the \textbf{CIDR} notation. The leftover bits identify a machine in the subnet. If the leftover bits are $000...$, then it is called the \textbf{network address} , and if the leftover bits are $111...$ then it is called the \textbf{broadcast address}. These addresses are generally not given to any machines.
+
+An organization is typically given a block of contiguous addresses with the same subnet prefix. The remaining bits can distinguish among devices within the same organization, and may have an additional subnetting structure.
+
 \end{document}
