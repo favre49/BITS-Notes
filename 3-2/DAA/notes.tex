@@ -739,7 +739,35 @@ If the input is in INDSET, then step 1 will correctly guess an independent set o
 
 If it is not in INDSET, then every guess in steo 1 will not be able to make an independent set of size at least $k$. NTM will reject the input in step 2 after verifying it to be either not an independent set or an independent set of size less then $k$.
 
-We can also verify it with the second definition and desigining a polynomial time DTM that takes certificates as input. First the DTM will verify that the size of $|u| = n$ and that the vertices whose values are set to 1 are an independent set of $G$ of size at least $|k|$. The DTM obviously runs in polynomrial time and $|u| = n$ is polynomially bounded. 
+We can also verify it with the second definition and desigining a polynomial time DTM that takes certificates as input. First the DTM will verify that the size of $|u| = n$ and that the vertices whose values are set to 1 are an independent set of $G$ of size at least $|k|$. The DTM obviously runs in polynomial time and $|u| = n$ is polynomially bounded. 
+
+\section{The Class NP-Complete and NP-Hard}
+
+\subsection{Polynomial Time Reductions}
+
+We say that a language $L_1$ reduces to a language $L_2$ in polynomial time if there exists a polynomial time computable function $f(x)$ such that $x \in L_1 \Rightarrow f(x) \in L_2$. By polynomial time computable function, we mean that there exists a DTM that can perform this function in polynomial time. This is denoted by $L_1 \leq_p L_2$.
+
+If $L_1 \leq_p L_2$ and $L_2$ has a polynomial time algorithm $A_2$, then we can combine $A_2$ and $f$ to get a polynomial time $A_1$ for $L_1$. First we give $x$ as an input to the DTM to compute $f(x)$ in polynomial time. Then $f(x)$ can be given to the DTM for $A_2$. If $A_2$ accepts $f(x)$, then $A_1$ accepts $x$. Else, it rejects $x$. The total time taken will obviously also be polynomial.
+
+Polynomial reduction is transitive - if $L_1 \leq_p L_2$ and $L_2 \leq_p L_3$ then $L_1 \leq_p L_3$.
+
+\subsection{NP-Complete and NP-Hard}
+
+A language $L_1$ is NP-hard if $\forall L \in \mathbf{NP}, L \leq_p L_1$.
+
+A language $L_1 \in \mathbf{NP}$ is NP-Complete if $\forall L \in \mathbf{NP}, L \leq_p L_1$.
+
+Notice the differnece in these definitions - a language $L$ is NP-Complete if $L$ is NP-Hard and $L \in NP$. Hence, a NP-Complete language is always NP-Hard, but a NP-Hard language need not be NP-Complete.
+
+A more informal way of putting these definitions is that any NP-hard language is at least as hard as any other NP language. We have the term NP-Complete because to solve the \textbf{P} vs \textbf{NP} problem, it suffices to study whether an NP-complete problem can be decided in polynomial time. This is true since any other NP problem could be reduced to the NP-complete problem in polynomial time, hence also becoming polynomial.
+
+\subsection{An NP-Complete Problem}
+
+A \textbf{Boolean formula}  over the variables $u_1 \cdots u_n$ consists of these variables and the logical operators AND,OR and NOT. A boolean formula $\Phi$ is satisfiablef there exists some assignment of value to the variables such that $\Phi$ evalueates to true.
+
+This problem, called the SAT problem, is NP-complete (called the Cook-Levin THeorem). To prove this, we must first prove that it is NP. Given a boolean formula $\Phi(z)$, an NTM will guess an assignment of variables for $z$ and then it will evaluate $\Phi(z)$ in polynomial time. If it evaluates to 1, then it will accept, otherwise it will reject. Hence, SAT $\in$ NP.
+
+The next step is to prove that it is NP-Hard. For this, we have to prove that for an $L \in NP, L \leq_p SAT$. We will have to describe a polynomial time DTM $M$ such that $x \in L \Rightarrow M(x) \in SAT$ and $x \notin L \Rightarrow M(x) \notin SAT$. Since $L$ is in NP, there exists a polynomial time DTM $D$ such that if $x \in L$, there exists $y \in \{0,1\}^{p(|x|)}$ such that $D(x,y) = 1$. If $x \notin L$, then there does not exist any such $y$ such that $D(x,y) = 0$.
 
 \section{Problems}
 
