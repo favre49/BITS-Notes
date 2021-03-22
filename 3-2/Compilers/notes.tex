@@ -918,5 +918,85 @@ We use $mkleaf$ to create leaf nodes and $mknode$ to make internal nodes.
 
 \section{Directed Acyclic Graph}
 
+A DAG has leaves corresponding to atomic operands and interior nodes corresponding to operators. A node $N$ in a DAG has more than one parent if $N$ represents a common subexpression. This allows a DAG to represent expressions more succinctly and give the compiler clues regarding the generation of efficient code to evaluate the expressions
+
+Consider the expression \texttt{a+a*(b-c)+(b-c)*d}. The equivalent DAG is in Fig 2.
+
+\begin{figure}[htpb]
+  \centering
+  \includegraphics[width=0.8\linewidth]{./assets/DAG_eg.png}
+  \caption{Directed Graph}%
+  \label{fig:}
+\end{figure}
+
+We can construct DAGs from SDDs. We can do it the same way we created ASTs, but now we check whether an identical node already exists when creating a new node. If it does exist, then the existing node is returned.
+
+\section{Three Address Code}
+
+\subsection{Introduction}
+
+In three address code, there is at most one operator on the right side of an expression. Hence, something like \texttt{x+y*z} would become \texttt{t1=y*z;t2=x+t1;}. This scheme allows for flexibility during target code generation and optimization.
+
+Three address codes are built of addresses and instructions. An address can be:
+\begin{itemize}
+  \item A name
+  \item A constant
+  \item A compiler generated temporary
+\end{itemize}
+
+\subsection{Assignment Statements}
+
+Assignment statements can be of the following forms:
+\begin{itemize}
+  \item A binary statement, like \texttt{x = y op z}
+  \item A unary statement, like \texttt{x = op z}
+  \item \texttt{x=y}
+\end{itemize}
+
+For every operator considered here, there must be a counterpart in the assembly level language.
+
+\subsection{Index Assignments}
+
+Three address code only supports 1 dimensional arrays. Hence, higher dimensional arrays must be converted into 1 dimensional arrays. This could be done by converting \texttt{x[i][j]} into \texttt{x[n*i+j]}. An example of such a statement is \texttt{x=a[i]}.
+
+\subsection{Jump Statements}
+
+Jump statements could be conditional or unconditional. An example of an unconditional statement is \texttt{goto L} where L is a label. An example of an conditional jump is \texttt{if x >= y goto L}.
+
+\subsection{Address and Pointer Assignments}
+
+Three Address codes allow for address and pointer assignments. For instance, \texttt{x = \&y} will work like in C, as will \texttt{x = *y}. Just like in, arithmetic cannot be done on pointers.
+
+\subsection{Procedure Calls and Returns}
+
+A call to a procedure $p(x_1,x_2, \cdots, x_n)$ can be written as a sequence of three address instructions:
+
+\texttt{param x1}\\
+\texttt{param x2}\\
+\texttt{...}\\
+\texttt{param xn} \\
+\texttt{enter f}\\
+\texttt{leave f} \\ 
+\texttt{return x} \\
+
+\subsection{Miscellaneous Statements}
+
+More statements may be needed depending upon the requirement of a language. Some such statements are \texttt{break, continue}. These can be implemented using jump statements.
+
+\subsection{Quadruples}
+
+Quadruples are a way to represent three address code. A quadruple or a quad has four fields - $op, arg_1, arg_2, result$. For instance, if we have the instruction \texttt{x=y+z}, the quad would be $(+,x,y,z)$.
+
+Instructions with unary operators do not use $arg_2$. For the copy assignment \texttt{x=y}, we consider \texttt{=} as the $op$. In all the other cases, the assignment operator is implied.
+
+Operators like \texttt{param} use neither $arg$ or $result$. Conditional and unconditional jumps put the target label in $result$.
+
+\subsection{Triples}
+
+Another way to implement three address code is using triples. A triple has only three fields - $op,arg_1,arg_2$. The result of an operation is no referred to by it's position in the instruction list. Hence, instead of referring to some temporary $t_1$ as $arg$, we would refer to $(0)$.
+
+Quadruples are still ideal compared to tripled, because during optimization we generally rearrange instructions to avoid hazards. If you do this with triples, you also have to changed the number of the referenced instruction.
+
+To fix this issue, \textbf{indirect triples}  store a list of pointers to triples, rather than a listing of the actual triples. This way, the compiler can reorder the instruction list without affecting the triples themselves.
 
 \end{document}
