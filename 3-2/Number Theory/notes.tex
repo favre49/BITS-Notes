@@ -335,7 +335,7 @@ The number 1 is neither prime nor composite.
 \end{solution}
 
 \begin{exercise}
-  Prove that there are infinitely many primes of the form $6n+5$.  
+  Prove that there are infinitely many primes of the form $6n+5$.
 \end{exercise}
 \begin{solution}
   Suppose that there are finitely many primes of the form $6n+5$, called $p_1,\cdots pp_n$. Consider $q = 6p_1\cdots p_n+5$.
@@ -979,10 +979,10 @@ So, every integer $a$ is congruent to it's remainder $r$ modulo $m$. We call $r$
 \end{solution}
 
 \begin{exercise}
-  Show that the sequence 71,771,7771,... has no perfect squares. 
+  Show that the sequence 71,771,7771,... has no perfect squares.
 \end{exercise}
 \begin{solution}
-  Remember that a perfect square is equivalent to either 0 or 1 modulo 4. We now prove that the $i^{th}$ term $r_i$ of the given sequence is such that $r_i \equiv 3 \mod 4$. 
+  Remember that a perfect square is equivalent to either 0 or 1 modulo 4. We now prove that the $i^{th}$ term $r_i$ of the given sequence is such that $r_i \equiv 3 \mod 4$.
 
   Let $P(n)$ be a statement that the term $r_i$ is such that $r_i \equiv 3 \mod 4$. This is true for a $i = 1$, since $71 \equiv 3 \mod 4$. Assume $P(k)$ is true. We can express $r_{i+1}$ by the recurrence:
   \begin{align*}
@@ -1080,7 +1080,7 @@ Let $a_1,...,a_k \in Z$. Let $n_1,...,n_k$ be integers $\geq 2$. We want to find
 
   Let us prove that $x = a_1Nx_1 + \cdots + a_kN_k x_k$ satisfies the given system of congruences. First, let us prove that it satisfies the first congruence. Since $N_i \equiv 0 \mod n_1$ for $i = 2, \cdots, k$, we get:
   \[x \equiv a_1 N_1 x_1 + 0 \mod n_1\]
-  We have already assumed that $N_1x_1 \equiv 1 \mod n_1$. So, 
+  We have already assumed that $N_1x_1 \equiv 1 \mod n_1$. So,
   \[x \equiv a_1 \mod n_1\]
   Hence proved. The same argument can be made for all the congruences.
 
@@ -1130,7 +1130,7 @@ Let $a_1,...,a_k \in Z$. Let $n_1,...,n_k$ be integers $\geq 2$. We want to find
 \end{proof}
 
 \begin{theorem}[Wilson's Theorem]
-  If $p$ is a prime number, then $(p-1)! \equiv -1 \mod p$  
+  If $p$ is a prime number, then $(p-1)! \equiv -1 \mod p$
 \end{theorem}
 \begin{proof}
   If $p = 2$, then $(p-1)! = 1$, which is $-1 \mod p$.
@@ -1147,7 +1147,7 @@ The following are some consequences of Wilson's theorem:
 \end{itemize}
 
 \begin{exercise}
-  Let $p$ be a prime and let $n \in \N$. Prove that 
+  Let $p$ be a prime and let $n \in \N$. Prove that
   \[\frac{(np)!}{n!p^n} \equiv (-1)^n \mod p\]
 \end{exercise}
 \begin{solution}
@@ -1168,7 +1168,7 @@ The following are some consequences of Wilson's theorem:
   \[a^{p-1} \equiv 1 \mod p\]
 \end{theorem}
 \begin{proof}
-  From Lemma 6.3, 
+  From Lemma 6.3,
 \begin{alignat*}{3}
   & a \cdot 2a \cdots (p-1)a && \equiv 1 \cdot 2 \cdots (p-1) && \mod p \\
   &(p-1)! a^{p-1} && \equiv (p-1)! &&\mod p \\
@@ -1246,7 +1246,7 @@ Fermat's Little Theorem can be generalized to create Euler's theorem. As a prere
   \[r_i \equiv r_j \mod m\]
   However, $|r_i-r_j| \leq m-1$ , so that cannot be true. So, by contradiction, (2) is also true, and so is our lemma.
 
-  Using this lemma, 
+  Using this lemma,
   \[ar_1 \cdot ar_2 \cdots ar_{\phi(m)} \equiv r_1 \cdot r_2 \cdots r_{\phi(m)} \mod m\]
   \[a^{\phi(m)} \cdot r_1 \cdot r_2 \cdots r_{\phi(m)} \equiv r_1 \cdot r_2 \cdots r_\phi(m) \mod m\]
   \[a^{\phi(m)} \equiv 1 \mod m\]
@@ -1270,7 +1270,7 @@ In particular, if $p$ is prime, then $\phi(p) = p-1$, and we have Fermat's Littl
   \[\sum_{i=1}^{p-1} ai \equiv 0 \mod p\]
 \end{exercise}
 \begin{solution}
-  TODO 
+  TODO
 \end{solution}
 
 \begin{theorem}[Generalized Euler Theorem]
@@ -1291,7 +1291,7 @@ In particular, if $p$ is prime, then $\phi(p) = p-1$, and we have Fermat's Littl
 \section{Multiplicative Functions}
 
 \begin{definition}
-  A real or complex valued function defined on the set of positive integers is called an arithmetical function of number theoretic function. 
+  A real or complex valued function defined on the set of positive integers is called an arithmetical function of number theoretic function.
 \end{definition}
 
 \begin{definition}
@@ -1306,12 +1306,12 @@ Examples of multiplicative functions are:
 \end{itemize}
 
 \begin{exercise}
-  Let $f$ be a multiplicative function which is not identically zero. Prove that $f(1) = 1$. 
+  Let $f$ be a multiplicative function which is not identically zero. Prove that $f(1) = 1$.
 \end{exercise}
 \begin{solution}
  From the definition of a multiplicative function,
  \[f(mn) = f(m) \cdot f(n)\]
- Let $m = 1$. Then, 
+ Let $m = 1$. Then,
  \[f(n) = f(1) \cdots f(n)\]
  From this, it is clear that $f(1) = 1$, the identity element.
 \end{solution}
@@ -1326,17 +1326,17 @@ Examples of multiplicative functions are:
 The proof is straightforward from the factorization of an integer, so I have not included the proof here.
 
 \begin{exercise}
-  Prove that Euler's Totient Function is multiplicative. 
+  Prove that Euler's Totient Function is multiplicative.
 \end{exercise}
 \begin{solution}
   We are trying to prove that if $(m,n) = 1, \phi(mn) = \phi(m) \phi(n)$. To prove this, we make a rectangular table of numbers from 1 to $mn$ with $m$ rows and $n$ columns:
   \[
   \begin{matrix}
-    1 & m+1 & 2m+1 & \cdots & (n-1)m+1 \\ 
-    2 & m+2 & 2m+2 & \cdots & (n-1)m+2 \\ 
-    3 & m+3 & 2m+3 & \cdots & (n-1)m+3 \\ 
-    \vdots & \vdots & \vdots & \vdots & \vdots \\ 
-    m & 2m & 3m& \cdots & nm \\ 
+    1 & m+1 & 2m+1 & \cdots & (n-1)m+1 \\
+    2 & m+2 & 2m+2 & \cdots & (n-1)m+2 \\
+    3 & m+3 & 2m+3 & \cdots & (n-1)m+3 \\
+    \vdots & \vdots & \vdots & \vdots & \vdots \\
+    m & 2m & 3m& \cdots & nm \\
   \end{matrix}
 \]
   The numbers in the $r^{th}$ row of this table are of the form $km+r$ as $k$ runs from $0 $ to $m-1$.
@@ -1344,10 +1344,10 @@ The proof is straightforward from the factorization of an integer, so I have not
   Let $d = (r,m)$. If $d = 1$, then no number in the $r^{th}$ row of the table is relatively prime to $mn$, since $d | (km+r)$ for all $k$. So to count the residues relatively prime to $mn$ we need only to look at the rows indexed by values of $r$ such that $(r,m) = 1$. There are $\phi(m)$ such rows.
 
   Now we introduce an important lemma - if $r \in \Z$, then the $n$ integers:
-  \[r,r+m,r+2m,\cdots, r+(n-1)m\] 
+  \[r,r+m,r+2m,\cdots, r+(n-1)m\]
   for a complete set of residues modulo $n$. Let us prove this. Suppose $r+im \equiv r+jm \mod n, i \neq j$. This means that $(i-j)m \equiv 0 \mod n$. So, $n|i-j$. However, $i-j < n$. So $i-j = 0$, i.e. $i = j$. This is a contradiction. Hence, no two numbers in the set are congruent. Since there are $n-1$ numbers in the set, they form a complete set of residues modulo $n$.
 
-  From the above lemma, the numbers in a row, given by $km+r$ form a complete set of residues modulo $n$. Thus, exactly $\phi(n)$ of them will be coprime to $n$, and hence relatively prime to $mn$. 
+  From the above lemma, the numbers in a row, given by $km+r$ form a complete set of residues modulo $n$. Thus, exactly $\phi(n)$ of them will be coprime to $n$, and hence relatively prime to $mn$.
 
   Hence, we have shown that there are $\phi(m)$ rows which contain $\phi(n)$ numbers coprime to $mn$, so there are in total $\phi(m) \phi(n)$ numbers in the table relatively prime to $mn$.
 \end{solution}
@@ -1394,7 +1394,7 @@ counts the number of positive divisors of $n$. Next if $p$ is prime and $e \in \
 \[\tau(p^e) = e+1\]
 From theorem 7.3, $\tau$ is multiplicative. So, if we express $n$ as:
 \[n = p_1^{e_1} \cdots p_k^{e_k}\]
-then 
+then
 \[\tau(n) = \tau(p_1^{e_1}) \cdots \tau(p_k^{e_k}) = (e_1+1) \cdots (e_k+1)\]
 
 \begin{exercise}
@@ -1410,7 +1410,7 @@ The next important function is the $\sigma$ function. Let $f$ be $f(n) = n$. The
 \[\sigma(n) = \sum_{d|n}f(d) = \sum_{d|n}d\]
 This is the sum of all positive divisors of $n$. If $p$ is a prime and $e \in \N$,
 \[\sigma(p^e) = 1 + p + p^2 + \cdots + p^e = \frac{p^{e+1} - 1}{p-1}\]
-Since $\sigma$ will be multiplicative by Theorem 7.3, if 
+Since $\sigma$ will be multiplicative by Theorem 7.3, if
 \[n = p_1^{e_1} \cdots p_k^{e_k}\]
 then
 \[\sigma(n) = \sigma(p_1^{e_1}) \cdots \sigma(p_k^{e_k}) = \frac{p_1^{e_1+1}-1}{p_1-1} \cdots \frac{p_k^{e_k+1} - 1}{p_k-1}\]
@@ -1419,7 +1419,7 @@ then
   If $n$ is a composite number, prove that $\sigma(n) > n + \sqrt n$.
 \end{exercise}
 \begin{proof}
-  Since $n$ is composite, let $a,b \in \N, a \neq 1,n$ such that $ab = n$. Then, 
+  Since $n$ is composite, let $a,b \in \N, a \neq 1,n$ such that $ab = n$. Then,
   \[\sigma(n) = 1 + n + a + b\]
   We know that either $a \geq \sqrt n$ or $b \geq \sqrt n$. Hence,
   \[\sigma(n) > 1 + n + \sqrt n\]
@@ -1433,7 +1433,7 @@ then
     1 & \text{if } n = 1 \\
     0 & \text{if } p^2 |n \text{ for prime } p \\
     (-1)^k & \text{if } n = p_1p_2 \cdots p_k
-  \end{cases}\]  
+  \end{cases}\]
 \end{definition}
 
 This can also be expressed as another definition. $\mu(n)$ is:
@@ -1444,11 +1444,55 @@ This can also be expressed as another definition. $\mu(n)$ is:
 \end{itemize}
 
 \begin{remark}
-  This is an important function to remember. It can be found using the Sieve of Eratosthenes, and is useful in many combinatoric problems involving factors. 
+  This is an important function to remember. It can be found using the Sieve of Eratosthenes, and is useful in many combinatoric problems involving numbers.
 \end{remark}
 
 \begin{theorem}
-  The M\"{o}bius function is multiplicative. 
+  The M\"{o}bius function is multiplicative.
 \end{theorem}
+\begin{proof}
+  Let $m,n \in \N$ with $(m,n) = 1$. If $m=1$ or $n=1$ then $\mu(mn) = \mu(m)\mu(n)$. If $m$ or $n$ are not square free, then $mn$ will not be square free, so $\mu(mn) = 0 = \mu(m)\mu(n)$. Finally, suppose both $m$ and $n$ are square free integers greater than 1. Let:
+  \[m= p_1 \cdots p_k\]
+  \[n = q_1 \cdots q_l\]
+  $p_i \neq q_j$ since the two numbers are coprime. $\mu(m) = (-1)^k, \mu(n) = (-1)^l$. $mn$ will be a product of $k+l$ distinct primes, so $\mu(mn) = (-1)^{k+l}$. Hence, $\mu(mn) = \mu(m)\mu(n)$. Hence $\mu$ is a multiplicative function.
+\end{proof}
+
+\begin{lemma}
+  \[\sum_{d|n} \mu(d) = \begin{cases} 
+    1 & n=1 \\
+    0 & n > 1
+  \end{cases}\] 
+\end{lemma}
+\begin{proof}
+  If $n=1$, then the result is trivial. Since $\mu$ is multiplicative, then the M\"{o}bius transform $F$ is also multiplicative. Now:
+  \begin{align*}
+    F(p^e) &= \mu(1) + \mu(p) + \mu(p^2) + \cdots + \mu(p^e) \\
+           &= 1-1+0\\
+           &= 0
+  \end{align*}
+  If $n = p_1^{e_1} \cdots p_k^{e_k}$ is the prime power factorization of $n$ then since $F$ is multiplicative,
+  \[F(n) = F(p_1^{e_1}) F(p_2^{e_2}) \cdots F(p_k^{e_k}) = 0\]
+\end{proof}
+
+\begin{theorem}[M\"{o}bius Inversion Formula]
+  Let $f$ be an arithmetical function and let $F$ denote it's M\"{o}bius transform. Then:
+  \[f(n) = \sum_{d|n} \mu(d) F \left( \frac{n}{d} \right) = \sum_{d|n} \mu \left( \frac{n}{d} \right)F(d)\]
+  and $F$ is called the inverse M\"{o}bius transform of $F$.
+\end{theorem}
+\begin{proof}
+  \begin{align*}
+    \sum_{d|n} \mu(d) F \left(\frac{n}{d}\right) &= \sum_{d|n} \mu(d) \sum_{d'|\frac{n}{d}} f(d') \\
+                                                 &= \sum_{d|n} \sum_{d|\frac{n}{d}} \mu(d) f(d') \\
+                                                 &= \sum_{d'|n} f(d') \sum_{d|\frac{n}{d'}} \mu(d) \\
+                                                 &= \sum_{d'|n} f(d') \left[ \frac{1}{n/d'} \right] \\
+                                                 &= f(n)
+  \end{align*}
+\end{proof}
+
+\begin{remark}
+  This is a case of Dirichlet Convolution, which is an interesting concept for computing the convolution of two number theoretic functions.
+\end{remark}
+
+Some applications of this formula are:
 
 \end{document}
