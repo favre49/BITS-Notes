@@ -526,10 +526,42 @@ The definition of a Poisson process can also be encoded in the form of three pos
   \item \textbf{Independence} : $N(t+h) - N(t)$ is independent of the number of occurrences prior to that interval
   \item \textbf{Homogeneity in time} : $p_n(t)$ depends only on the length $t$ of the interval and is independent of where the interval is situated, where:
     \[p_n(t) = P(N(t+s) - N(s) = n)\]
-  \item \textbf{Regularity} : In an interval of infinitesimal length $h$, the probability of exactly one occurrence $\lambda h + o(h)$ and that of more than one occurrence is $o(h)$ (wut?)
+  \item \textbf{Regularity} : In an interval of infinitesimal length $h$, the probability of exactly one occurrence $\lambda h + o(h)$ and that of more than one occurrence is $o(h)$
 \end{enumerate}
 
-It is possible to prove that these two definitions are equivalent.
+We can prove that these definitions are equivalent.
+
+\begin{theorem}
+  The probability distribution of a Poisson Process is:
+  \[p_n(t) = e^{\lambda t} \frac{(\lambda t)^n}{n!}\]
+\end{theorem}
+\begin{proof}
+  Consider $p_n(t+h)$ for $n \geq 0$. $n$ events by epoch $t+h$. $n$ events by epoch $t+h$ can happen in the following ways:
+  \begin{itemize}
+    \item $n$ events by epoch $t$ and no event between $t$ and $t+h$. So,
+      \begin{align*}
+        P(A_1) &= P(N(t) = n) P(N(h) = 0 | N(t) = n) \\
+               &= p_n(t) p_0(h)\\
+               &= p_n(t)(1-\lambda h) + o(h)
+      \end{align*}
+    \item  $n-1$ events by epoch $t$ and one event between $t$ and $t+h$.
+      \[P(A_2) = p_{n-1}(t) (\lambda h) + o(h)\]
+    \item $n-2$ events by epoch $t$ and two events between $t$ and $t+h$.
+      \[P(A_3) = p_{n-2}(t) (p_2(h)) \leq p_2(h)\]
+      and so on for $A_4, A_5, ...$
+      \[\sum_{k=2}^n P(A_{k+1}) \leq \sum_{k=2}^n p_k(h) = o(h)\]
+  \end{itemize}
+  and so
+      \[p_n(t+h) = p_n(t) (1- \lambda h) + p_{n-1}(t) (\lambda h) + o(h), n \geq 1\]
+      Setting the limit $h \rightarrow 0$
+      \[p_n'(t) = -\lambda (p_n(t) - p_{n-1}(t))\]
+      If $n =0$, then we get:
+      \[p_0'(t) = -\lambda(p_0(t))\]
+      Obviously, $p_0(0) = 1$ and $p_n(0) = 0, n > 0$.
+  With this, we can prove our result using induction or generating functions. Using generating functions,
+  \[P(s,t) = \sum_{n=0}^{\infty} p_n(t)s^n\]
+  TODO
+\end{proof}
 
 \section{Interarrival times}
 
@@ -587,18 +619,14 @@ In a non-homogeneous Poisson process, the rate $\lambda$ varies with time, i.e. 
   where
   \[m(t) = \int_0^t \lambda(x) dx\]
 \end{theorem}
-\begin{proof}
-  TODO 
-\end{proof}
-
 
 \section{Yule-Furry Process}
 
 Here we consider that $\lambda$ is a function of $n$, the population size at an instant. We assume that:
 
 \begin{align*}
-  p_k(h) = Pr(N(t+h) - N(t) = k | N(t) = n) &= \lambda_n h + o(h), k = 1
-                                            &= o(h), k \geq 2
+  p_k(h) = Pr(N(t+h) - N(t) = k | N(t) = n) &= \lambda_n h + o(h), k = 1\\
+                                            &= o(h), k \geq 2\\
                                             &= 1 - \lambda_nh + o(h), k = 0
 \end{align*}
 
@@ -607,12 +635,15 @@ where $\lambda_n = n \lambda$ and the initial condition is $p_1(0), p_i(0) = 0$ 
 An example of such a process is a population of bacteria that can give birth to new members but cannot die. 
 
 \begin{theorem}
+  A Yule-Furry Process is given by the following characteristics
   \[p_n(t) = e^{-\lambda t} (1 - e^{-\lambda t})^{n-1}\] 
   \[E[N(t)] = e^{\lambda t}\] 
+  \[Var(N(t)) = e^{\lambda t} (e^{\lambda t} - 1)\]
 \end{theorem}
-\begin{proof}
-  TODO 
-\end{proof}
 
+Let us suppose that there is also immigration in addition to birth, such that in an interval of infinitesimal length $h$, the probability of a new member being added (by immigration) is $vh + oh$.
+
+Then the generating function of the probability is:
+\[P(s,t) = \frac{s^i e^{-\lambda t} e^{-v(1-s)t}}{(1 - s(1- e^{-\lambda t}))^i}\]
 
 \end{document}
