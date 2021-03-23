@@ -793,4 +793,25 @@ IP addressing assigns an address to each subnet. An example is 223.1.1.0/24. The
 
 An organization is typically given a block of contiguous addresses with the same subnet prefix. The remaining bits can distinguish among devices within the same organization, and may have an additional subnetting structure.
 
+\section{IP Datagram Format}
+
+\section{DHCP Protocol}
+
+How does an end host get an IP address? One way is for the IP address to be hard coded by the system administrator in some file. Another way is to use \textbf{Dynamic Host Configuration Protocol}  to dynamically get the IP address from a server. The host works as a client, and is provided an IP address by the DHCP server. This is useful when hosts are only connected intermittently.
+
+When the DHCP server gives the host an IP address, it gives it a ``lease'', meaning that it is valid only for a specific amount of time. This lease can be renewed when necessary. The DHCP server allows for reuse of addresses, i.e. if one host leaves then another host can use it's IP address.
+
+A DHCP server provides IP addresses for a specific subnet. Having one DHCP server for every subnet is very wasteful. Hence, the router will have a ``relay agent'', which will forward the DHCP messages from the hosts to an appropriate DHCP server.
+
+The protocol works as follows:
+
+\begin{enumerate}
+  \item The client sends a ``DHCP discover'' message, which is a broadcast message looking for a DHCP server. The \texttt{src} field will hold IP address 0.0.0.0, since no IP address has been given. The \texttt{dest} field will hold the IP address 255.255.255.255, since the message is being broadcast. Every message also has a transaction ID, to keep track of the messages.
+  \item The server responds with a ``DHCP offer''. The \texttt{src} field will hold the IP address of the DHCP server, and the \texttt{dest} field will once again have the broadcast IP address. It will also have a field \texttt{yiaddrr} holding the leased IP address, and a field \texttt{lifetime} for the tie of the lease. Of course, it will also have the same transaction ID as the discover message.
+  \item The client will respond with a ``DHCP request''. It needs to respond again because the client may receive multiple DHCP offers, and hence the server cannot immediately provide the client with an address. The client hence chooses one of the offers and responds. The request will once again have the \texttt{src} 0.0.0.0, and the broadcast destination address. Now, the transaction ID will be different. The \texttt{lifetime} and \texttt{yiaddrr} field will be the same as sent in the DHCP offer, so that the server knows who had sent it.
+  \item Finally, the server sends a ``DHCP ACK''. This has the same contents as the DHCP offer, but with the same transaction ID as in the request. After receiving this, the client assumes the given IP address.
+\end{enumerate}
+
+\section{IP Fragmentation and Reassembly}
+
 \end{document}
