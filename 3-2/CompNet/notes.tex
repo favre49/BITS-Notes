@@ -789,11 +789,30 @@ An IP address is associated with a single interface. In IPv4, it is 32 bits long
 
 The IP address number is not meaningless. To know that it means, we need to understand \textbf{subnets}. Say we had a network of multiple endhosts and routers. Then, we could detach each interface from it's host or router(imagine the device was deleted but the interfaces remained), creating islands of isolated networks, with interfaces terminating the endpoints of the isolated networks. Each of these isolated networks form a subnet.
 
-IP addressing assigns an address to each subnet. An example is 223.1.1.0/24. The /24 notation, called the \textbf{subnet mask} indicates that the leftmost 24 bits of the 32 bit quantity identify the subnet address. This is known as the \textbf{CIDR} notation. The leftover bits identify a machine in the subnet. If the leftover bits are $000...$, then it is called the \textbf{network address} , and if the leftover bits are $111...$ then it is called the \textbf{broadcast address}. These addresses are generally not given to any machines.
+IP addressing assigns an address to each subnet. An example is 223.1.1.0/24. The /24 notation, called the \textbf{subnet mask} indicates that the leftmost 24 bits of the 32 bit quantity identify the subnet address. This is known as the \textbf{CIDR} notation. The leftover bits identify a machine in the subnet. If the leftover bits are $000...$, then it is called the \textbf{network address} , and if the leftover bits are $111...$ then it is called the \textbf{broadcast address}. The broadcast address forwards a datagram to all hosts on the same subnet. These addresses are generally not given to any machines.
 
 An organization is typically given a block of contiguous addresses with the same subnet prefix. The remaining bits can distinguish among devices within the same organization, and may have an additional subnetting structure.
 
-\section{IP Datagram Format}
+Let us say that an ISP connects 8 different organizations. Something special about the subnetting structure we have described till now is that the ISP will only advertise that it services datagrams whose first 20 address bits match (say) 200.23.16.0/20. The rest of the world does not know that there are 8 organizations under the ISP with their own subnets. This is referred to as \textbf{address aggregation}. 
+
+What would happen if an organization is moved to a different ISP? Would it's subnet would need to be changed? The answer is no. The new ISP could advertise multiple subnets - it's original one as well as 200.23.18.0/23 for the newly added organization.
+
+\section{The Router}
+
+The router has 4 high level components:
+
+\begin{itemize}
+  \item \textbf{Input ports} : The input payer is a physical endpoint terminating the incoming physical link. It also performs link layer functions, to interoperate with the link layer on the other side of the incoming link. The \textbf{lookup function}  is also performed at the input port. The forwarding table is consulted to determine the router output port to which a packet should be sent. If the switching fabric is already in use, the packets will be queued at the input port, awaiting transmission.
+  \item \textbf{Switching Fabric} : It connects the input ports to the output ports. The rate at which packets can be transferred from input port to output port is called the \textbf{switching rate}. If there are $N$ inputs, we desire that the switching rate is at least $N$ times the line rate. There are three ways to perform switching:
+    \begin{itemize}
+      \item Switching via memory. Here routers are traditional computers, where switching is done under the direct control of the routing processor, It worked much like an operating system, with the input ports generating interrupts to perform the necessary operations.
+      \item Switching via a bus. Here the input port directly transfers a packet to the output port via a shared bus, without intervention by the routing processor. The packet is prepended with a header and sent to the bus. All the output ports will receive the packet but only the one mentioned in the header will recognize it and act accordingly. Here the router switching speed is limited by the bus speed. If multiple packets arrive to the router at the same time, they must go to the bus in a queue since only one packet can use the bus at a time.
+      \item Switching via an interconnection network. This is a more sophisticated network using a crossbar switch. A crossbar switch consists of $2N$ buses that connect $N$ input ports and $N$ output ports. Each of the input buses intersect with all the output buses, and can be opened or closed at any time by the switching fabric.
+    \end{itemize}
+  \item \textbf{Output Ports} : It stores packets received by the switching fabric and transmits these on the outgoing link by performing the necessary link layer and physical layer functions.
+  \item \textbf{Routing Processor}  : The routing processor executes the routing protocols, maintains the routing tables and computes the forwarding table. Shadow copies of the forwarding tables are stored in every input port.
+\end{itemize}
+
 
 \section{DHCP Protocol}
 
