@@ -36,6 +36,7 @@
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\Z}{\mathbb{Z}}
 \newcommand{\C}{\mathbb{C}}
+\DeclareMathOperator{\ord}{ord}
 
 % Title information
 \title{Number Theory}
@@ -1493,6 +1494,70 @@ This can also be expressed as another definition. $\mu(n)$ is:
   This is a case of Dirichlet Convolution, which is an interesting concept for computing the convolution of two number theoretic functions.
 \end{remark}
 
-Some applications of this formula are:
+\chapter{Primitive Roots}
+
+\section{Order of numbers}
+
+\begin{definition} (Order of an integer)
+  Let $m$ be an integer $\geq 2$ and let $a$ be an integer coprime to $m$. The order of $a$ modulo $m$  is the least positive integer $k$ such that:
+  \[a^k \equiv 1 \mod m\]
+  This is denoted by $\ord_m a$
+\end{definition}
+
+This is reminiscent of Euler's Theorem. As expected, $\phi(m)$ is not always the least integer satisfying the above equation. It is obvious that $\ord_m a \leq \phi(m)$.
+
+Moreover, if $a \equiv b \mod m$, then $\ord_m a = \ord_m b$.
+
+\begin{lemma}
+  Let $h \in \N$. Then $a^h \equiv 1 \mod m$ if and only if $\ord_m a | h$. 
+\end{lemma}
+\begin{proof}
+  Let $k = \ord_m a$. Suppose $a^h \equiv 1 \mod m$. By division algorithm, there exists unique integers $q,r$ such that:
+  \[h = kq+r, 0 \leq r < k\]
+  Suppose $r \neq 0$. Then
+  \begin{align*}
+     1 &\equiv a^h \equiv a^{kq+r} \equiv a^kq a^r \mod m \\
+       &\equiv 1 \cdot a^r \mod m
+  \end{align*}
+  This is a contradiction since $r < k$, but $k$ is the least positive integer such that $a^k \equiv 1 \mod m$. Hence, $r = 0$, so $k|h$. The converse is obvious.
+\end{proof}
+
+A consequence of Lemma 8.1 is that $\ord_m a | \phi(m)$. This allows us to prune the space of possible orders when trying to find the order of an integer. Instead of trying every single integer to check if it is the order, we only need to check divisors of $\phi(m)$.
+
+\begin{exercise}
+  Let $a \in \Z$ with $(a,m) = 1$. Let $i,j \in \N \cup \{0\}$. Then $a^i \equiv a^j \mod m$ if and only if $i \equiv j \mod \ord_m a$  .
+\end{exercise}
+\begin{solution}
+  TODO, exercise (consider calling this an exercise?) 
+\end{solution}
+
+A consequence of the proposition above is that if $k = \ord_m a$, then $a,a^2, \cdots , a^k$ are incongruent modulo $m$.
+
+\begin{lemma}
+  Let $k = \ord_m a$ and let $h \in \N$. Then
+  \[\ord_m a^h = \frac{k}{(h,k)}\]
+\end{lemma}
+\begin{proof}
+  Let $l = \ord_m a^h$ and let $d = (h,k)$. Write
+  \[h = dh', k = dk'\]
+  We want to prove that $l = k'$. Since $a^hl \equiv 1 \mod m$, we get $k|hl$. Hence, $k' | h'l$. Since $(h',k') = 1$, we get $k'|l$. Now, it is enough to prove that $l|k'$. This will follow if we can prove that $(a^h)^{k'} \equiv 1 \mod m$. Now:
+  \[(a^h)^{k'} \equiv a^{h'dk/d} = (a^k)^{h'} \equiv 1 \mod m\]
+\end{proof}
+
+\section{Primitive Roots}
+
+\begin{definition}
+  Let $m$ be an integer $\geq 2$ and let $a$ be an integer coprime to $m$. we say that a is a primitive root modulo $m$ if $\ord_m a = \phi(m)$.
+\end{definition}
+
+\begin{exercise}
+  Prove that 2 is not a primitive root modulo any Fermat prime $f_n$, $n \geq 2$.
+\end{exercise}
+\begin{solution}
+  \[2^{2^n} \equiv -1 \mod f_n\] 
+  \[2^{2^{n+1}} \equiv 1 \mod f_n\]
+  \[\phi(f_n) = f_n-1\]
+  since $f_n$ is prime. $2^{n+1} < f_n-1$ for $n \geq 2$. Hence, $2$ cannot be a primitive root since $\ord_{f_n} 2 < \phi(f_n)$.
+\end{solution}
 
 \end{document}
