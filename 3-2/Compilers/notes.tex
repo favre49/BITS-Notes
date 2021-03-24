@@ -999,4 +999,25 @@ Quadruples are still ideal compared to tripled, because during optimization we g
 
 To fix this issue, \textbf{indirect triples}  store a list of pointers to triples, rather than a listing of the actual triples. This way, the compiler can reorder the instruction list without affecting the triples themselves.
 
+\subsection{Three Address Code Generation}
+
+Three address code can be generated using SDDs. For this, we need to define three functions:
+
+\begin{itemize}
+  \item \texttt{new Temp()} : Returns a unique new temporary variable
+  \item \texttt{gen} : Produces a 3 address code for an expression
+  \item \texttt{||} : Concatenates two three address codes.
+\end{itemize}
+
+To illustrate the generation, let us use the example from Fig 3.
+
+\begin{figure}[htpb]
+  \centering
+  \includegraphics[width=0.8\linewidth]{./assets/sdd_gen_eg.png}
+  \caption{An example grammar}%
+  \label{fig:}
+\end{figure}
+
+The attribute $code$ will hold the 3 address codes for $S$ and $E$, and $E.addr$ denotes the address that will hold the value for $E$. The productions and semantic rules are self explanatory - the parse tree will be evaluated bottom up to generate the final three address code.
+
 \end{document}
