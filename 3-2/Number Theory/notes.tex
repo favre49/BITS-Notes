@@ -1366,6 +1366,13 @@ The proof is straightforward from the factorization of an integer, so I have not
   \end{align*}
 \end{proof}
 
+\begin{exercise}
+  Prove that $\phi(n)$ is even for $n > 2$. 
+\end{exercise}
+\begin{proof}
+  Notice that if $k$ is coprime to $n$, then $n-k$ is also coprime to $n$. This can be proved since $(n,k) = (n-k,k)$. Hence, we can form pairs of coprime integers $k,n-k$, and thus $\phi(n)$ must be even. Notice also that the degenerate case where $n-k = k$ does not apply, since they could not be coprime for $n > 2$.
+\end{proof}
+
 \section{The M\"{o}bius Transform}
 
 \begin{definition}
