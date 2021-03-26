@@ -831,6 +831,97 @@ The protocol works as follows:
   \item Finally, the server sends a ``DHCP ACK''. This has the same contents as the DHCP offer, but with the same transaction ID as in the request. After receiving this, the client assumes the given IP address.
 \end{enumerate}
 
+\section{The IP Datagram}
+
+The key field of IPv4 datagram are:
+
+\begin{itemize}
+  \item \textbf{Version Number} : This 4 bit  field specify the IP protocol version of the datagram
+  \item \textbf{Header Length}  : Since the IPv4 datagram can contain a variable number of options, these 4 bits are needed to determine where the IP datagram data actually begins.
+  \item \textbf{Type of Service} : The type of service bits were included in the IPv4 header to allow different types of IP datagrams to be distinguished from each other. For instance, we may want to distinguish between real time and non real time traffic
+  \item \textbf{Datagram length}  : The total length of the IP datagram (header + datae) measured in bytes. It is a 16 bit field.
+  \item \textbf{Identifiers, flags, and fragmentation offset} : These three fields have to do with fragmentation
+  \item \textbf{Time to live} : The TTL field is included to ensure that datagrams do not circulate forever. This field is decremented by one each time the datagram is processed by a router. If the TTL field reaches 0, the datagram must be dropped.
+  \item \textbf{Protocol} : This field is used only when an IP datagram reaches its destination, and indicates the transport layer protocol to which the data portion of the IP datagram should be passed. A value of 6 means TCP, and a value of 17 means UDP.
+  \item \textbf{Header Checksum} : This allows the router to check for bit errors in the IP datagram. This is calculated by computing each 2 bytes in the header as a number and summing them all up with 1s complement arithmetic.
+  \item \textbf{Source and Destination IP addresses} 
+  \item \textbf{Options}  The options field allows an IP header to be extended.
+  \item \textbf{Data} : The data field holds the actual payload, which could be the transport layer segment or an ICMP message.
+\end{itemize} 
+
 \section{IP Fragmentation and Reassembly}
+
+All link layer protocols cannot carry network layer packets of the same size. The maximum amount of data that can be carried is the MTU. The problem that arises is that different links can have different MTUs, and hence may be incapable of sending some incoming datagrams.
+
+In order to fix this issue, the IP datagram is broken up into two or more smaller IP datagrams, called \textbf{fragments}. These need to be reassembled before they reach the transport layer, since it expects complete segments form the network layer. This reassembly is done at the end hosts.
+
+The reassembly is done using the identification, flag and fragmentation offset fields in the IP datagram header. When a datagram is created, the sending host gives the datagram a identification number. When the router fragments this datagram, the identification order remains the same for every fragment. Now when the destination receives the fragments, it can check these identification numbers to determine if the datagrams are actually fragments of the same larger datagram.
+
+Of course, the network layer is unreliable so some datagrams may be lost. Hence, the last fragment has the flag bit set to 0, whereas all other fragments have the flag bit set to one. To piece together the fragments, we use the fragmentation offset field.
+
+\section{Network Address Translation}
+
+Within an organization, end hosts may have separate \textbf{private IP addresses}. These can only be used for communication within the organization. It cannot be used to interface with the Internet, since these IP addresses may not be unique.
+
+Private address allow the local network to use just one IP address for interfacing with the internet. This allows us to change addresses of devices within the local network without notifying the outside world, or change the ISP without changing addresses of devices in the local network. Moreover, from a security perspective, the devices inside the local network are not addressable or visible to the outside world.
+
+\begin{figure}[htpb]
+  \centering
+  \includegraphics[width=0.8\linewidth]{./assets/NAT_eg.png}
+  \caption{./assets}%
+  \label{fig:./assets}
+\end{figure}
+
+In Figure 1, we can see the structure of the NAT. All datagrams leaving the local address will have the same source address (138.76.29.7), and all the datagrams coming into it will have the same destination address (138.76.29.7), since the router is the only access point to the Internet.
+
+The router will hold a \texbf{NAT translation table}, which will map the WAN side addresses to the LAN side addresses. When (say) 10.0.0.1, 3345 sends a datagram, to (say) 128.119.40.186, 80, the NAT router will change the source address to 138.76.29.7,5001, and send it to the destination. At the same time, it will create an entry in the translation table with the WAN side address 138.76.29.7,5001 and the LAN side address 10.0.0.1,3345. When the response arrives, it will have the destination as 138.76.29.7,5001. Then, the router will check the NAT translation table and forward it to the appropriate machine and port number.
+
+Since the 16 bit port number field is the only differentiating factor for the WAN side address, at most $2^{16}-1$ devices can be connected. NAT is also controversial since the router is checking the transport layer packet for the port number, which violates the layered architecture of the internet.
+
+Consider a client outside the local network wants to connect to a server with address 10.0.0.1. The only visible address is the NATed address, 138.76.29.7, not the internal server address. Therefore, to address this, we need to do some special configuration:
+
+\begin{itemize}
+  \item Statically configure the NAT to forward incoming connection requests at a given port to the server.
+  \item Another way is to use the Universal Plug and Play (UPnP) protocol. It learns the public IP address and can add or remove port mappings with lease times. For instance, an application can ask the NAT to create a mapping from (say) 10.0.0.1,3345 to (say) 138.76.29.7,5001. This way, the network administrator need not manually configure the NAT.
+  \item The last method is to use relaying. The NATed client establishes connection to a relay. The relay then bridges packets between external clients and th NATed client. This is used in Skype.
+\end{itemize}
+
+\section{IPv6}
+
+IPv6 is the successor to the IPv4 protocl, allowing for a larger address space as well as some other improvements.
+
+In Fig we can see the IPv6 datagram format.
+
+\begin{figure}[htpb]
+  \centering
+  \includegraphics[width=0.8\linewidth]{./assets/ipv6_datagram.png}
+  \caption{An IPv6 datagram}%
+  \label{fig:}
+\end{figure}
+
+The important differences are:
+
+\begin{itemize}
+  \item The size of the IP address is now 128 bits, instead of 32.
+  \item There is now an \textbf{anycast address}, that allows sending to any one of a group of hosts.
+  \item The header length is a fixed 40 bits in size
+  \item IPv6 allows for flow labelling. This allows for the labelling of packets belonging to particular flows to handle them specially. For instance, audio or video transmission could be treated as flows.
+\end{itemize}
+
+The fields are:
+\begin{itemize}
+  \item \textbf{Version}, holding the value 6 for IPv6
+  \item The \textbf{traffic class} is an 8 bit field similiar to the TOS field in the IPv4 datagram
+  \item The \textbf{flow label} is used for identifying flow datagrams
+  \item The \textbf{payload length}  is the number of bytes in the datagram that follow the header.
+  \item \textbf{Next Header}  identifies the protocol to which to deliver the datagram
+  \item The \textbf{Hop limit}  is the same as TTL in the IPv4 datagram
+  \item The source and destination addresses
+  \item The actual payload
+\end{itemize}
+
+IPv6 does not allow for fragmentation and reassembly at intermediate routers. Instead, this is only done by the source and destination. If the datagram is too large for a router, it answers with a ``Packet Too Big"" ICMP error message. This speeds up IP forwarding within the network.
+
+It is also noticeable that there is no longer a header check sum. This is because the transport and link layers both perform checksumming, so it was removed in IPv6 in the interest of speed.
 
 \end{document}
