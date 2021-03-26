@@ -1,10 +1,11 @@
-\documentclass[12pt,letterpaper]{amsbook}
+\documentclass[12pt,letterpaper]{book}
 
 % Formatting packages
 \usepackage[utf8]{inputenc}
 \usepackage[margin=1 in]{geometry}
 \usepackage{parskip}
 \usepackage[hidelinks]{hyperref}
+\usepackage{setspace}
 
 % Picture packages
 \usepackage{graphicx}
@@ -15,6 +16,10 @@
 
 % Formatting
 \renewcommand{\baselinestretch}{1.25}
+\setlength{\abovedisplayskip}{7pt}
+\setlength{\belowdisplayskip}{7pt}
+\setlength{\abovedisplayshortskip}{7pt}
+\setlength{\belowdisplayshortskip}{7pt}
 
 % Theorems and other necessary structures
 \usepackage{mdframed}
@@ -641,9 +646,60 @@ An example of such a process is a population of bacteria that can give birth to 
   \[Var(N(t)) = e^{\lambda t} (e^{\lambda t} - 1)\]
 \end{theorem}
 
-Let us suppose that there is also immigration in addition to birth, such that in an interval of infinitesimal length $h$, the probability of a new member being added (by immigration) is $vh + oh$.
+Let us suppose that there is also immigration in addition to birth, such that in an interval of infinitesimal length $h$, the probability of a new member being added (by immigration) is $vh + o(h)$.
 
 Then the generating function of the probability is:
 \[P(s,t) = \frac{s^i e^{-\lambda t} e^{-v(1-s)t}}{(1 - s(1- e^{-\lambda t}))^i}\]
+
+\chapter{Brownian Motion}
+
+\section{Wiener Process}
+
+Consider a particle performs a random walk such that in a small interval of time of duration $\Delta t$, the displacement of the particle to the right or to the left by a small amount $\Delta x$. The probability of the particle moving right by $\Delta x$ is $p$ and to the left $- \Delta x$ is $q$, such that $p+q = 1$. Both $p$ and $q$ are independent of time $t$. This displacement at the $i^{th}$ step is denoted by $Z_i$. Then, the total displacement is:
+\[X(t) = \sum_{i = 1}^{n(t)} Z_i\]
+Each ``step'' is obviously a time interval of $\Delta t$, so $n(t) = t / \Delta t$. First, let us compute the expected value:
+\begin{align*}
+  E[X(t)] &= \sum_{i = 1}^n E[Z_i]\\
+          &= \sum_{i=1}^n (p-q) \Delta x \\
+          &= n (p-q) \Delta x\\ 
+          &= \frac{t(p-q) \Delta x}{\Delta t}
+\end{align*}
+Now, let us compute the variance:
+\begin{align*}
+  V[X(t)]  &= \sum_{i=1}^n V[Z_i] \\
+           &= \sum_{i=1}^n E[Z_i^2] - E[Z_i]^2 \\
+           &= \sum_{i=1}^n (\Delta x)^2 (p+q) - \Delta x^2 (p-q)^2\\
+           &= \sum_{i=1}^n (\Delta x)^2 [1 - (p-q)^2]\\
+           &= \sum_{i=1}^n4 pq (\Delta x)^2 \\
+           &= 4 npq (\Delta x)^2 \\
+           &= \frac{4 p q t (\Delta x)^2}{\Delta t}
+\end{align*}
+
+Let $X(t)$ is such that as $\Delta t \rightarrow 0$, $V[X(t)] \rightarrow \sigma^2t$. This means that:
+\[\lim_{\Delta t \rightarrow 0} \frac{4pqt (\Delta x)^2}{\Delta t} = \sigma^2 t\]
+\[\lim_{\Delta t \rightarrow 0} \frac{4pq (\Delta x)^2}{\Delta t} = \sigma^2\]
+For this limit to exist, 
+\[\Delta x = \frac{\sigma}{\sqrt{pq}} (\Delta t)^{1/2}\]
+Also Let $X(t)$ is such that 
+\[\lim_{\Delta t \rightarrow 0} E[X(t)] = \mu t\]
+\[\lim_{\Delta t \rightarrow 0} \frac{(p-q) \Delta x}{\Delta t} = \mu\]
+\[\lim_{\Delta t \rightarrow 0} \frac{p-q}{\Delta t} \frac{\sigma}{\sqrt{pq}} (\Delta t)^{1/2} = \mu\]
+This equation is satisfied when:
+\[p = \frac{1}{2} (1 + \mu (\Delta t)^{1/2} / \sigma)\]
+\[q = \frac{1}{2} (1 - \mu (\Delta t)^{1/2} / \sigma)\]
+From this, we can find that:
+\[\Delta x = \sigma (\Delta t)^{1/2}\]
+Since $Z_i$ are i.i.d, the sum of them $X(t)$ for large $n$ is normal with mean $\mu t$ and variance $\sigma^2 t$ from the central limit theorem.
+
+\section{Diffusion Process}
+
+Let $f(x,t) \Delta x$ be the probability of finding the particle at $(x, x+ \Delta x)$ at time $t$.
+\[f(x,t) \Delta x = p f(x - \Delta x, t - \Delta t) \Delta x + q f(x + \Delta x, t - \Delta t) \Delta x\]
+\[f(x,t) = p \left[f(x,t) - \frac{\partial f}{\partial x} - \frac{\partial f}{\partial t} + \frac{1}{2} \frac{\partial ^ 2 f}{\partial x^2} + 0 (\Delta t) \right] + q\left[f(x,t) + \frac{\partial f}{\partial x} - \frac{\partial f}{\partial t} + \frac{1}{2} \frac{\partial ^ 2 f}{\partial x^2} + 0 (\Delta t) \right]  \]
+The above result comes from Taylor Expansion.
+\[f(x,t) = f(x,t)(p+q) - \frac{\partial f}{\partial x} \Delta x (p-q) - \frac{\partial f}{\partial t} \Delta t (p+q) + \frac{1}{2} \frac{\partial^2 f}{\partial x^2} (\Delta x)^2 (p+q) \]
+Cancelling some terms and using the values of $p$ and $q$, we get the following partial differential equation:
+\[\frac{\partial f}{\partial t} + \mu \frac{\partial f}{\partial x} = \frac{\sigma^2}{2} \frac{\partial^2 f}{\partial x^2}\]
+This is called the \textbf{Advection Diffusion Equation}. $\sigma^2/2$ is called the diffusion coefficient.
 
 \end{document}
