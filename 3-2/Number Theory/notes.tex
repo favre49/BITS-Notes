@@ -1529,16 +1529,22 @@ Moreover, if $a \equiv b \mod m$, then $\ord_m a = \ord_m b$.
   This is a contradiction since $r < k$, but $k$ is the least positive integer such that $a^k \equiv 1 \mod m$. Hence, $r = 0$, so $k|h$. The converse is obvious.
 \end{proof}
 
-A consequence of Lemma 8.1 is that $\ord_m a | \phi(m)$. This allows us to prune the space of possible orders when trying to find the order of an integer. Instead of trying every single integer to check if it is the order, we only need to check divisors of $\phi(m)$.
+\begin{corollary}
+  $\ord_m a | \phi(m)$ 
+\end{corollary}
 
-\begin{exercise}
+This corollary allows us to prune the space of possible orders when trying to find the order of an integer. Instead of trying every single integer to check if it is the order, we only need to check divisors of $\phi(m)$.
+
+\begin{lemma}
   Let $a \in \Z$ with $(a,m) = 1$. Let $i,j \in \N \cup \{0\}$. Then $a^i \equiv a^j \mod m$ if and only if $i \equiv j \mod \ord_m a$  .
-\end{exercise}
-\begin{solution}
+\end{lemma}
+\begin{proof}
   TODO, exercise (consider calling this an exercise?) 
-\end{solution}
+\end{proof}
 
-A consequence of the proposition above is that if $k = \ord_m a$, then $a,a^2, \cdots , a^k$ are incongruent modulo $m$.
+\begin{corollary}
+If $k = \ord_m a$, then $a,a^2, \cdots , a^k$ are incongruent modulo $m$.
+\end{corollary}
 
 \begin{lemma}
   Let $k = \ord_m a$ and let $h \in \N$. Then
@@ -1566,5 +1572,38 @@ A consequence of the proposition above is that if $k = \ord_m a$, then $a,a^2, \
   \[\phi(f_n) = f_n-1\]
   since $f_n$ is prime. $2^{n+1} < f_n-1$ for $n \geq 2$. Hence, $2$ cannot be a primitive root since $\ord_{f_n} 2 < \phi(f_n)$.
 \end{solution}
+
+\begin{theorem}
+  Let $a_1, \cdots a_\phi(m)$ denote all positive integers $\leq m$ that are coprime to $m$. If $a$ is a primitive root modulo $m$, then 
+  \[a,a^2, \cdots, a^{\phi(m)}\]
+  are congruent modulo $m$ to $a_1, \cdots, a^\phi(m)$ in some order
+\end{theorem}
+\begin{proof}
+  TODO 
+\end{proof}
+
+\begin{corollary}
+  If $m$ has a primitive root, then the number of primitive roots modulo $m$ is $\phi(\phi(m))$.
+\end{corollary}
+\begin{proof}
+  Suppose $a$ is a primitive root modulo $m$. Since any other primitive root is coprime to $m$, it is congruent modulo $m$ to one of
+  \[a,a^2,\cdots, a^{\phi(m)}\]
+  Since $\ord_m a^h = \frac{\phi(m)}{(h,\phi(m))}$, $a^h$ is a primitive root modulo $m$ if and only if $(h, \phi(m)) = 1$. Hence the number of primitive roots modulo $m$ equals the number of positive integers $\leq \phi(m)$ coprime to $\phi(m)$ and hence $\phi(\phi(m))$
+\end{proof}
+
+\begin{exercise}
+  Let $m \geq 3$ and let $a$ be a primitive root modulo $m$. Prove that:
+  \[a^{\phi(m)/2} \equiv -1 \mod m\]
+\end{exercise}
+\begin{solution}
+  Since $(m-1,m) = 1$  , there exists $i$ in $[1,\phi(m))$, such that $a^i \equiv m-1 \equiv -1 \mod m$. Then $a^{2i} \equiv 1 \mod m$. If $i < \phi(m)/2$, then $2i < \phi(m)$ and we get a contradiction as $a$ is a primitive root modulo $m$. If $i > \phi(m)/2$, then $0 < i-\phi(m)/2 < \phi(m)/2$. $(a^{i - \phi(m)/2})^2 \equiv 1 \mod m$. Since $2(i - \phi(m)/2) < \phi(m)$, this is again a contradiction as $a$ is a primitive root modulo $m$. Hence $i = \phi(m)/2$.
+\end{solution}
+
+\begin{theorem}
+  Let $n \in \Z$. If $p$ is an odd prime dividing $n^2+1$, then $p \equiv 1 \mod 4$. 
+\end{theorem}
+\begin{proof}
+   
+\end{proof}
 
 \end{document}
