@@ -117,7 +117,7 @@ So, we get the algorithm:
   \caption{KMul(x,y)}
 \end{algorithm}
 
-The time complexitu of this is $T(n) = 3T(n/2) + cn$, which gives the aforementioned complexity.
+The time complexity of this is $T(n) = 3T(n/2) + cn$, which gives the aforementioned complexity.
 
 \section{Matrix Multiplication}
 
@@ -745,7 +745,7 @@ We can also verify it with the second definition and desigining a polynomial tim
 
 \subsection{Polynomial Time Reductions}
 
-We say that a language $L_1$ reduces to a language $L_2$ in polynomial time if there exists a polynomial time computable function $f(x)$ such that $x \in L_1 \Rightarrow f(x) \in L_2$. By polynomial time computable function, we mean that there exists a DTM that can perform this function in polynomial time. This is denoted by $L_1 \leq_p L_2$.
+We say that a language $L_1$ reduces to a language $L_2$ in polynomial time if there exists a polynomial time computable function $f(x)$ such that $x \in L_1$ if and only if $f(x) \in L_2$. By polynomial time computable function, we mean that there exists a DTM that can perform this function in polynomial time. This is denoted by $L_1 \leq_p L_2$.
 
 If $L_1 \leq_p L_2$ and $L_2$ has a polynomial time algorithm $A_2$, then we can combine $A_2$ and $f$ to get a polynomial time $A_1$ for $L_1$. First we give $x$ as an input to the DTM to compute $f(x)$ in polynomial time. Then $f(x)$ can be given to the DTM for $A_2$. If $A_2$ accepts $f(x)$, then $A_1$ accepts $x$. Else, it rejects $x$. The total time taken will obviously also be polynomial.
 
