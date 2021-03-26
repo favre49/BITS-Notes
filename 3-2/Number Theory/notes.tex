@@ -1266,14 +1266,6 @@ In particular, if $p$ is prime, then $\phi(p) = p-1$, and we have Fermat's Littl
   \[a^l \equiv a^{l-k}a^k \equiv a^{\phi(m)q}a^k \equiv a^k \mod m\]
 \end{proof}
 
-\begin{exercise}
-  Let $p$ be an odd prime and let $a \in \Z$ with $p \nmid a$. Show that:
-  \[\sum_{i=1}^{p-1} ai \equiv 0 \mod p\]
-\end{exercise}
-\begin{solution}
-  TODO
-\end{solution}
-
 \begin{theorem}[Generalized Euler Theorem]
   Let $m_1, \cdots, m_k \in \N$ and let $a$ be an integer coprime to $m_i$ for each $i$, then:
 \[a^{[\phi(m_1), \cdots, \phi(m_k)]} \equiv 1 \mod [m_1 , \cdots, m_k]\]
@@ -1539,7 +1531,17 @@ This corollary allows us to prune the space of possible orders when trying to fi
   Let $a \in \Z$ with $(a,m) = 1$. Let $i,j \in \N \cup \{0\}$. Then $a^i \equiv a^j \mod m$ if and only if $i \equiv j \mod \ord_m a$  .
 \end{lemma}
 \begin{proof}
-  TODO, exercise (consider calling this an exercise?) 
+  The backwards direction is trivial to prove, by substitution. Let us prove the forward direction.
+  
+  Let $k = \ord_m a$. WLOG, assume $i \geq j$. Then, let us assume that $i-j \not \equiv 0 \mod k$. Then we can express $i-j$ as:
+  \[i-j = kp + r, 0 < r < k \]
+  Substituting,
+  \[a^{i} \equiv a^j \mod m\]
+  \[a^{i-j} \equiv 1 \mod m\]
+  \[a^{kp+r} \equiv 1 \mod m\]
+  \[a^{kp} \cdot a^r \equiv 1 \mod m\]
+  \[a^r \equiv 1 \mod m\]
+  But, $r < k$, which is a contradiction since the order should be the least number satisfying the equation. Hence, the forward direction is proved.
 \end{proof}
 
 \begin{corollary}
