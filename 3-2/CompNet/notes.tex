@@ -924,4 +924,55 @@ IPv6 does not allow for fragmentation and reassembly at intermediate routers. In
 
 It is also noticeable that there is no longer a header check sum. This is because the transport and link layers both perform checksumming, so it was removed in IPv6 in the interest of speed.
 
+Given these technical details, how do we transition from IPv4 to IPv6? It is clearly impossible to coordinate a mass upgrade from old IPv4 systems to the new IPv6, considering the size of the internet today. Instead we use a \textbf{dual stack} approach, where IPv6 nodes also have a complete IPv4 implementation. These have the ability to send and receive both IPv4 and IPv6 datagrams, and have both kinds of addresses. 
+
+These dual stack nodes have to be capable of checking whether or not the next node is IPv6 compatible. To do this, we can use DNS - if the node name is resolved to have an IPv6 address, it must be IPv6 compatible. Otherwise, it is IPv4-only.
+
+This dual stack approach faces a huge issue. Consider an example where Alice and Bob both have IPv6 compatible machines, and want to communicate with one another. But one of the nodes on the path between them is IPv4-only. In this case, the IPv6 datagrams sent by Alice would have to be converted to IPv4. Unfortunately, there are field in the IPv6 datagrams that have no counterpart in IPv4, so that information is lost.
+
+An alternative is \textbf{tunnelling}. We refer to the set of IPv4 nodes as a \textbf{tunnel}. The IPv6 node on one side of a tunnel takes the entire IPv6 datagram and puts it in the data field of an IPv4 datagram. The IPv4 datagram received on the other side of the tunnel can be used to extract the IPv6 datagram and route as normal.
+
+\section{ICMP}
+
+ICMP stands for the Internet Control Message Protocol. ICMP is used by hosts and routers to communicate network layer information with one another. For instance, a popular use of ICMP is for error reporting.
+
+ICMP messages are carried inside the IP datagram payload, just like transport layer segments. When a host receives an IP datagram with ICMP specified as the upper layer protocol, it demultiplexes the contents to ICMP, just like with the transport layer protocols.
+
+Every ICMP message has a \texttt{type} and a \texttt{code} field, and contains the header and the first 8 bytes of the IP datagram that caused the ICMP message to be generated. This way the sender can determine the datagram that caused the error.
+
+Some important examples of ICMP messages are ``Destination Unreachable'', ``source quench'' (used for congestion control), ``echo reply'' (used to ping).
+
+\section{Routing Algorithms}
+
+\subsection{The Terminology}
+
+Typically, a host is attached directly to one router which is called the \textbf{default router} . The default router connected to the source host is called the \textbf{source router}. Hence the problem of routing a packet from source host to the destination hos boils down to the routing of a packet from the source router to a destination router.
+
+Routing algorithms can be of many (not necessarily exclusive) types:
+\begin{itemize}
+  \item \textbf{Global}, where each node has complete information about connectivity and link costs
+  \item \textbf{Decentralized}, where each node begins with only the knowledge of the costs of its own directly attached links. Then, it uses an iterative process of calculation to find the least cost paths.
+  \item \textbf{Static}, where routes change very slowly over time
+  \item \textbf{Dynamic}, where routes change due to the traffic load or change in topology
+  \item \textbf{Load sensitive}, where link cost changes due to congestion in the link
+  \item \textbf{Load insensitive} , where link costs do not change with congestion
+\end{itemize}
+
+\subsection{Link State Routing Algorithms}
+
+LS algorithms are global algorithms - they have complete information about the network topology and all link costs. This is done in practice via link state broadcast algorithms, where each node broadcasts to all the other nodes on the network.
+
+One LD algorithm is Djikstra's algorithm, which can compute all least-cost paths from a source node $u$ to all the other nodes. After the $k^{th}$ iteration, the least cost paths are known to $k$ destination nodes. The algorithm is well known, but remember the following notation:
+\begin{itemize}
+  \item $D(v)$ - the cost of the least cost path from $u$ to $v$
+  \item $p(v)$ the predecessor on the least cost path
+  \item $N'$ the subset of nodes, where $v$ is in $N'$ if the least cost path is known.
+\end{itemize}
+
+In $O(n \log n)$ (in sparse graphs) time, we can fill the forwarding table with information of the next-hop node on the least cost path from $u$ to it's destination.
+
+This approach can lead to some problems - assume that the link costs are equivalent to the load on the link. In this example, link costs are not symmetric. This means we are now trying congestion-sensitive routing.
+
+
+
 \end{document}
