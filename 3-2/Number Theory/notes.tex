@@ -1318,6 +1318,10 @@ Examples of multiplicative functions are:
 
 The proof is straightforward from the factorization of an integer, so I have not included the proof here.
 
+\begin{remark}
+  The value of a multiplication function $f(x) \forall x \in [1,n]$ can be calculated in $O(n)$ time using a linear sieve. 
+\end{remark}
+
 \begin{exercise}
   Prove that Euler's Totient Function is multiplicative.
 \end{exercise}
@@ -1605,7 +1609,89 @@ If $k = \ord_m a$, then $a,a^2, \cdots , a^k$ are incongruent modulo $m$.
   Let $n \in \Z$. If $p$ is an odd prime dividing $n^2+1$, then $p \equiv 1 \mod 4$. 
 \end{theorem}
 \begin{proof}
-   
+TODO   
+\end{proof}
+
+\begin{exercise}
+  Let $\ord_m a = h$, $\ord_m b = k$. Then:
+  \begin{enumerate}
+    \item $(\ord_m ab) | hk$
+    \item If $h$ and $k$ are coprime, then $\ord_m ab = hk$.
+  \end{enumerate}
+\end{exercise}
+\begin{solution}
+  Let $l = \ord_m ab$. Since $a^h \equiv 1 \mod m$ and $b^k \equiv 1 \mod m$, we get:
+  \[(ab)^{hk} = a^{hk} b^{hk} \equiv 1 \mod m\]
+  Hence $\ord_m ab|hk$.
+
+  To prove 2, we must show that $hk|l$. Since $h$ and $k$ are coprime, we can just show that $h|l$ and $k|l$. Let us prove that $h|l$. To do this, we prove that $a^l \equiv 1 \mod m$. Now $a^{lh} \equiv 1 \mod m$. Next,
+  \[(a^l)^k \equiv a^{lk} b^{lk} \equiv (ab)^{lk} \equiv 1 \mod m\]
+  Since $(h,k) = 1$, there exist integers such that $hx+ky = 1$. Now 
+  \[a^l \equiv (a^{lh})^x (a^{lk})^y \equiv 1 \mod m\]
+  (polish, late for class)
+\end{solution}
+
+\begin{theorem}[Lucas' Theorem]
+  Let $m \geq 3$. Suppose that there exists $x \in \N$ such that $x^{m-1} \equiv 1 \mod m$ and $x^{(m-1)/q} \not \equiv 1 \mod m$ for all prime factors $q$ of $m-1$. Then $m$ is prime.
+\end{theorem}
+\begin{proof}
+  Let $k = \ord_m x$. Since $x^{m-1} \equiv 1 \mod m$, we get that $k|m-1$. Write $m-1 = kt, t \in \N$. Suppose $t > 1$. Then we can find a prime $q$ dividing $t$. Now
+  \[x^{(m-1)/q} \equiv (x^k)^{t/q} \equiv 1 \mod m\]
+  which is a contradiction. Hence $t = 1$, or $k = m-1$. Thus $m-1 = \phi(m)$. Hence $m$ is prime.
+\end{proof}
+
+This gives us a primality test for integers. This is in fact faster than brute force checking in $O(\sqrt{n})$ since the number of prime factors of a number grows very slowly - see highly composite numbers. (or perhaps finding the necessary $x$ is slow?)
+
+\begin{corollary}
+  Let $m \geq 3$. Suppose  that there exists $x \in \N$ such that $x^{(m-1)/2} \equiv -1 \mod m$ and $x^{(m-1)/q} \equiv 1 \mod m$ for all odd prime factors $q$ of $m-1$. Then $m$ is prime.
+\end{corollary}
+
+\section{Polynomial Congruences}
+
+\begin{definition}
+  Let $f(x)  \in Z[x]$. We say that $\alpha \in \Z$ is a solution of 
+  \[f(x) \equiv 1 \mod m\]
+  if $f(\alpha) \equiv 0 \mod m$.
+\end{definition}
+
+\begin{theorem}[Lagrange's Theorem]
+  Let $p$ be a prime and let $f(x) = a_nx^n + \cdots + a_0$ be a polynomial of degree $n$ with integer coefficients, where $p \nmid a_n$. The congruence has $f(x) \equiv 0 \mod p$ has at most $n$ incongruent solutions modulo $p$.
+\end{theorem}
+\begin{proof}
+  We prove the theorem by induction on $n$. If $n=0$, then $f(x) = a_0$ with $p \nmid a_0$. Hence, the number of solutions will be 0, which is $\leq n$.
+
+  Assume that the theorem is true for polynomials of degree $<k$. Consider a polynomial of degree $k$ $f(x)$.
+  
+  If $f(x) \equiv 0 \mod p$ has no solutions, we are done. Otherwise if it has a solution $\alpha, 0 \leq \alpha < p$. No:
+  \begin{align*}
+    f(x) &\equiv f(x) - 0 \mod p \\
+         &\equiv f(x) - f(\alpha) \mod p\\
+         &\equiv a_k(x^k - \alpha^k)+ a_{k-1} (x^{k-1} - \alpha^{k-1}) + \cdots + a_1(x - \alpha) \mod p
+  \end{align*}
+  Since $x-\alpha$ divides each of the summands, we get that $x-\alpha$ divides $f(x)$. Write
+  \[f(x) \equiv (x-\alpha)q(x) \mod p\]
+  where $q(x)$ is a polynomial of degree $k-1$.
+
+  If $\beta$ is any other incongruent solution of $f(x) \equiv 0 \mod p$, then $q(\beta) \equiv 0 \mod p$. By induction hypothesis, $q(x)$ has at most $k-1$ solutions. Hence, $f(x)$ has at most $k$ solutions. Hence, by PSI, Lagrange's theorem holds true.
+\end{proof}
+
+\begin{corollary}
+  Let $p$ be a prime and let $d$ be a positive divisor of $p-1$. Then the congruence $x^{d-1} \equiv 0 \mod p$ has exactly $d$ solutions
+\end{corollary}
+\begin{proof}
+  Let $f(x) = x^{p-1} -1$. By Fermat's little theorem,
+  \[f(x) \equiv 0 \mod p\]
+  has exactly $p-1$ solutions. Since $d|p-1$, we have that $x^d-1$ divides $x^{p-1}-1$. So,
+  \[f(x) = (x^d-1)q(x)\]
+  where
+  \[q(x) = x^{p-1-d} + x^{p-1-2d} + \cdots + x^d + 1\]
+  By Lagrange's theorem, the congruence
+  \[x^d-1 \equiv 0 \mod p\]
+  has $\leq d$ solutions and 
+  \[q(x) \equiv 0 \mod p\]
+  has $\leq p-1-d$ solutions. Since $f(x) \equiv 0 \mod p$ has $p-1$ solutions and $q(x) \equiv 0$ has $\leq p-1-d$ solutions, we get that
+  \[x^d-1 \equiv 0 \mod p\]
+  must have $\geq (p-1) - (p-1-d) = d$ solutions. Hence it has exactly $d$ solutions.
 \end{proof}
 
 \end{document}
