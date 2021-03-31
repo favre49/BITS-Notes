@@ -761,13 +761,55 @@ Notice the differnece in these definitions - a language $L$ is NP-Complete if $L
 
 A more informal way of putting these definitions is that any NP-hard language is at least as hard as any other NP language. We have the term NP-Complete because to solve the \textbf{P} vs \textbf{NP} problem, it suffices to study whether an NP-complete problem can be decided in polynomial time. This is true since any other NP problem could be reduced to the NP-complete problem in polynomial time, hence also becoming polynomial.
 
-\subsection{An NP-Complete Problem}
+\subsection{The Boolean Satisfiability Problem}
 
 A \textbf{Boolean formula}  over the variables $u_1 \cdots u_n$ consists of these variables and the logical operators AND,OR and NOT. A boolean formula $\Phi$ is satisfiablef there exists some assignment of value to the variables such that $\Phi$ evalueates to true.
 
 This problem, called the SAT problem, is NP-complete (called the Cook-Levin THeorem). To prove this, we must first prove that it is NP. Given a boolean formula $\Phi(z)$, an NTM will guess an assignment of variables for $z$ and then it will evaluate $\Phi(z)$ in polynomial time. If it evaluates to 1, then it will accept, otherwise it will reject. Hence, SAT $\in$ NP.
 
-The next step is to prove that it is NP-Hard. For this, we have to prove that for an $L \in NP, L \leq_p SAT$. We will have to describe a polynomial time DTM $M$ such that $x \in L \Rightarrow M(x) \in SAT$ and $x \notin L \Rightarrow M(x) \notin SAT$. Since $L$ is in NP, there exists a polynomial time DTM $D$ such that if $x \in L$, there exists $y \in \{0,1\}^{p(|x|)}$ such that $D(x,y) = 1$. If $x \notin L$, then there does not exist any such $y$ such that $D(x,y) = 0$.
+Next we have to prove that SAT is NP Hard. \textbf{TODO}.
+
+
+\subsection{The 0-1 Integer Programming Problem}
+
+The 0-1 integer programming problem, $01IPROG$ is as follows - given  list of $m$ linear inequalities with rational coefficients over $n$ variables $u_1, \cdots, u_n$, find out if there is an assignment of 0s and 1s satisfying all the inequalities.
+
+It is simple to show $01IPROG$ is NP - an NTM $N$ can non-deterministically guess an assignment 0 or 1 to the variables and then it will evaluate and verify all the inequalities in polynomial time.
+
+$01IPROG$ is also NP-Hard. We can prove this by showing that $SAT \leq_p 01IPROG$. For a given CNF formula $\Phi = C_1 \land C_2 \land \cdots \land C_m$ where for each clause there will be an inequality whose solution will be in either 0 or 1. Suppose that the clause is $u_1 \lor \lnot u_2 \lor \lnot u_3$, then the corresponding linear inequality will be $u_1 + (1 - u_2) + (1-u_3) \geq 1$. We can prove that these are equivalent. From this, we can say that $\Phi$ has an equivalent 0-1 integer program, whose transformation can be done in linear time. Hence, $SAT \leq_p 01IPROG$, so $01IPROG$ is NP Hard.
+
+This also completes a proof that $01IPROG$ is NP-Complete.
+
+\subsection{The Independent Set Problem, Revisited}
+
+We have already proved that $INDSET \in \matbf{NP}$. We can also show it is NP-Hard by proving that $3SAT \leq_p INDSET$. Say we have a $m$ clause 3CNF formula $\Phi = C_1 \land C_2 \cdots C_m$. We will convert it into a $7m$ vertex graph $G$ in polynomial time such that $\Phi$ is satisfiable if and only if the independent set is of size at least $m$.
+
+Let us associate a cluster of 7 vertices in $G$ with each clause of $\Phi$. The vertices in a cluster associated with a clause correspond to the seven possible satisfying partial assignments, e.g. (0,1,0) or (1,1,0). We will call a partial assignment \textbf{consistent} if they have same value for all shared variables.  We put an edge between two vertices in $G$ if they correspond to inconsitent partial assigments. 
+
+The fina l output graph will have $7m$ vertices, and can be generated in polynomial time. Suppose $\Phi$ is satisfiable. Then, all the clauses are true for some assignment of variables. In each clause, we select the vertex corresponding to the partial assignment. There cannot be an edge between two chosen vertices since the partial assignments are inconsistent, so that means that they form an independent set. If it is not satisfiable, then there cannot be an independent set of size $m$. Hence, $3SAT \leq_p INDSET$.
+
+\section{NP Optimization Problems}
+
+An NP optimization problem $\Pi$ consists of:
+
+\begin{itemize}
+  \item A set of valid instances $D_\Pi$ recognizable in polynomial time. The size of an instance $I \in D_\Pi$, denotes by $|I|$ is defined as the number of bits needed to write $I$ under the assumption that all numbers occuring in the instance are written in binary
+  \item Each instance $I \in D_\Pi$ has a set of feasible solutions $S_\Pi (I)$. We require that $S_\Pi(I) \neq \phi$  and that every solution $s \in S_\Pi(I)$ is of a length polynomially bounded in $|I|$.  Furthermore, there is a polynomial time algorithm that given a pair $(I,S)$ decides whether $S \in S_\Pi(I)$
+  \item There is a polynomial time computable objective function $obj$ that assigns a non negative number to each pair $(I,S)$, where $I$ is an instance and $S$ is a feasible solution for $I$.
+  \item $\Pi$ is specified to either be a minimization or maximization problem. The restriction of $\Pi$ to unit cost instances is called the \textbf{cardinality version} of $\Pi$.
+\end{itemize}
+
+With every NP optimization problem, we can naturally associate a division problem by giving a bound on the optimal solution. Thus, the decision version of NP optimization problem $\Pi$ consists of pairs $(I,B)$ where $I$ is an instance of $\Pi$ and $B$ is a rational numbre. If $\Pi$ is a minimzation problem, then the answer to the decision version will be ``yes'' if and only if there is a feasible solution to $I$ of cost $\leq B$.
+
+An \textbf{approximation algorithm}  produces a feasible solution that is ``close'' to the optimal one, and is time efficient. Let $\Pi$ be a minimization problem, and let $\delta$ be a function such that $\delta:Z^+ \rightarrow Q^+$, with $S \geq 1$. An algorithm $A$ is said to be a factor $\delta$ approximation algorithm for $\Pi$ if, on each instance $I$, $A$ produces a feasible solution for $I$ such that $f_\Pi(I,S) \leq \delta(|I|). OPT(I)$, where $OPT(I)$ is the optimal solution. The running time of $A$ must be bounded by a fixed polynomial in $|I|$.
+
+\subsection{The Vertex Cover Problem}
+
+Given an undirected graph $G = (V,E)$ and a cost function on vertices $C:V \rightarrow Q^+$ find a minimum cost vertex cover. The special case in which all vertices are of unit cost , will be called the cardinality vertex cover problem.
+
+Let us now define a 2-approximatoin algorithm for the cardinality vertex cover problem. Given a graph $H = (U,F)$, let $M$ be a maximal matching. Let the set of matched vertices be $V$. No edge can be left uncovered by the set of vertices picked, since otherwise such an edge could have been added to the matching, and it would not be maximal.
+
+TODO: prove that this is a 2-approximation
 
 \section{Problems}
 
