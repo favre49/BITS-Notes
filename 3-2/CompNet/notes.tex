@@ -971,8 +971,23 @@ One LD algorithm is Djikstra's algorithm, which can compute all least-cost paths
 
 In $O(n \log n)$ (in sparse graphs) time, we can fill the forwarding table with information of the next-hop node on the least cost path from $u$ to it's destination.
 
-This approach can lead to some problems - assume that the link costs are equivalent to the load on the link. In this example, link costs are not symmetric. This means we are now trying congestion-sensitive routing.
+This approach can lead to some problems - assume that the link costs are equivalent to the load on the link. In this example, link costs are not symmetric. This means we are now trying congestion-sensitive routing. In this case, there may be \textbf{route oscillations}, where the route changes with new costs on every timestep.
 
+\textbf{TODO : OSPF}
 
+\subsection{Distance Vector Routing Algorithm}
+
+While the LS algorithm us an algorithm using global information, the DV algorithm is iterative, asynchronous and distributed. This means that each node receives some information from one or more of its directly attached neighbours, performs a calculation, and then distributes the results of its calculation back to its neighbours.
+
+The DV algorithm is governed by the \textbf{Bellman Ford Algorithm}, given by:
+\[d_x (y) = \min_v \{c(x,v) + d_v(y)\}\]
+Each node $x$ begins with $D_x(y)$, an estimate of the cost of the least cost path form itself to node $y$, for all nodes in $N$. Let $\mathbf{D}_x = [D_x(y) : y \in N]$ be the distance vector for node $x$. With the DV algorithm, each node $x$ maintains the following information:
+\begin{itemize}
+  \item For each neighbour $v$, the cost $c(x,v)$ from $x$ to directly attached neighbour $v$
+  \item Node $x$ distance vector $\mathbf{D}_x$
+  \item The distance vectors of each of it's neighbours $\mathbf{D}_v$
+\end{itemize}
+From time to time, each node sends a copy of its distance vector to each of its neighbours. When $x$ receives a new distance vector from $v$, it saves $\mathbf{D}_v$, and then uses the Bellman Ford equation to update it's own distance vector.
+If node $x$'s distance vector has changed, then it will send its updated distance vector to each of its neighbours. It can be proved that this will eventually converge to the actual cost of the least cost path.
 
 \end{document}
