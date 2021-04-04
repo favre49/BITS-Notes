@@ -917,12 +917,10 @@ So, every integer $a$ is congruent to it's remainder $r$ modulo $m$. We call $r$
 \end{solution}
 
 \begin{definition}
-  A set $a_1,...,a_m$ is said to be a compete set of residues modulo $m$ if every integer is congruent modulo $m$ to exactly one of them.
+  A set $a_1,...,a_m$ is said to be a complete set of residues modulo $m$ if every integer is congruent modulo $m$ to exactly one of them.
 \end{definition}
 
-\begin{remark}
-  A set of $m$ integers form a complete set of residues modulo $m$ if and only if no two of the integers are congruent modulo $m$.
-\end{remark}
+A set of $m$ integers form a complete set of residues modulo $m$ if and only if no two of the integers are congruent modulo $m$.
 
 \begin{exercise}
   Let $m \in \N$ with $m \geq 3$. Prove that the set $\{1^2,2^2,...,m^2\}$ doesn't form a complete set of residues modulo $m$.
@@ -988,7 +986,7 @@ So, every integer $a$ is congruent to it's remainder $r$ modulo $m$. We call $r$
   Let $P(n)$ be a statement that the term $r_i$ is such that $r_i \equiv 3 \mod 4$. This is true for a $i = 1$, since $71 \equiv 3 \mod 4$. Assume $P(k)$ is true. We can express $r_{i+1}$ by the recurrence:
   \begin{align*}
     r_{i+1} &= 10r_i + 61 \\
-    r_{i+1} & \equiv 10 \cdot 3 + 1 \mod 4
+    r_{i+1} & \equiv 10 \cdot 3 + 1 \mod 4 \\
     r_{i+1} &= 3 \mod 4
   \end{align*}
   By PMI, $P(n)$ is true $\forall n \geq 1$. Hence, no member of this sequence may be a perfect square.
@@ -1012,7 +1010,7 @@ Let $a,l,m$ be integers $\geq 2$. We want to compute $a^l \mod m$. To do this, w
   Let $a,b,c,m \in \Z$ with $m \geq 2$. Then,
   \begin{itemize}
     \item If $ac \equiv bc \mod m$ and $(c,m) = 1$, then $a \equiv b \mod m$.
-    \item Let $d = (c,m)$. If $ac \equiv bc \mod m$ and $(c,m) = 1$, then $a \equiv b \mod \frac{m}{d}$.
+    \item Let $d = (c,m)$. If $ac \equiv bc \mod m$ then $a \equiv b \mod \frac{m}{d}$.
   \end{itemize}
 \end{theorem}
 \begin{proof}
@@ -1079,7 +1077,7 @@ Let $a_1,...,a_k \in Z$. Let $n_1,...,n_k$ be integers $\geq 2$. We want to find
   \[N_i x \equiv 1 \mod n_i\]
   be $x_i$.
 
-  Let us prove that $x = a_1Nx_1 + \cdots + a_kN_k x_k$ satisfies the given system of congruences. First, let us prove that it satisfies the first congruence. Since $N_i \equiv 0 \mod n_1$ for $i = 2, \cdots, k$, we get:
+  Let us prove that $x = a_1N_1x_1 + \cdots + a_kN_k x_k$ satisfies the given system of congruences. First, let us prove that it satisfies the first congruence. Since $N_i \equiv 0 \mod n_1$ for $i = 2, \cdots, k$, we get:
   \[x \equiv a_1 N_1 x_1 + 0 \mod n_1\]
   We have already assumed that $N_1x_1 \equiv 1 \mod n_1$. So,
   \[x \equiv a_1 \mod n_1\]
@@ -1127,7 +1125,7 @@ Let $a_1,...,a_k \in Z$. Let $n_1,...,n_k$ be integers $\geq 2$. We want to find
   By definition of being ``self invertible'',
   \[a^2 \equiv 1 \mod p\]
   \[(a-1)(a+1) \equiv 0 \mod p\]
-  So, $(a-1) \equiv 0 \mod p$ or $(a+1) \equiv \mod p$. From this, $a \equiv \pm 1 \mod p$.
+  So, $(a-1) \equiv 0 \mod p$ or $(a+1) \equiv 0\mod p$. From this, $a \equiv \pm 1 \mod p$.
 \end{proof}
 
 \begin{theorem}[Wilson's Theorem]
@@ -1219,7 +1217,7 @@ Theorem 6.11 gives us the base for Fermat's test for non primality. Let $n \in \
   \[a^p \equiv a \mod 6p\]
 \end{solution}
 
-Fermat's Little Theorem can be generalized to create Euler's theorem. As a prerequisite, we need to know about \textbf{Euler's totient function}, $\phi(m)$. $\phi(m)$ is the number of integers less than $m$ which are coprime to $m$. Some properties are:
+Fermat's Little Theorem can be generalized to create Euler's theorem. As a prerequisite, we need to know about \textbf{Euler's totient function}, $\phi(m)$. $\phi(m)$ is the number of integers less than or equal to $m$ which are coprime to $m$. Some properties are:
 
 \begin{itemize}
   \item $\phi(p) = p-1$ if and only if $p$ is prime
@@ -1305,7 +1303,7 @@ Examples of multiplicative functions are:
  From the definition of a multiplicative function,
  \[f(mn) = f(m) \cdot f(n)\]
  Let $m = 1$. Then,
- \[f(n) = f(1) \cdots f(n)\]
+ \[f(n) = f(1) \cdot f(n)\]
  From this, it is clear that $f(1) = 1$, the identity element.
 \end{solution}
 
@@ -1319,7 +1317,7 @@ Examples of multiplicative functions are:
 The proof is straightforward from the factorization of an integer, so I have not included the proof here.
 
 \begin{remark}
-  The value of a multiplication function $f(x) \forall x \in [1,n]$ can be calculated in $O(n)$ time using a linear sieve. 
+  The value of a multiplicative function $f(x) \forall x \in [1,n]$ can be calculated in $O(n)$ time using a linear sieve. 
 \end{remark}
 
 \begin{exercise}
@@ -1448,7 +1446,7 @@ This can also be expressed as another definition. $\mu(n)$ is:
 \end{itemize}
 
 \begin{remark}
-  This is an important function to remember. It can be found using the Sieve of Eratosthenes, and is useful in many combinatoric problems involving numbers.
+  This is an important function to remember. It can be found using a sieve, and is useful in many combinatoric problems involving numbers, especially for inclusion-exclusion.
 \end{remark}
 
 \begin{theorem}
@@ -1580,9 +1578,9 @@ If $k = \ord_m a$, then $a,a^2, \cdots , a^k$ are incongruent modulo $m$.
 \end{solution}
 
 \begin{theorem}
-  Let $a_1, \cdots a_\phi(m)$ denote all positive integers $\leq m$ that are coprime to $m$. If $a$ is a primitive root modulo $m$, then 
+  Let $a_1, \cdots, a_{\phi(m)}$ denote all positive integers $\leq m$ that are coprime to $m$. If $a$ is a primitive root modulo $m$, then 
   \[a,a^2, \cdots, a^{\phi(m)}\]
-  are congruent modulo $m$ to $a_1, \cdots, a^\phi(m)$ in some order
+  are congruent modulo $m$ to $a_1, \cdots, a_{\phi(m)}$ in some order
 \end{theorem}
 \begin{proof}
   TODO 
