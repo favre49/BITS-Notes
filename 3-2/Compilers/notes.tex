@@ -1092,4 +1092,53 @@ A \textbf{control flow graph}  is a directed graph where the basic blocks form t
 
 The first and last nodes can be connected to two special nodes - the entry and exit node. In this way, the control flow graph diagrammatically shows the flow of execution in the graph.
 
+\section{Local and Global Optimizations}
+
+Some examples of local optimizations are:
+\begin{itemize}
+  \item Some statements can be deleted (e.g. \texttt{x = x+0})
+  \item Some statements can be simplified (e.g. \texttt{x = x * 0})
+  \item Constant folding (e.g. \texttt{x = 3*5+2})
+\end{itemize}
+
+To choose statements to delete, something we could do is eliminate unreachable basic blocks. Think of a conditional jump which always evaluates to true, and hence skips over some code (e.g. \texttt{if (1 != 0) x++;}). Another scenario is when using libraries - some methods may never be used. This would make the program smaller and also faster. This would be a global optimization.
+
+Optimizations can be simplified if each register occurs only once on the left hand side of an assignment. For example,
+
+\texttt{x = z+y;} \\
+\texttt{a = x;} \\
+\texttt{x = 2*x;} \\
+could be rewritten as:
+
+\texttt{b = z+y;}\\
+\texttt{a = b;}\\
+\texttt{x = 2*b;}\\
+This is known as \textbf{single assignment form}. With this, we can do some more optimizations.
+
+For instance, we can now do \textbf{common subexpression elimination}. If a definition $x = $ is the first use of $x$ in the block, then when two assignments have the same RHS, they can compute the same value. For instance,
+
+\texttt{x = y+z;}\\
+\texttt{w = y+z} \\
+can be optimized to give
+
+\texttt{x = y+z;} \\
+\texttt{w = x}
+
+Another possible optimization is \textbf{copy propagation}. If $w = x$ appears in a block, we can replace all subsequent uses of $w$ with uses of $x$. For instance, 
+
+\texttt{b = z+y;}\\
+\texttt{a = b;}\\
+\texttt{x = 2*a;}\\
+can be optimized into:
+
+\texttt{b = z+y;}\\
+\texttt{a=b;}\\
+\texttt{x = 2*b;}\\
+Interestingly, we can now perform dead code elimination to remove \texttt{a=b}.
+
+How do you perform dead code elimination? If $w = rhs$ appears in a basic block and $w$ does not appear anywhere else in the program, we can remove $w=rhs$ - it is dead.
+
+It must have become clear by now that typically, optimizations interact - one optimization may enable another optimization. Generally, an optimizing compiler repeats optimizations until no improvements are possible.
+
+
 \end{document}
