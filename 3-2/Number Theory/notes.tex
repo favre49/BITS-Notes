@@ -1427,6 +1427,21 @@ then
   \[\sigma(n) > 1 + n + \sqrt n\]
 \end{proof}
 
+\begin{lemma}
+  \[\sum_{d|n} \phi(d) = n\] 
+\end{lemma}
+\begin{proof}
+  Define $F(n) = \sum_{d|n} \phi(d)$. From Theorem 7.3,  $F$ is multiplicative. It is simple to see that
+  \begin{align*}
+    F(p^k) &= \sum_{d|n} \phi(d)\\
+           &= \sum_{i = 0}^k \phi(p^i)\\
+           &= \sum_{i = 1}^k (p^i - p^{i-1}) + 1 \\
+           &= p^k
+  \end{align*}
+  Hence, if $n = \prod p_i^{e_i}$,
+  \[F(n) = \prod F(p_i^{e_i}) = \prod p_i^{e_i} = n\]
+\end{proof}
+
 \section{The M\"{o}bius Function}
 
 \begin{definition}
@@ -1691,5 +1706,68 @@ This gives us a primality test for integers. This is in fact faster than brute f
   \[x^d-1 \equiv 0 \mod p\]
   must have $\geq (p-1) - (p-1-d) = d$ solutions. Hence it has exactly $d$ solutions.
 \end{proof}
+
+\begin{theorem}
+  Let $p$ be a prime and let $d$ be a positive divisor of $p-1$. Then there are exactly $\phi(d)$ incongruent integers of order $d$ modulo $p$. 
+\end{theorem}
+\begin{proof}
+  For every positive divisor $d$ of $p-1$, let:
+  \[S_d = \{a : 1 \leq a \leq p-1, \ord_p a = d\}\]
+  Let $\psi(d) = |S_d|$. Since 
+  \[\{1,2,3,\cdots, p-1\} = \bigcup_{d|p-1} S_d\]
+  we get
+  \[p-1 =\sum_{d|p-1} \psi(d) \]
+  We know that:
+  \[\sum_{d|p-1} \phi(d) = p-1 = \sum_{d|p-1} \psi(d)\]
+  We want to prove that $\psi(d) = \phi(d) \forall d$. It is enough to prove that $\psi(d) \leq \phi(d)$.
+
+  Suppose $d$ is a divisor of $p-1$ with $\psi(d) \neq 0$. Let $a$ be an integer with $\ord_p a = d$. We know that
+  \[a,a^2, \cdots, a^d\]
+  are mutually incongruent, modulo $p$. Moreover,
+  \[(a^i)^d-1 \equiv (a^d)^i - 1 \equiv 1-1 \equiv 0\]
+  Hence, $a,a^2, \cdots, a^d$ are the $d$ solutions of $x^d - 1 \equiv 0 \mod p$. This implies that $S_d \subseteq \{a, a^2, \cdots, a^d\}$.
+
+  We know that
+  \[\ord_p a^i = \frac{d}{(i,d)}\]
+  Thus $\ord_p a^i = d$ if and only if $i$ and $d$ are coprime. There are $\phi(d)$ such $i$. Hence, $|S_d| = \psi(d) = \phi(d)$.
+\end{proof}
+
+\begin{corollary}
+  Let $p$ be a prime. There are $\phi(p-1)$ incongruent primitive roots  modulo $p$. 
+\end{corollary}
+\begin{proof}
+  Note that this also follows from Corollary 8.4.1. To show that this follows from Theorem 8.8, we see that if a number is a primitive root, it's order is $d = p-1$. So, there must be $\phi(p-1)$ incongruent primitive roots.
+\end{proof}
+
+\chapter{Quadratic Residues}
+
+\section{Quadratic Congruences}
+
+\begin{definition}
+  A quadratic congruence is an equation of the form:
+  \[ax^2 + bx + c \equiv 0 \mod m\]
+  where $a \neq 0$ and $m \geq 2.
+\end{definition}
+
+When $m=2$, we can easily reduce it to a linear congruence since $x^2 \equiv x \mod 2$ for all $x$. Hence
+\[ax^2 + bx + c \equiv (a+b)x + c \mod 2\]
+We already know how to solve this. Hence, we will assume that $m \geq 3$ from now on.
+
+\begin{theorem}
+Let $p$ be an odd prime and let $a,b,c \in \Z$ where $(a,p) = 1$. The quadratic congruence
+\[ax^2 + bx + c \equiv 0 \mod p\]
+has a solution $x$ if and only if the quadratic congruence
+\[y^2 \equiv b^2 - 4ac \mod p\]
+has a solution $y$. Further, $y \equiv 2ax + b \mod p$.
+\end{theorem}
+\begin{proof}
+  The solution $x$ will exist if and only if:
+  \[4a(ax^2 + bx + c) \equiv 0 \mod p\] 
+  \[(2ax)^2 + 2 \cdot (2ax) \cdot b + 4ac \equiv 0 \mod p\]
+  \[(2ax)^2 + 2 \cdot (2ax) \cdot b + 4ac + b^2 - b^2 \equiv 0 \mod p\]
+  \[(2ax + b)^2 \equiv b^2-4ac \mod p\]
+  \[y^2 \equiv b^2 - 4ac \mod p\]
+\end{proof}
+Theorem 9.1 gives us a method to transform a quadratic congruence to a smaller, more easily solvable form.
 
 \end{document}
