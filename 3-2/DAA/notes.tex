@@ -801,15 +801,36 @@ An NP optimization problem $\Pi$ consists of:
 
 With every NP optimization problem, we can naturally associate a division problem by giving a bound on the optimal solution. Thus, the decision version of NP optimization problem $\Pi$ consists of pairs $(I,B)$ where $I$ is an instance of $\Pi$ and $B$ is a rational numbre. If $\Pi$ is a minimzation problem, then the answer to the decision version will be ``yes'' if and only if there is a feasible solution to $I$ of cost $\leq B$.
 
-An \textbf{approximation algorithm}  produces a feasible solution that is ``close'' to the optimal one, and is time efficient. Let $\Pi$ be a minimization problem, and let $\delta$ be a function such that $\delta:Z^+ \rightarrow Q^+$, with $S \geq 1$. An algorithm $A$ is said to be a factor $\delta$ approximation algorithm for $\Pi$ if, on each instance $I$, $A$ produces a feasible solution for $I$ such that $f_\Pi(I,S) \leq \delta(|I|). OPT(I)$, where $OPT(I)$ is the optimal solution. The running time of $A$ must be bounded by a fixed polynomial in $|I|$.
+An \textbf{approximation algorithm}  produces a feasible solution that is ``close'' to the optimal one, and is time efficient. Let $\Pi$ be a minimization problem, and let $\delta$ be a function such that $\delta:Z^+ \rightarrow Q^+$, with $S \geq 1$. An algorithm $A$ is said to be a $\delta$ approximation algorithm for $\Pi$ if, on each instance $I$, $A$ produces a feasible solution for $I$ such that $f_\Pi(I,S) \leq \delta(|I|). OPT(I)$, where $OPT(I)$ is the optimal solution. The running time of $A$ must be bounded by a fixed polynomial in $|I|$.
+
+A \textbf{polynomial time approximation scheme} (PTAS) is a family of algorithms $\{A_\epsilon\}$ where there is an algorithm for each $\epsilon > 0$, such that $A_\epsilon$ is a $(1+\epsilon)$ - approximation algorithm for minimization and $(1-\epsilon)$ for maximization.
 
 \subsection{The Vertex Cover Problem}
 
 Given an undirected graph $G = (V,E)$ and a cost function on vertices $C:V \rightarrow Q^+$ find a minimum cost vertex cover. The special case in which all vertices are of unit cost , will be called the cardinality vertex cover problem.
 
-Let us now define a 2-approximatoin algorithm for the cardinality vertex cover problem. Given a graph $H = (U,F)$, let $M$ be a maximal matching. Let the set of matched vertices be $V$. No edge can be left uncovered by the set of vertices picked, since otherwise such an edge could have been added to the matching, and it would not be maximal.
+Let us now define a 2-approximation algorithm for the cardinality vertex cover problem. Given a graph $H = (U,F)$, let $M$ be a maximal matching. Let the set of matched vertices be $V$. No edge can be left uncovered by the set of vertices picked, since otherwise such an edge could have been added to the matching, and it would not be maximal.
 
-TODO: prove that this is a 2-approximation
+Let us prove that this is a 2-approximation algorithm. The cardinality of the maching $|M| \leq |OPT|$. This means that $|V| = 2|M| \leq 2 \cdot OPT$. Hence proved.
+
+\subsection{The Weighted Vertex Cover Problem}
+
+We can formulate the weighted vertex cover problem as the following ILP:
+\[\min \sum_{i \in V} w_i x_i\]
+such that
+\[x_i + x_j \geq 1 \forall (i,j \in E)\]
+\[x_i \in \{0,1\} \forall i \in V\]
+We can relax the second condition to be:
+\[0 \leq x_i \leq 1 \forall i \in V\]
+
+Let $S^*$ denote a vertex cover of minimum weight, found with the ILP. Then:
+\[W_{LP} \leq W(S^*)\]
+The ILP problem is NP-Complete, and we cannot hope to solve it. However, solving the LP problem is in P. We can solve it in polynomial time using the simplex or the ellipsoid algorithm.
+
+Given a fractional solution $\{x_i^*\}$, we define $S = \{i \in V : x_i^* \geq 0.5\}$. The set defined in this way is a vertex cover, and $|S| \leq 2 \cdot W_{LP}$. Hence, it is a 2 approximation.
+
+\subsection{The Set Cover Problem}
+
 
 \section{Problems}
 
