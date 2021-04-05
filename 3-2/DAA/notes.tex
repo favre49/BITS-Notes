@@ -805,6 +805,19 @@ An \textbf{approximation algorithm}  produces a feasible solution that is ``clos
 
 A \textbf{polynomial time approximation scheme} (PTAS) is a family of algorithms $\{A_\epsilon\}$ where there is an algorithm for each $\epsilon > 0$, such that $A_\epsilon$ is a $(1+\epsilon)$ - approximation algorithm for minimization and $(1-\epsilon)$ for maximization.
 
+\subsection{Linear Programming}
+
+Before we can get started with some algorithms, we must discuss linear programming. A linear programming is of the form:
+\[\min \sum_{j=1}^n c_j x_j\]
+subject to
+\[\sum_{j=1}^n a_{ij}x_j \geq b_i\]
+\[x_j \geq 0\]
+A solution is a $n$ vector $x$ that minimizes the given objective function $\sum_{i=1}^n c_jx_j$.
+
+Solving LPs is in $\mathbf{P}$. However, a variation of LP called Integer Linear Programming (ILP) is not. In ILPs we can add constraints that require the variable $x_j$ to be an integer, or a member of a set. Solving ILPs can be proved to be NP-Complete.
+
+Linear programming has a concept of \textbf{duality}. 
+
 \subsection{The Vertex Cover Problem}
 
 Given an undirected graph $G = (V,E)$ and a cost function on vertices $C:V \rightarrow Q^+$ find a minimum cost vertex cover. The special case in which all vertices are of unit cost , will be called the cardinality vertex cover problem.
@@ -830,6 +843,38 @@ The ILP problem is NP-Complete, and we cannot hope to solve it. However, solving
 Given a fractional solution $\{x_i^*\}$, we define $S = \{i \in V : x_i^* \geq 0.5\}$. The set defined in this way is a vertex cover, and $|S| \leq 2 \cdot W_{LP}$. Hence, it is a 2 approximation.
 
 \subsection{The Set Cover Problem}
+
+In the set cover problem, we are given a ground set of elements $E = \{e_1, \cdots, e_n\}$ and some subsets of those elements $S_1, S_2, \cdots, S_m$ where each $S_j \subseteq E$ as well as a non negative weight $W_j \geq 0$ for each subset $S_j$. The goal is to find a minimum weight collection of subsets that covers all of $E$; that is, we wish to find $I \subseteq \{1, \cdots, m\} that minimizes $\sum_{j \in I} w_j$ such that $\bigcup_{j \in I}S_j = E$.
+
+The vertex cover problem is a special case of the set cover proble. We can convert a vertex cover problem into a set cover problem by letting the ground set be the set of edfes, and a subset is created for each vertex $i$ containing edges incident to $i$.
+
+We can formulate it as the following ILP:
+\[\min \sum_{j=1}^m w_jx_j\]
+subject to
+\[\sum_{j : e_i \in S_j } x_j \geq 1, i = 1, \cdots, m\]
+\[x_j \in \{0,1\}, j = 1, \cdots, m\]
+
+Let us relax the problem, to get the following LP:
+\[\min \sum_{j=1}^m w_jx_j\]
+subject to
+\[\sum_{j : e_i \in S_j } x_j \geq 1, i = 1, \cdots, m\]
+\[x_j \geq 0, j = 1, \cdots, m\]
+
+Let $Z_{IP}^*$ denote the optimum value of the ILP, and $Z_{LP}^*$ be the optimum value of the LP.
+\[Z_{LP}^* \leq Z_{IP}^* = OPT\]
+Let $x^*$ denote on optimum solution to the LP. We include subset $S_j$ in our solution if and only if $x_j^* \geq 1/f$, where $f$ is the maximum number of sets in which any element appears. Formally, $f_i = |\{j : e_i \in S_j\}|$, then $f = \max_{i \leq n} f_i$. This is known as the \textbf{rounding algorithm}, since it is in effect rounding $x_j^*$ to 1 if $x_j^* \geq 1/f$.
+
+Firstly, is this algorithm even correct? Let $e_i$ be covered if the solution contains some subset containing $e_i$. Because the optimal solution $x^*$ is a feasible solution to the linear program,
+\[\sum_{j : e_i \in S_j} x_j^* \geq 1\]
+for $e_i$. There are $f_i \leq f$ terms in this sum, so at least one term must be at least $1/f$. Thus, there does exist $x_j^* \geq 1/f$, and $e_i$ will be covered. Hence, the algorithm is correct, and provides a set cover.
+
+This algorithm is in fact an $f$ approximation algorithm. By our construction, $1 \leq f \cdot x_j^*$ for all $j \in I$. Hence,
+\begin{align*}
+  \sum_{j \in I}  w_j &\leq \sum_{j=1}^m w_j \cdot (f \cdot x_j^*) \\
+                      &= f \sum_{j=1}^m w_j x_j^* \\
+                      &= f \cdot Z_{LP}^*
+                      \leq f \cdot OPT
+\end{align*}
 
 
 \section{Problems}
