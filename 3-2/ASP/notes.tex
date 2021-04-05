@@ -679,17 +679,19 @@ Let $X(t)$ is such that as $\Delta t \rightarrow 0$, $V[X(t)] \rightarrow \sigma
 \[\lim_{\Delta t \rightarrow 0} \frac{4pqt (\Delta x)^2}{\Delta t} = \sigma^2 t\]
 \[\lim_{\Delta t \rightarrow 0} \frac{4pq (\Delta x)^2}{\Delta t} = \sigma^2\]
 For this limit to exist, 
-\[\Delta x = \frac{\sigma}{\sqrt{pq}} (\Delta t)^{1/2}\]
+\[\Delta x = \frac{\sigma}{2\sqrt{pq}} (\Delta t)^{1/2}\]
 Also Let $X(t)$ is such that 
 \[\lim_{\Delta t \rightarrow 0} E[X(t)] = \mu t\]
 \[\lim_{\Delta t \rightarrow 0} \frac{(p-q) \Delta x}{\Delta t} = \mu\]
-\[\lim_{\Delta t \rightarrow 0} \frac{p-q}{\Delta t} \frac{\sigma}{\sqrt{pq}} (\Delta t)^{1/2} = \mu\]
+\[\lim_{\Delta t \rightarrow 0} \frac{p-q}{\Delta t} \frac{\sigma}{2\sqrt{pq}} (\Delta t)^{1/2} = \mu\]
 This equation is satisfied when:
 \[p = \frac{1}{2} (1 + \mu (\Delta t)^{1/2} / \sigma)\]
 \[q = \frac{1}{2} (1 - \mu (\Delta t)^{1/2} / \sigma)\]
 From this, we can find that:
 \[\Delta x = \sigma (\Delta t)^{1/2}\]
 Since $Z_i$ are i.i.d, the sum of them $X(t)$ for large $n$ is normal with mean $\mu t$ and variance $\sigma^2 t$ from the central limit theorem.
+
+
 
 \section{Diffusion Process}
 
