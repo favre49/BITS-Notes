@@ -990,4 +990,46 @@ Each node $x$ begins with $D_x(y)$, an estimate of the cost of the least cost pa
 From time to time, each node sends a copy of its distance vector to each of its neighbours. When $x$ receives a new distance vector from $v$, it saves $\mathbf{D}_v$, and then uses the Bellman Ford equation to update it's own distance vector.
 If node $x$'s distance vector has changed, then it will send its updated distance vector to each of its neighbours. It can be proved that this will eventually converge to the actual cost of the least cost path.
 
+Though we can be sure that the distances will eventually converge, how long can it take to converge? Consider the network given in Fig. 5.3.
+
+\begin{figure}[htpb]
+  \centering
+  \includegraphics[width=0.8\linewidth]{./assets/dv_eg.png}
+  \caption{Routing network example}%
+  \label{fig:}
+\end{figure}
+
+If, like in example (a), we reduce the link cost from 4 to 1, what will happen? Let us consider the distance table entries of $y$ and $z$ to $x$. First, $y$ will notice the link cost change, change the distance vector and send it to $z$. $z$ will then update it's own distance vector (since the minimum cost is now 2) and notify $y$ of this. $y$ will not make any changes, so the process stops here. We only needed 2 iterations.
+
+But what about in example (b)? The link cost changed from 4 to 60. $y$ will detect this, and compute a new minimum cost path to $x$ as:
+\[D_y(x) = min \{c(y,x) + D_x(x), c(y,z) + D_z(x)\} = \min \{60 + 0, 1 + 5\} = 6\]
+This is, of course wrong, but nevertheless, $y$ will do this. Now, $y$ will route through $z$ to get to $x$, but $z$ will want to route to $y$ to get to $x$. This forms a \textbf{routing loop}, which will keep bouncing packets between $y$ and $z$ till there is a change in the routing table. $y$ will inform $z$ of the change, and $z$ will update it's own least cost to $D_z(x) = 7$. Then it will inform $y$ of this. It will take 44 iterations to find out the actual correct routing table.
+
+This presents a big problem. What if we changed to some very large value? It would take a long time to fix the routing loop. This is called the \textbf{count-to-infinity problem}.
+
+This can be fixed with some modifications. One such rule is the \textbf{poison reverse rule} , which states that routes received via one interface have to be advertised back out from that interface with an unreachable metric. That means that if $z$ routes through $y$ to get to $x$, then $z$ will advertise to $y$ that its distance to $x$ is infinity. This will remove the routing loop, since $y$ will never attempt to route to $x$ via $z$, as long as $z$ continues to route to $x$ via $y$.
+
+Another rule is the \textbf{split horizon rule}  that states that a route can't be advertised out of the interface if the next hop for the advertised route is found on that interface.
+
+\section{Routing Information Protocol}
+
+The RIP is a protocol for routing within an \textbf{autonomous system} (AS). An autonomous system is a group of routers that are typically under the same administrative control. Routers in the same AS use the same routing algorithm and have information about one another. Since RIP is for routing within an autonomous system, it is called a \textbf{intra-AS routing protocol}.
+
+The RIP is a DV protocol that uses the hop count as a cost metric - this means that every link has a cost of 1. In RIP, the costs are from the source router to a destination subnet. This is unlike the DV protocol previously discussed, where the costs where defined between routers. Hence, a hop is now defined as the number of subnets on the path from the source router to the destination subnet.
+
+The maximum cost of a path is limited to 15, hence limiting the size of the network admissible for using the RIP protocol.  In RIP, routing updates are exchanged between neighbours approximately every 30 seconds using \textbf{RIP response messages}. The response message contains a list of up to 25 destination subnets within the AS, as well as the sender's distance to each of those subnets. They are sent as UDP packets, and periodically repeated.
+
+Each router maintains a routing table called the \textbf{RIP table}. This contains both the distance vector and the forwarding table. The table has 3 columns - one for the destination subnet, another for the next router, and the last for the number of hops.
+
+
+
+
+
+\chapter{Data Link Layer}
+
+\section{Introduction}
+
+The Data Link Layer uses the services of the Physical layer to deliver link-layer packets, which are called \textbf{frames}.
+
+
 \end{document}
