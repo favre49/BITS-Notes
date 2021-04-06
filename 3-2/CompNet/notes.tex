@@ -973,8 +973,6 @@ In $O(n \log n)$ (in sparse graphs) time, we can fill the forwarding table with 
 
 This approach can lead to some problems - assume that the link costs are equivalent to the load on the link. In this example, link costs are not symmetric. This means we are now trying congestion-sensitive routing. In this case, there may be \textbf{route oscillations}, where the route changes with new costs on every timestep.
 
-\textbf{TODO : OSPF}
-
 \subsection{Distance Vector Routing Algorithm}
 
 While the LS algorithm us an algorithm using global information, the DV algorithm is iterative, asynchronous and distributed. This means that each node receives some information from one or more of its directly attached neighbours, performs a calculation, and then distributes the results of its calculation back to its neighbours.
@@ -998,7 +996,7 @@ Though we can be sure that the distances will eventually converge, how long can 
   \caption{Routing network example}%
   \label{fig:}
 \end{figure}
-
+his various body parts in order to get them back. 
 If, like in example (a), we reduce the link cost from 4 to 1, what will happen? Let us consider the distance table entries of $y$ and $z$ to $x$. First, $y$ will notice the link cost change, change the distance vector and send it to $z$. $z$ will then update it's own distance vector (since the minimum cost is now 2) and notify $y$ of this. $y$ will not make any changes, so the process stops here. We only needed 2 iterations.
 
 But what about in example (b)? The link cost changed from 4 to 60. $y$ will detect this, and compute a new minimum cost path to $x$ as:
@@ -1021,9 +1019,36 @@ The maximum cost of a path is limited to 15, hence limiting the size of the netw
 
 Each router maintains a routing table called the \textbf{RIP table}. This contains both the distance vector and the forwarding table. The table has 3 columns - one for the destination subnet, another for the next router, and the last for the number of hops.
 
+If a router does not hear from its neighbour for 180 seconds, it considers that it is no longer reachable. Then, the RIP modifies the local routing tale and then propagates this information by sending advertisements to the reachable neighbours. A router may also request information about the neighbours costs using \textbf{RIP request messages}.
 
+\section{OSPF}
 
+OSPF is another routing protocol for intra-AS routing. It is generally used in upper layer ISPs, while RIP is generally used in lower tier RIPs.
 
+OSPF is a link state algorithm. A router constructs a complete graph of the entire AS, and then locally runs Djikstra's algorithm to find a shortest path tree to all the subnets. Individual link costs can be set by the network admin.
+
+In OSPF, a router broadcasts routing information to all the other routers in the AS, not just the neighbours. This is done in case there is a change in link state as well as periodically. This is done using \textbf{OSPF messages}, which are carried by IP instead of using UDP as in RIP. Thus, OSPF implements the functionality of reliable message transfer and broadcast itself.
+
+\section{BGP}
+
+\subsection{The Basics}
+
+So far, we have considered only intra-AS routing protocols. For ASs to communicate with one another, we need \textbf{inter-AS protocols}. For the purpose of this communication, some routers in an AS called \textbf{gateway routers}  have the added task of being responsible to forward packets to destinations outside the AS.
+
+In BGP, pairs of routers exchange routing information over TCP connections on port 179. These are between the gateway routers of multiple ASs, as well as between routers within an AS. The two routers at the end of a TCP connection are called \textbf{BGP peers}, and the link is called a \textbf{BGP session} . If the BGP session spans two ASs, then it is an \textbf{external BGP session}. Otherwise, it is an \textbf{internal BGP session}.
+
+In BGP, destinations are not hosts, but instead CIDRized prefixes, each representing a subnet or collection of subnets. BGP allows each AS to learn which destinations are reachable via it's neighbouring ASs. This is done over the eBGP session connecting two gateway routers - each AS will send information about it's neighbours.
+
+\subsection{Attributes and Routes}
+
+In BGP, an AS is identified by its unique \textbf{autonomous system number} or ASN. When a router advertises a prefix across a BGP session, it includes \textbf{BGP attributes}. The attributes along with the prefix is termed a \textbf{route}. Two important attributes are:
+
+\begin{itemize}
+  \item AS-PATH, an attribute that contains the ASs through which the advertisement has passed. When a prefix is passed into an AS, it's ASN is added to the attribute. This allows routers to detect and prevent looping advertisements. If a router sees that its AS is contained in the path list, it will reject the advertisement.
+  \item  NEXT-HOP is the router interface that begins the AS_PATH. This allows routers to properly configure their forwarding tables.
+\end{itemize}
+
+BGP also has other attributes, including attributes to assign preference metrics.
 
 \chapter{Data Link Layer}
 
