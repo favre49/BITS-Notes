@@ -1506,9 +1506,56 @@ This can also be expressed as another definition. $\mu(n)$ is:
   \end{align*}
 \end{proof}
 
-\begin{remark}
-  This is a case of Dirichlet Convolution, which is an interesting concept for computing the convolution of two number theoretic functions.
-\end{remark}
+\section{Dirichlet Convolution}
+
+This section is not in syllabus or taught in class, but is helpful when proving some identities. It is included in the notes for this purpose.
+
+\begin{definition}
+  The Dirichlet Convolution of two arithmetic functions $f$ and $g$ are defined to be the function
+  \[h = \sum_{d|n} f(d) g \left(\frac{n}{d} \right)\]
+  where $h$ is denoted by $f*g$.
+\end{definition}
+
+\begin{theorem}
+  Let $f$ and $g$ be multiplicative. Then $h=f*g$ is multiplicative.
+\end{theorem}
+\begin{proof}
+  Let $(m,n) = 1$. If $d|mn$ and $(m,n) = 1$, then there exist unique $a|m$ and $b|n$ such that $d=ab$. Therefore
+  \begin{align*}
+    h(mn) &= \sum_{d|mn} f(d)g \left( \frac{mn}{d} \right)  \\ 
+          &= \sum_{a|m} \sum_{b|n} f(ab) g \left( \frac{mn}{ab} \right) \\
+          &= \sum_{a|m} \sum_{b|n} f(a) f(b) g \left( \frac{m}{a} \right) g \left ( \frac{n}{b} \right) \\
+          &= \left [ \sum_{a|m} f(a) g \left( \frac{m}{a}\right)\right] \left[ \sum_{b|n} f(b) g \left( \frac{n}{b} \right) \right] \\
+          &= h(m) h(n)
+  \end{align*}
+  Hence, $h$ is also multiplicative
+\end{proof}
+
+\begin{corollary}
+  $f$ is multiplicative if and only if $F$, it's M\"{o}bius transform, is also multiplicative
+\end{corollary}
+\begin{proof}
+  One direction of this statement has already been proved in Theorem 7.3. The other direction is clear from noticing that the M\"{o}bius inversion formula could alternatively be stated by $f = \mu & F$. Since $F$ and $\mu$ are multiplicative, $f$ must be multiplicative.
+\end{proof}
+
+Theorem 7.8 allows us to solve lots of problems simply by stating that the convolution must be multiplicative. An example of a problem that uses Corollary 7.8.1 is given below.
+
+\begin{exercise}
+  Let $f$ be such that:
+  \[\mu(n) = \sum_{d|n} f(d)\]
+  Find $f(n)$
+\end{exercise}
+\begin{solution}
+  By  the M\"{o}bius inversion formula,
+  \[f(n) = \sum_{d|n} \mu(n) \mu \left(\frac{n}{d} \right)\]
+  Hence $f = \mu * \mu$. This means that $f$ must be multiplicative (or from Corollary 7.8.1). Let $p$ be a prime. Then, from the formula:
+  \begin{itemize}
+    \item $f(p) = -2$
+    \item $f(p^2) = 1$
+    \item $f(p^a) = 0, \forall a > 2$
+  \end{itemize}
+  Hence, if $n$ is divisible by $p^3$ for any prime $p$, $f(n) = 0$. Otherwise, $f(n) = (-2)^k$ where $k$ is the number of primes such that $p|n$ but $p^2 \nmid n$.
+\end{solution}
 
 \chapter{Primitive Roots}
 
