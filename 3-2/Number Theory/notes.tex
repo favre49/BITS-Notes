@@ -38,6 +38,30 @@
 \newcommand{\C}{\mathbb{C}}
 \DeclareMathOperator{\ord}{ord}
 
+\makeatletter
+\def\legendre@dash#1#2{\hb@xt@#1{%
+  \kern-#2\p@
+  \cleaders\hbox{\kern.5\p@
+    \vrule\@height.2\p@\@depth.2\p@\@width\p@
+    \kern.5\p@}\hfil
+  \kern-#2\p@
+  }}
+\def\@legendre#1#2#3#4#5{\mathopen{}\left(
+  \sbox\z@{$\genfrac{}{}{0pt}{#1}{#3#4}{#3#5}$}%
+  \dimen@=\wd\z@
+  \kern-\p@\vcenter{\box0}\kern-\dimen@\vcenter{\legendre@dash\dimen@{#2}}\kern-\p@
+  \right)\mathclose{}}
+\newcommand\legendre[2]{\mathchoice
+  {\@legendre{0}{1}{}{#1}{#2}}
+  {\@legendre{1}{.5}{\vphantom{1}}{#1}{#2}}
+  {\@legendre{2}{0}{\vphantom{1}}{#1}{#2}}
+  {\@legendre{3}{0}{\vphantom{1}}{#1}{#2}}
+}
+\def\dlegendre{\@legendre{0}{1}{}}
+\def\tlegendre{\@legendre{1}{0.5}{\vphantom{1}}}
+\makeatother
+
+
 % Title information
 \title{Number Theory}
 \author{2018A7PS0193P}
@@ -1736,7 +1760,7 @@ This gives us a primality test for integers. This is in fact faster than brute f
 \end{proof}
 
 \begin{corollary}
-  Let $p$ be a prime and let $d$ be a positive divisor of $p-1$. Then the congruence $x^{d-1} \equiv 0 \mod p$ has exactly $d$ solutions
+  Let $p$ be a prime and let $d$ be a positive divisor of $p-1$. Then the congruence $x^d-1 \equiv 0 \mod p$ has exactly $d$ solutions
 \end{corollary}
 \begin{proof}
   Let $f(x) = x^{p-1} -1$. By Fermat's little theorem,
@@ -1815,6 +1839,67 @@ has a solution $y$. Further, $y \equiv 2ax + b \mod p$.
   \[(2ax + b)^2 \equiv b^2-4ac \mod p\]
   \[y^2 \equiv b^2 - 4ac \mod p\]
 \end{proof}
-Theorem 9.1 gives us a method to transform a quadratic congruence to a smaller, more easily solvable form.
+Theorem 9.1 gives us a method to transform a quadratic congruence to a smaller, more easily solvable form. Now we can try to handle quadratic congruences which have a leading coefficient 1 and no $x$ term.
+
+\begin{exercise}
+  Let $p$ be an odd prime and let $a \in \Z$ with $p \ndiv a$. Prove that the congruence $x^2 \equiv a \mod p$ either has no solutions or exactly two incongruent solutions. 
+\end{exercise}
+\begin{solution}
+  Using Lagrange's theorem, there are at most two solutions. If $x$ is a solution, then $p-x$ is also a solution, and is incongruent to $x$. 
+\end{solution}
+
+\begin{definition}
+  Let $m \geq 2$ and let $a \in \Z$ with $(a,m) = 1$. We say that $a$ is a quadratic residue modulo $m$ if the congruence
+  \[x^2 \equiv a \mod m\]
+  is solvable. Otherwise it is a quadratic non-residue modulo $m$.
+\end{definition}
+
+\begin{theorem}
+  Let $p$ be an odd prime. There are exactly $(p-1)/2$ quadratic residues modulo $p$ and exactly $(p-1)/2$ quadratic non residues modulo $p$. 
+\end{theorem}
+\begin{proof}
+  If $b \equiv a \mod p$, then $b$ is a quadratic residue modulo $p$ if and only if $a$ is a quadratic residue modulo $p$. So we look at integers $a$ with $1 \leq a \leq p-1$. Since $p$ is a prime, we know that there is a primitive root of $p$, say $g$. Further, every integer $a$ with $1 \leq a \leq p-1$ is congruent modulo $p$ to exactly one integer in the list $g,g^2,\cdots, g^{p-1}$. We can prove that $a$ is a quadratic residue modulo $p$ if and only if it is congruent to an even power of $g$ modulo $p$. Hence there are exactly $(p-1)/2$ quadratic residues modulo $p$. 
+\end{proof}
+
+\begin{definition}[Legendre symbol]
+  Let $p$ be an odd prime and let $a \in \Z$ with $p \nmid a$. Let
+  \[\legendre{a}{p} = \begin{cases}
+    1 & \text {if } a \text{ is a quadratic residue modulo } p \\
+    -1 & \text {if } a \text{ is a quadratic non-residue modulo } p \\
+  \end{cases}\]
+\end{definition}
+
+\begin{lemma}
+ Let $p$ be an odd prime and let $a,b \in \Z$ with $p \nmid ab$. Then
+ \begin{enumerate}
+   \item If $b \equiv a \mod p$, then $\legendre{a}{p} = \legendre{b}{p}$
+   \item $\legendre{a^2}{p}= 1$
+ \end{enumerate}
+\end{lemma}
+
+\begin{theorem}[Euler's Criterion]
+  Let $p$ be an odd prime and let $a \in \Z$ with $p \nmid a$. Then 
+  \[\legendre{a}{p} \equiv a^{(p-1)/2} \mod p\]
+\end{theorem}
+\begin{proof}
+  TODO 
+\end{proof}
+\begin{corollary}
+  Let $p$ be an odd prime and let $a,b \in \Z$ with $p \nmid ab$
+  \[\legendre{a}{p} \legendre{b}{p} = \legendre{ab}{p}\] 
+\end{corollary}
+
+\begin{corollary}
+  Let $p$ be an odd prime. Then:
+  \[\legendre{-1}{p} = \begin{cases}
+    1 &  \text{if } p \equiv 1 \mod 4 \\
+    -1 &  \text{if }p \equiv 3 \mod 4 \\
+  \end{cases}\]
+\end{corollary}
+
+\begin{exercise}
+  Use Euler's criterion to find 
+  \[\legendre{79}{31}\]
+\end{exercise}
 
 \end{document}
