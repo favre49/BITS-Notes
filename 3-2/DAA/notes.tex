@@ -99,7 +99,7 @@ Let us consider the strings in some base $B = 10$. Then, we can write
 where $m = n/2$.
 The product will be given by:
 \[xy = z_2 B^{2m} + z_1 B^m + z_0\]
-where 
+where
 \[z_2 = x_1y_1\]
 \[z_1 = x_1y_0 + x_0y_1\]
 \[z_0 = x_0y_0\]
@@ -111,7 +111,7 @@ So, we get the algorithm:
 \begin{algorithm}[H]
   \SetAlgoLined
   p = KMul(x_1+x_0,y_1+y_0) \\
-  x_1y_1 = KMul(x_1,y_1) \\ 
+  x_1y_1 = KMul(x_1,y_1) \\
   x_0y_0 = KMul(x_0,y_0) \\
   \Return x_1y_1 \times 10^n + (p-x_1y_1 - x_0y_0)\times 10^{n/2} + x_0y_0
   \caption{KMul(x,y)}
@@ -218,7 +218,7 @@ As such, we have found the DFT of the polynomial in $O(n \log n)$ time.
 
 After performing the pointwise multiplication of the DFT of our polynomials $A$ and $B$, we have to interpolate to find the coefficient form of our resulting polynomial $C$.
 
-\textit{TODO: Add interpolation with Vandermonde matrix, can be seen on cp-algorithms} 
+\textit{TODO: Add interpolation with Vandermonde matrix, can be seen on cp-algorithms}
 
 In short, the formula is:
 \[a_k = \frac{1}{n} \sum_{j=0}^{n-1} y_j w_n^{-kj}\]
@@ -233,12 +233,12 @@ Greedy algorithms involve making a sequence of choices where each looks best at 
 
 \begin{itemize}
   \item \textbf{Greedy choice property:} we can assemble a globally optimal solution by making locally optimal (greedy) choices.
-  \item \textbf{Optimal Substructure} : A problem is said to have optimal substructure if an optimal solution to the problem contains within it optimal solutions to subproblems. 
+  \item \textbf{Optimal Substructure} : A problem is said to have optimal substructure if an optimal solution to the problem contains within it optimal solutions to subproblems.
 \end{itemize}
 
 \subsection{Activity Selection Problem}
 
-Consider a set $S = \{1,2,3,..n\}$ of $n$ activities that can happen one activity at a time. Activity $i$ takes place during interval $[s_i,f_i)$. Activities $i$ and $j$ are compatible if $[s_i,f_i)$ and $[s_j,f_j)$ don't overlap. Our goal is to select the maximum size subset of mutually comparable activities. 
+Consider a set $S = \{1,2,3,..n\}$ of $n$ activities that can happen one activity at a time. Activity $i$ takes place during interval $[s_i,f_i)$. Activities $i$ and $j$ are compatible if $[s_i,f_i)$ and $[s_j,f_j)$ don't overlap. Our goal is to select the maximum size subset of mutually comparable activities.
 
 To solve, we can assume that activities are in increasing order of their finishing time. If not, then sort it in $O(n \log n)$. Doing this, we can choose them greedily, picking an activity whenever we are free.
 
@@ -269,7 +269,7 @@ The algorithm for Huffman Coding creates this tree. Say we are given a set $C$ o
     Allocate new node $z$ \\
     $z.left = x =$ EXTRACT\_MIN(Q)$ \\
     $z.right = y =$ EXTRACT\_MIN(Q)$ \\
-    $z.freq = x.freq+y.freq$ \\ 
+    $z.freq = x.freq+y.freq$ \\
     INSERT($Q.z$) \\
   }
   return EXTRACT\_MIN(Q)
@@ -295,7 +295,7 @@ A \textbf{matroid}  is an ordered pair $M = (S,I)$ satisfying the following cond
 
 In more simple terms, the matroid gives a classification of each subset of $S$ to be independent or dependent. The empty set is always independent and any subset of an independent set is independent. If an independent size $A$ has smaller size than $B$, then there exists some element in $B$ that can be added into $A$ without loss of independency.
 
-Given a matroid $M$, we call an element $x \notin A$ an \textbf{extension} of $A \in I$ if we can add $x$ to $A$ while preserving its independence, i.e. $A \cup \{x\} \in I$. 
+Given a matroid $M$, we call an element $x \notin A$ an \textbf{extension} of $A \in I$ if we can add $x$ to $A$ while preserving its independence, i.e. $A \cup \{x\} \in I$.
 
 The graphic matroid $M_G = (S_G, I_G)$ is defined as follows:
 
@@ -343,11 +343,11 @@ Notice, that this is basically Kruskal's algorithm for finding a minimum spannin
 \end{lemma}
 
 \begin{lemma}
-  Let $M = (S,I)$ be any matroid. If $x$ is an element of $S$ that is an extension of some independent subset $A$ of $S$, then $x$ is also an extension of $\phi$. 
+  Let $M = (S,I)$ be any matroid. If $x$ is an element of $S$ that is an extension of some independent subset $A$ of $S$, then $x$ is also an extension of $\phi$.
 \end{lemma}
 
 \begin{corollary}
-  Let $M = (S,I)$ be any matroid. If $x$ is an element of $S$ such that $x$ is not an extension of $\phi$, then $x$ is not an extension of any independent set $A$ of $S$. 
+  Let $M = (S,I)$ be any matroid. If $x$ is an element of $S$ such that $x$ is not an extension of $\phi$, then $x$ is not an extension of any independent set $A$ of $S$.
 \end{corollary}
 
 These lemmas tell us that at any point, choosing the minimum is optimal, as long as it does not create a cycle.
@@ -404,7 +404,7 @@ The time complexity of this is $T(n) = \Theta(n^2 \cdot 2^n)$ and space complexi
 
 \section{Matrix Chain Multiplication}
 
-If we are given a sequence of matrices, $A,B,C$ of size $u \times v$, $v \times w$, $w \times z$ respectively. This gives us two ways to multiple the matrix : 
+If we are given a sequence of matrices, $A,B,C$ of size $u \times v$, $v \times w$, $w \times z$ respectively. This gives us two ways to multiple the matrix :
 
 \begin{itemize}
   \item $(A \times B) \times C$ : Takes $u \times v \times w + u \times w \times z$ steps
@@ -439,7 +439,7 @@ A more efficient approach to solve this is DP. Let us assume every matrix $A_i$ 
         $q = m[i][k] + m[k+1][j] + p_{i-1}p_kp_j$ \\
         \If{$q < m[i][j]$}{
           $m[i][j] = q$ \\
-          $s[i][j] = k$ 
+          $s[i][j] = k$
         }
       }
     }
@@ -500,7 +500,7 @@ Hence our goal becomes choosing $r$ such that it minimizes $e[i,j]$. This gives 
   \For{l = 1 to n} {
     \For{i = 1 to n-l+1} {
       $j = i-l+1$ \\
-      $e[i,j] = \infty$ \\ 
+      $e[i,j] = \infty$ \\
       $w[i,j] = w[i,j-1] + p_j + q_j$ \\
       \For{r = i to j} {
         $t = e[i,r-1] + e[r+1,j] + w[i,j]$ \\
@@ -552,7 +552,7 @@ If $i$ and $j$ are the first two jobs of the schedule and $B$ is not available f
 Now, let
 \begin{align*}
   t_{ij} &= b_j + \max \{b_i + \max \{t-a_i,0\} - a_j,0\} \\
-         &= b_j + b_i -a_j + \max \{ \max \{t-a_i,0\}, a_j - b_i \} \\ 
+         &= b_j + b_i -a_j + \max \{ \max \{t-a_i,0\}, a_j - b_i \} \\
          &= b_j + b_i - a_j + \max \{t-a_i,0,a_j-b_i\} \\
          &= b_j + b_i - a_j - a_i + \max \{t,a_i,a_j+a_i -b_i\}
 \end{align*}
@@ -566,7 +566,7 @@ If $i$ and $j$ are interchanged, we get
 Hence, we can see that
 \[g(S,t) < g'(S,t) \Leftrightarrow t_{ij} \leq t_{ji}\]
 
-This should hold for all $t$, so after some reduction, 
+This should hold for all $t$, so after some reduction,
 \[\min\{a_i,b_i\} \geq \min \{a_j,b_j\}\]
 
 So, if $\min\{a_1,a_2,...,a_n,b_1,b_2,...,b_n\}$ is $a_i$, then $i$ should be the first job. If $\min\{a_1,a_2,...,a_n,b_1,b_2,...,b_n\} = b_j$ then $j$ should be the last job.
@@ -719,7 +719,7 @@ Obviously, \textbf{P} $\subseteq$ \textbf{NP}, since a DTM is a special case of 
 \subsection{The Certificate Definition of NP}
 \textbf{P} can be views as a set of problems that can be solved efficiently. \textbf{NP} can be viewed as a set of problems that can be efficiently verified given a possible solution. This gives us an alternate definition of \textbf{NP}.
 
-A language $L$ is in \textbf{NP} is there exists a polynomial $p$ and a polynomial time DTM $M$ called the verifier for $L$ such that for every $x \in \{0,1\}^*, x \in L \Leftrightarrow \exists u \in \{0,1\}^{p(|x|)}$ such that $M$ accepts $x,u$. If $M$ does accept $x,u$, then $u$ is the \textbf{certificate} of $x$. 
+A language $L$ is in \textbf{NP} is there exists a polynomial $p$ and a polynomial time DTM $M$ called the verifier for $L$ such that for every $x \in \{0,1\}^*, x \in L \Leftrightarrow \exists u \in \{0,1\}^{p(|x|)}$ such that $M$ accepts $x,u$. If $M$ does accept $x,u$, then $u$ is the \textbf{certificate} of $x$.
 
 The meaning of this definition is that we are given an input $x$ and a possible solution $u$, and we should be able to devise a DTM that can verify $u$ in polynomial time. The restriction of polynomial time also restricts the length of $u$ to a polynomial in $|x|$.
 
@@ -739,7 +739,7 @@ If the input is in INDSET, then step 1 will correctly guess an independent set o
 
 If it is not in INDSET, then every guess in steo 1 will not be able to make an independent set of size at least $k$. NTM will reject the input in step 2 after verifying it to be either not an independent set or an independent set of size less then $k$.
 
-We can also verify it with the second definition and desigining a polynomial time DTM that takes certificates as input. First the DTM will verify that the size of $|u| = n$ and that the vertices whose values are set to 1 are an independent set of $G$ of size at least $|k|$. The DTM obviously runs in polynomial time and $|u| = n$ is polynomially bounded. 
+We can also verify it with the second definition and desigining a polynomial time DTM that takes certificates as input. First the DTM will verify that the size of $|u| = n$ and that the vertices whose values are set to 1 are an independent set of $G$ of size at least $|k|$. The DTM obviously runs in polynomial time and $|u| = n$ is polynomially bounded.
 
 \section{The Class NP-Complete and NP-Hard}
 
@@ -757,18 +757,17 @@ A language $L_1$ is NP-hard if $\forall L \in \mathbf{NP}, L \leq_p L_1$.
 
 A language $L_1 \in \mathbf{NP}$ is NP-Complete if $\forall L \in \mathbf{NP}, L \leq_p L_1$.
 
-Notice the differnece in these definitions - a language $L$ is NP-Complete if $L$ is NP-Hard and $L \in NP$. Hence, a NP-Complete language is always NP-Hard, but a NP-Hard language need not be NP-Complete.
+Notice the difference in these definitions - a language $L$ is NP-Complete if $L$ is NP-Hard and $L \in NP$. Hence, a NP-Complete language is always NP-Hard, but a NP-Hard language need not be NP-Complete.
 
 A more informal way of putting these definitions is that any NP-hard language is at least as hard as any other NP language. We have the term NP-Complete because to solve the \textbf{P} vs \textbf{NP} problem, it suffices to study whether an NP-complete problem can be decided in polynomial time. This is true since any other NP problem could be reduced to the NP-complete problem in polynomial time, hence also becoming polynomial.
 
 \subsection{The Boolean Satisfiability Problem}
 
-A \textbf{Boolean formula}  over the variables $u_1 \cdots u_n$ consists of these variables and the logical operators AND,OR and NOT. A boolean formula $\Phi$ is satisfiablef there exists some assignment of value to the variables such that $\Phi$ evalueates to true.
+A \textbf{Boolean formula}  over the variables $u_1 \cdots u_n$ consists of these variables and the logical operators AND,OR and NOT. A boolean formula $\Phi$ is satisfiable if there exists some assignment of value to the variables such that $\Phi$ evalueates to true.
 
 This problem, called the SAT problem, is NP-complete (called the Cook-Levin THeorem). To prove this, we must first prove that it is NP. Given a boolean formula $\Phi(z)$, an NTM will guess an assignment of variables for $z$ and then it will evaluate $\Phi(z)$ in polynomial time. If it evaluates to 1, then it will accept, otherwise it will reject. Hence, SAT $\in$ NP.
 
 Next we have to prove that SAT is NP Hard. \textbf{TODO}.
-
 
 \subsection{The 0-1 Integer Programming Problem}
 
@@ -784,9 +783,9 @@ This also completes a proof that $01IPROG$ is NP-Complete.
 
 We have already proved that $INDSET \in \matbf{NP}$. We can also show it is NP-Hard by proving that $3SAT \leq_p INDSET$. Say we have a $m$ clause 3CNF formula $\Phi = C_1 \land C_2 \cdots C_m$. We will convert it into a $7m$ vertex graph $G$ in polynomial time such that $\Phi$ is satisfiable if and only if the independent set is of size at least $m$.
 
-Let us associate a cluster of 7 vertices in $G$ with each clause of $\Phi$. The vertices in a cluster associated with a clause correspond to the seven possible satisfying partial assignments, e.g. (0,1,0) or (1,1,0). We will call a partial assignment \textbf{consistent} if they have same value for all shared variables.  We put an edge between two vertices in $G$ if they correspond to inconsitent partial assigments. 
+Let us associate a cluster of 7 vertices in $G$ with each clause of $\Phi$. The vertices in a cluster associated with a clause correspond to the seven possible satisfying partial assignments, e.g. (0,1,0) or (1,1,0). We will call a partial assignment \textbf{consistent} if they have same value for all shared variables.  We put an edge between two vertices in $G$ if they correspond to inconsistent partial assigments.
 
-The fina l output graph will have $7m$ vertices, and can be generated in polynomial time. Suppose $\Phi$ is satisfiable. Then, all the clauses are true for some assignment of variables. In each clause, we select the vertex corresponding to the partial assignment. There cannot be an edge between two chosen vertices since the partial assignments are inconsistent, so that means that they form an independent set. If it is not satisfiable, then there cannot be an independent set of size $m$. Hence, $3SAT \leq_p INDSET$.
+The final output graph will have $7m$ vertices, and can be generated in polynomial time. Suppose $\Phi$ is satisfiable. Then, all the clauses are true for some assignment of variables. In each clause, we select the vertex corresponding to the partial assignment. There cannot be an edge between two chosen vertices since the partial assignments are inconsistent, so that means that they form an independent set. If it is not satisfiable, then there cannot be an independent set of size $m$. Hence, $3SAT \leq_p INDSET$.
 
 \section{NP Optimization Problems}
 
@@ -795,45 +794,45 @@ An NP optimization problem $\Pi$ consists of:
 \begin{itemize}
   \item A set of valid instances $D_\Pi$ recognizable in polynomial time. The size of an instance $I \in D_\Pi$, denotes by $|I|$ is defined as the number of bits needed to write $I$ under the assumption that all numbers occuring in the instance are written in binary
   \item Each instance $I \in D_\Pi$ has a set of feasible solutions $S_\Pi (I)$. We require that $S_\Pi(I) \neq \phi$  and that every solution $s \in S_\Pi(I)$ is of a length polynomially bounded in $|I|$.  Furthermore, there is a polynomial time algorithm that given a pair $(I,S)$ decides whether $S \in S_\Pi(I)$
-  \item There is a polynomial time computable objective function $obj$ that assigns a non negative number to each pair $(I,S)$, where $I$ is an instance and $S$ is a feasible solution for $I$.
+  \item There is a polynomial time computable objective function $obj$ that assigns a non-negative number to each pair $(I,S)$, where $I$ is an instance and $S$ is a feasible solution for $I$.
   \item $\Pi$ is specified to either be a minimization or maximization problem. The restriction of $\Pi$ to unit cost instances is called the \textbf{cardinality version} of $\Pi$.
 \end{itemize}
 
-With every NP optimization problem, we can naturally associate a division problem by giving a bound on the optimal solution. Thus, the decision version of NP optimization problem $\Pi$ consists of pairs $(I,B)$ where $I$ is an instance of $\Pi$ and $B$ is a rational numbre. If $\Pi$ is a minimzation problem, then the answer to the decision version will be ``yes'' if and only if there is a feasible solution to $I$ of cost $\leq B$.
+With every NP optimization problem, we can naturally create a decision problem by giving a bound on the optimal solution. Thus, the decision version of NP optimization problem $\Pi$ consists of pairs $(I,B)$ where $I$ is an instance of $\Pi$ and $B$ is a rational number. If $\Pi$ is a minimization problem, then the answer to the decision version will be ``yes'' if and only if there is a feasible solution to $I$ of cost $\leq B$.
 
-An \textbf{approximation algorithm}  produces a feasible solution that is ``close'' to the optimal one, and is time efficient. Let $\Pi$ be a minimization problem, and let $\delta$ be a function such that $\delta:Z^+ \rightarrow Q^+$, with $S \geq 1$. An algorithm $A$ is said to be a $\delta$ approximation algorithm for $\Pi$ if, on each instance $I$, $A$ produces a feasible solution for $I$ such that $f_\Pi(I,S) \leq \delta(|I|). OPT(I)$, where $OPT(I)$ is the optimal solution. The running time of $A$ must be bounded by a fixed polynomial in $|I|$.
+An \textbf{approximation algorithm}  produces a feasible solution that is ``close'' to the optimal one, and is time efficient. Let $\Pi$ be a minimization problem, and let $\delta$ be a function such that $\delta:Z^+ \rightarrow Q^+$, with $\delta \geq 1$. An algorithm $A$ is said to be a $\delta$ approximation algorithm for $\Pi$ if, on each instance $I$, $A$ produces a feasible solution for $I$ such that $f_\Pi(I,S) \leq \delta(|I|). OPT(I)$, where $OPT(I)$ is the optimal solution. The running time of $A$ must be bounded by a fixed polynomial in $|I|$.
 
 A \textbf{polynomial time approximation scheme} (PTAS) is a family of algorithms $\{A_\epsilon\}$ where there is an algorithm for each $\epsilon > 0$, such that $A_\epsilon$ is a $(1+\epsilon)$ - approximation algorithm for minimization and $(1-\epsilon)$ for maximization.
 
 \subsection{Linear Programming}
 
-Before we can get started with some algorithms, we must discuss linear programming. A linear programming is of the form:
+Before we can get started with some algorithms, we must discuss linear programming. Given an $n$-vector $c$, a $m$-vector $b$ and a $n \times m$ matrix $a$, a linear programming is of the form:
 \[\min \sum_{j=1}^n c_j x_j\]
 subject to
-\[\sum_{j=1}^n a_{ij}x_j \geq b_i\]
-\[x_j \geq 0\]
+\[\sum_{j=1}^n a_{ij}x_j \geq b_i, i = 1, \cdots, m\]
+\[x_j \geq 0, j = 1, \cdots, n\]
 A solution is a $n$ vector $x$ that minimizes the given objective function $\sum_{i=1}^n c_jx_j$.
 
 Solving LPs is in $\mathbf{P}$. However, a variation of LP called Integer Linear Programming (ILP) is not. In ILPs we can add constraints that require the variable $x_j$ to be an integer, or a member of a set. Solving ILPs can be proved to be NP-Complete.
 
-Linear programming has a concept of \textbf{duality}.  Consider the example of minimizing
-\[6x_1 + 4x_2 + 2x_3\]
+Linear programming has a concept of \textbf{duality}.  Consider the example of
+\[\min 6x_1 + 4x_2 + 2x_3\]
 subject to
 \[4x_1 + 2x_2 + x_3 \geq 5\]
-\[x_1 + x_2 \geq 5\]
+\[x_1 + x_2 \geq 3\]
 \[x_2 + x_3 \geq 4\]
 \[x_i \geq 0\]
 
 Observe that since $6x_1 + 4x_2 + 2x_3 \geq (4x_1 + 2x_2 + x_3)  + (x_1 + x_2) + (x_2 + x_3) \geq 5+3+4 = 12$. This means that the optimal value of the LP is at least 12.
 
-Now suppose we take $y_i$ of the $i^th$ constraint. Then the lower bound achieved is $5y_1 + 3y_2 + 4y_3$. We need to ensure that:
+Now suppose we take $y_i$ of the $i^{th}$ constraint. Then the lower bound achieved is $5y_1 + 3y_2 + 4y_3$. We need to ensure that:
 \[6x_1 + 4x_2 + 2x_3 \geq y_1(4x_1 + 2x_2 + x_3) + y_2(x_1 + x_2) + y_3(x_2+x_3)\]
 This means that:
 \[4y_1 + y_2 \leq 6\]
 \[2y_1 + y_2 + y_3 \leq 4\]
 \[y_1 + y_3 \leq 2\]
-We want to maximize the lower bound subject to these constraints,which gives us a new LP - maximize
-\[5y_1 + 3y_2 + 4y_3\]
+We want to maximize the lower bound subject to these constraints,which gives us a new LP:
+\[\max 5y_1 + 3y_2 + 4y_3\]
 subject to
 \[4y_1 + y_2 \leq 6\]
 \[2y_1 + y_2 + y_3 \leq 4\]
@@ -849,7 +848,7 @@ According to the \textbf{LP Duality Theorem}, the primal program has a finite op
 \[\sum_{j=1}^n c_jx_j^* = \sum_{i=1}^m b_iy_i^*\]
 
 The \textbf{weak duality theorem}  states that if $x$ and $y$ are feasible solutions for the primal and dual respectively, then:
-\[\sum_{j=1}^m c_jx_j \geq \sum_{i=1}^m b_iy_i\]
+\[\sum_{j=1}^n c_jx_j \geq \sum_{i=1}^m b_iy_i\]
 
 Let $x$ and $y$ be feasible solutions to the primal and dual LPs respectively. Then $x$ and $y$ obey the \textbf{complementary slackness conditions}  if and only if they are optimal solutions to their respective LPs.
 
@@ -866,22 +865,21 @@ Let us prove that this is a 2-approximation algorithm. The cardinality of the ma
 We can formulate the weighted vertex cover problem as the following ILP:
 \[\min \sum_{i \in V} w_i x_i\]
 such that
-\[x_i + x_j \geq 1 \forall (i,j \in E)\]
+\[x_i + x_j \geq 1 \forall (i,j) \in E\]
 \[x_i \in \{0,1\} \forall i \in V\]
 We can relax the second condition to be:
 \[0 \leq x_i \leq 1 \forall i \in V\]
 
 Let $S^*$ denote a vertex cover of minimum weight, found with the ILP. Then:
 \[W_{LP} \leq W(S^*)\]
-The ILP problem is NP-Complete, and we cannot hope to solve it. However, solving the LP problem is in P. We can solve it in polynomial time using the simplex or the ellipsoid algorithm.
 
 Given a fractional solution $\{x_i^*\}$, we define $S = \{i \in V : x_i^* \geq 0.5\}$. The set defined in this way is a vertex cover, and $|S| \leq 2 \cdot W_{LP}$. Hence, it is a 2 approximation.
 
 \subsection{The Set Cover Problem}
 
-In the set cover problem, we are given a ground set of elements $E = \{e_1, \cdots, e_n\}$ and some subsets of those elements $S_1, S_2, \cdots, S_m$ where each $S_j \subseteq E$ as well as a non negative weight $W_j \geq 0$ for each subset $S_j$. The goal is to find a minimum weight collection of subsets that covers all of $E$; that is, we wish to find $I \subseteq \{1, \cdots, m\} that minimizes $\sum_{j \in I} w_j$ such that $\bigcup_{j \in I}S_j = E$.
+In the set cover problem, we are given a ground set of elements $E = \{e_1, \cdots, e_n\}$ and some subsets of those elements $S_1, S_2, \cdots, S_m$ where each $S_j \subseteq E$ as well as a non negative weight $w_j \geq 0$ for each subset $S_j$. The goal is to find a minimum weight collection of subsets that covers all of $E$; that is, we wish to find $I \subseteq \{1, \cdots, m\}$ that minimizes $\sum_{j \in I} w_j$ such that $\bigcup_{j \in I}S_j = E$.
 
-The vertex cover problem is a special case of the set cover proble. We can convert a vertex cover problem into a set cover problem by letting the ground set be the set of edfes, and a subset is created for each vertex $i$ containing edges incident to $i$.
+The vertex cover problem is a special case of the set cover problem. We can convert a vertex cover problem into a set cover problem by letting the ground set be the set of edges, and a subset is created for each vertex $i$ containing edges incident to $i$.
 
 We can formulate it as the following ILP:
 \[\min \sum_{j=1}^m w_jx_j\]
@@ -917,18 +915,18 @@ subject to:
 \[\sum_{i : e_i \in S_j} y_i \leq w_j\]
 \[y_i \geq 0\]
 
-By the weak duality theorem, for any feasible solution to the dual, 
+By the weak duality theorem, for any feasible solution to the dual,
 \[\sum_{i=1}^n y_i \leq Z_{LP}^* \leq OPT\]
 
 Let $y^*$ be the optimal solution to the dual LP, and consider the solution in which we choose all subsets for which the corresponding dual inequality is tight, i.e. the inequality is met with equality for $S_j$:
 \[\sum_{i : e_i} y_i^* = w_j\]
 Let $I'$ denote the indices of the subsets in this solution. We will now prove that this algorithm is also an f-approximation algorithm for the set cover problem.
 
-First, let us see if $S_j, j \in I'$ is a set cover. Suppose that $e_k$ is uncovered. Then, for ever $S_j$ containing $e_k$, 
+First, let us see if $S_j, j \in I'$ is a set cover. Suppose that $e_k$ is uncovered. Then, for ever $S_j$ containing $e_k$,
 \[\sum_{i : e_i \in S_j} y_i^* < w_j\]
 Let $\epsilon$ be the smallest difference between the RHS and LHS of all constraints involving $e_k$. Then, $\epsilon > 0$. Consider a new dual solution $y'$ such that $y_k' = y_k^* + \epsilon$ and every other component of $y'$ is the same as in $y^*$. Then $y'$ is a dual feasible solution since for each $j$ such that $e_k \in S_j$,
 \[\sum_{i : e_i \in S_j} y_i' = \sum_{i : e_i \in S_j} y_i^* + \epsilon \leq w_j\]
-by the definition of $\epsilon$. For each $j$ such that $e_k \notin S_j$, 
+by the definition of $\epsilon$. For each $j$ such that $e_k \notin S_j$,
 \[\sum_{i : e_i \in S_j} y_i' = \sum_{i : e_i \in S_j} y_i^* \leq w_j\]
 as before. This contradicts the optimality of $y^*$. Thus, it must be covered. Hence, $I'$ is a set cover.
 
@@ -949,7 +947,7 @@ as before. This contradicts the optimality of $y^*$. Thus, it must be covered. H
 \begin{solution}
   We guess that $T(n) = O(n)$ and substitute accordingly. $T(n) \leq cn-d$. Then:
   \begin{align*}
-    T(n) & \leq c(\frac{n}{3}) - d + c(\frac{2n}{3})  - d + 1 \\ 
+    T(n) & \leq c(\frac{n}{3}) - d + c(\frac{2n}{3})  - d + 1 \\
          &\leq cn -2d + 1 \\
          &\leq cn-d
   \end{align*}
@@ -962,7 +960,7 @@ as before. This contradicts the optimality of $y^*$. Thus, it must be covered. H
   Solve the recurrence $T(n) = T(n/3) + T(2n/3) + cn$
 \end{exercise}
 \begin{solution}
-  At each level, we can see that the sum of the ``work done''  is $cn$, up till some point. After that, since the right subtree would be doing more work, it would go deeper than the left subtree. 
+  At each level, we can see that the sum of the ``work done''  is $cn$, up till some point. After that, since the right subtree would be doing more work, it would go deeper than the left subtree.
 
   First let us consider a lower bound. The lower bound on the height of the tree is obviously $\log_3n$, using the leftmost path. So, considering a full binary tree with that height,
   \[T(n) \geq n \log_3n\]
@@ -974,19 +972,19 @@ as before. This contradicts the optimality of $y^*$. Thus, it must be covered. H
 \end{solution}
 
 \begin{exercise}
-  How do you use Strassen's algorithm when $n$ is not a power of 2? 
+  How do you use Strassen's algorithm when $n$ is not a power of 2?
 \end{exercise}
 \begin{solution}
   You can pad the matrices $A$ and $B$ with 0 until it is a power of 2. This won't affect the complexity since $N > 2n$, where $N$ is the new dimension.
 \end{solution}
 
 \begin{exercise}
-  How quickly can you multiply a $kn \times n$ matrix by a $n \times kn$ matrix, using Strassen's algorithm? What if the input is reversed?  
+  How quickly can you multiply a $kn \times n$ matrix by a $n \times kn$ matrix, using Strassen's algorithm? What if the input is reversed?
 \end{exercise}
 \begin{solution}
   If we consider the first case, we can see that the $kn \times n$ matrix is composed of $k$ $n \times n$ matrices. We can say the same for $n \times kn$. Therefore, we can write both matrices as $k \times 1$ and $1 \times k$, by assuming each $n \times n$ matrix as a single element. So the running time will be:
   \[T(kn \times n, n \times kn) = k^2 T(n \times n, n \times n)\]
-Using Strassen's algorithm, 
+Using Strassen's algorithm,
 \[T(kn \times n, n \times kn) = k^2 n^{\log 7}\]
 
 In the second case, we find that using the same arguments and multiplying a $1 \times k$ and a $k \times 1$ matrix, we would also need to do $k$ multiplications and $k-1$ additions. Therefore,
@@ -996,7 +994,7 @@ Which equals
 \end{solution}
 
 \begin{exercise}
-  What are the transitions for the Josephus problem? 
+  What are the transitions for the Josephus problem?
 \end{exercise}
 \begin{solution}
   The transitions are:
