@@ -816,7 +816,42 @@ A solution is a $n$ vector $x$ that minimizes the given objective function $\sum
 
 Solving LPs is in $\mathbf{P}$. However, a variation of LP called Integer Linear Programming (ILP) is not. In ILPs we can add constraints that require the variable $x_j$ to be an integer, or a member of a set. Solving ILPs can be proved to be NP-Complete.
 
-Linear programming has a concept of \textbf{duality}. 
+Linear programming has a concept of \textbf{duality}.  Consider the example of minimizing
+\[6x_1 + 4x_2 + 2x_3\]
+subject to
+\[4x_1 + 2x_2 + x_3 \geq 5\]
+\[x_1 + x_2 \geq 5\]
+\[x_2 + x_3 \geq 4\]
+\[x_i \geq 0\]
+
+Observe that since $6x_1 + 4x_2 + 2x_3 \geq (4x_1 + 2x_2 + x_3)  + (x_1 + x_2) + (x_2 + x_3) \geq 5+3+4 = 12$. This means that the optimal value of the LP is at least 12.
+
+Now suppose we take $y_i$ of the $i^th$ constraint. Then the lower bound achieved is $5y_1 + 3y_2 + 4y_3$. We need to ensure that:
+\[6x_1 + 4x_2 + 2x_3 \geq y_1(4x_1 + 2x_2 + x_3) + y_2(x_1 + x_2) + y_3(x_2+x_3)\]
+This means that:
+\[4y_1 + y_2 \leq 6\]
+\[2y_1 + y_2 + y_3 \leq 4\]
+\[y_1 + y_3 \leq 2\]
+We want to maximize the lower bound subject to these constraints,which gives us a new LP - maximize
+\[5y_1 + 3y_2 + 4y_3\]
+subject to
+\[4y_1 + y_2 \leq 6\]
+\[2y_1 + y_2 + y_3 \leq 4\]
+\[y_1 + y_3 \leq 2\]
+\[y_i \geq 0\]
+This maximization program is called the \textbf{dual}  of the previous LP, which is the \textbf{primal}. The dual of a primal form can be expressed as:
+\[\max \sum_{i=1}^m b_i y_i\]
+subject to:
+\[\sum_{i=1}^m a_{ij}y_i \leq c_j\]
+\[y_i \geq 0\]
+
+According to the \textbf{LP Duality Theorem}, the primal program has a finite optimum if and only if its dual has a finite optimum. Moreover, if $x^*$  and $y^*$ are the optimal solutions for the primal and dual programs respectively, then
+\[\sum_{j=1}^n c_jx_j^* = \sum_{i=1}^m b_iy_i^*\]
+
+The \textbf{weak duality theorem}  states that if $x$ and $y$ are feasible solutions for the primal and dual respectively, then:
+\[\sum_{j=1}^m c_jx_j \geq \sum_{i=1}^m b_iy_i\]
+
+Let $x$ and $y$ be feasible solutions to the primal and dual LPs respectively. Then $x$ and $y$ obey the \textbf{complementary slackness conditions}  if and only if they are optimal solutions to their respective LPs.
 
 \subsection{The Vertex Cover Problem}
 
@@ -875,6 +910,27 @@ This algorithm is in fact an $f$ approximation algorithm. By our construction, $
                       &= f \cdot Z_{LP}^*
                       \leq f \cdot OPT
 \end{align*}
+
+The dual LP for our set cover problem is given by:
+\[\max \sum_{i=1}^n y_i\]
+subject to:
+\[\sum_{i : e_i \in S_j} y_i \leq w_j\]
+\[y_i \geq 0\]
+
+By the weak duality theorem, for any feasible solution to the dual, 
+\[\sum_{i=1}^n y_i \leq Z_{LP}^* \leq OPT\]
+
+Let $y^*$ be the optimal solution to the dual LP, and consider the solution in which we choose all subsets for which the corresponding dual inequality is tight, i.e. the inequality is met with equality for $S_j$:
+\[\sum_{i : e_i} y_i^* = w_j\]
+Let $I'$ denote the indices of the subsets in this solution. We will now prove that this algorithm is also an f-approximation algorithm for the set cover problem.
+
+First, let us see if $S_j, j \in I'$ is a set cover. Suppose that $e_k$ is uncovered. Then, for ever $S_j$ containing $e_k$, 
+\[\sum_{i : e_i \in S_j} y_i^* < w_j\]
+Let $\epsilon$ be the smallest difference between the RHS and LHS of all constraints involving $e_k$. Then, $\epsilon > 0$. Consider a new dual solution $y'$ such that $y_k' = y_k^* + \epsilon$ and every other component of $y'$ is the same as in $y^*$. Then $y'$ is a dual feasible solution since for each $j$ such that $e_k \in S_j$,
+\[\sum_{i : e_i \in S_j} y_i' = \sum_{i : e_i \in S_j} y_i^* + \epsilon \leq w_j\]
+by the definition of $\epsilon$. For each $j$ such that $e_k \notin S_j$, 
+\[\sum_{i : e_i \in S_j} y_i' = \sum_{i : e_i \in S_j} y_i^* \leq w_j\]
+as before. This contradicts the optimality of $y^*$. Thus, it must be covered. Hence, $I'$ is a set cover.
 
 
 \section{Problems}
