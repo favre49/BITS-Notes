@@ -873,7 +873,7 @@ where $d = (a,b)$ and $n \in \Z$. The initial solution $x_0,y_0$ can be found us
 \section{Introduction}
 
 \begin{definition}
-  Let $m \in \N$. Two integers $a,b$ are said to be congruent modulo $m$ if $m|a-b$. This is denoted by $a \equiv b \mod m$
+  Let $m \in \N$. Two integers $a,b$ are said to be congruent modulo $m$ if $m|a-b$. This is denoted by $a \equiv b \mod m$.
 \end{definition}
 
 Congruence has the following properties:
@@ -887,7 +887,7 @@ Congruence has the following properties:
 As such, it is an equivalence relation. The set of all integers congruent to $a$ modulo $m$ is denoted by $[a]$, and is called the congruence class of $a \mod m$
 
 \begin{lemma}
-  Two integers are congruent modulo $m$ if and only if $a,b$ have the same remainder upon division by $m$
+  Two integers are congruent modulo $m$ if and only if $a,b$ have the same remainder upon division by $m$.
 \end{lemma}
 \begin{proof}
 Suppose $a$ and $b$ have the same remainder upon division by $m$. Then:
@@ -1057,7 +1057,7 @@ Let $a,l,m$ be integers $\geq 2$. We want to compute $a^l \mod m$. To do this, w
 Let $a,b,m \in \Z, m \geq 2$. Then $ax \equiv b \mod m$ is called a linear congruence. Our goal is to find possible $x$ that satisfy the given congruence.
 
 \begin{theorem}
-  Let $a,b,m \in Z$ and $d = (a,m)$. The linear congruence $ax \equiv b \mod m$ has a solution if and only if $d | b$. If $d | b$, then there are $d$ mutually incongruent solutions modulo $m$.
+  Let $a,b,m \in \Z$ and $d = (a,m)$. The linear congruence $ax \equiv b \mod m$ has a solution if and only if $d | b$. If $d | b$, then there are $d$ mutually incongruent solutions modulo $m$.
 \end{theorem}
 \begin{proof}
   The linear congruence $ax \equiv b \mod m$ can be expressed as a linear Diophantine equation:
@@ -1240,7 +1240,7 @@ by multiplying both sides by the inverse of $a$, getting the equation:
   If $(a,p) \neq 1$, then $p|a$. Hence $a \equiv a^p \equiv 0 \mod p$.
 \end{proof}
 
-Theorem 6.12 gives us the base for Fermat's test for non primality. Let $n \in \N$. If $a^n \not \equiv a \mod n$, then $n$ must be composite. Clearly, the converse does not hold - if $a^n \equiv a \mod n$, this is not proof that $n$ is prime! Composite numbers that follow the result in Fermat's little theorem are called Carmichael numbers.
+Theorem 6.12 gives us the basis for Fermat's test for non-primality. Let $n \in \N$. If $a^n \not \equiv a \mod n$, then $n$ must be composite. Clearly, the converse does not hold - if $a^n \equiv a \mod n$, this is not proof that $n$ is prime! Composite numbers that follow the result in Fermat's little theorem are called Carmichael numbers.
 
 \begin{theorem}
   Let $p_1, p_2, \cdots p_k$ be distinct prime numbers. Let $a \in \N$ and let
@@ -1429,8 +1429,8 @@ The proof is straightforward from the factorization of an integer, so I have not
 \begin{proof}
   Let $m,n \in \N$ with $(m,n) = 1$. Then:
   \begin{align*}
-    F(mn) &= \sum_{d|mn} f(d) = \sum_{d_1|m,d_2|m} f(d_1d_2) \\
-          &= \sum_{d_1|m,d_2|m} f(d_1) f(d_2) \\
+    F(mn) &= \sum_{d|mn} f(d) = \sum_{d_1|m,d_2|n} f(d_1d_2) \\
+          &= \sum_{d_1|m,d_2|n} f(d_1) f(d_2) \\
           &= \sum_{d_2|n} \left( \sum_{d_1|m}f(d_1) \right) f(d_2) \\
           &= \sum_{d_2|n} F(m) f(d_2) \\
           &= F(m) \sum_{d_2|n} f(d_2) \\
@@ -1501,7 +1501,7 @@ then
   \end{cases}\]
 \end{definition}
 
-This can also be expressed as another definition. $\mu(n)$ is:
+This can also be expressed as another equivalent definition. $\mu(n)$ is:
 \begin{itemize}
   \item 1 if $n$ is square free with an even number of prime factors
   \item $-1$ if $n$ is square free with an odd number of prime factors
@@ -1547,7 +1547,7 @@ This can also be expressed as another definition. $\mu(n)$ is:
 \begin{proof}
   \begin{align*}
     \sum_{d|n} \mu(d) F \left(\frac{n}{d}\right) &= \sum_{d|n} \mu(d) \sum_{d'|\frac{n}{d}} f(d') \\
-                                                 &= \sum_{d|n} \sum_{d|\frac{n}{d}} \mu(d) f(d') \\
+                                                 &= \sum_{d|n} \sum_{d'|\frac{n}{d}} \mu(d) f(d') \\
                                                  &= \sum_{d'|n} f(d') \sum_{d|\frac{n}{d'}} \mu(d) \\
                                                  &= \sum_{d'|n} f(d') \left[ \frac{1}{n/d'} \right] \\
                                                  &= f(n)
@@ -1612,7 +1612,7 @@ Theorem 7.8 allows us to solve lots of problems simply by stating that the convo
 \begin{definition} (Order of an integer)
   Let $m$ be an integer $\geq 2$ and let $a$ be an integer coprime to $m$. The order of $a$ modulo $m$  is the least positive integer $k$ such that:
   \[a^k \equiv 1 \mod m\]
-  This is denoted by $\ord_m a$
+  This is denoted by $\ord_m a$.
 \end{definition}
 
 This is reminiscent of Euler's Theorem. As expected, $\phi(m)$ is not always the least integer satisfying the above equation. It is obvious that $\ord_m a \leq \phi(m)$.
@@ -1667,7 +1667,7 @@ If $k = \ord_m a$, then $a,a^2, \cdots , a^k$ are incongruent modulo $m$.
 \begin{proof}
   Let $l = \ord_m a^h$ and let $d = (h,k)$. Write
   \[h = dh', k = dk'\]
-  We want to prove that $l = k'$. Since $a^hl \equiv 1 \mod m$, we get $k|hl$. Hence, $k' | h'l$. Since $(h',k') = 1$, we get $k'|l$. Now, it is enough to prove that $l|k'$. This will follow if we can prove that $(a^h)^{k'} \equiv 1 \mod m$. Now:
+  We want to prove that $l = k'$. Since $a^{hl} \equiv 1 \mod m$, we get $k|hl$. Hence, $k' | h'l$. Since $(h',k') = 1$, we get $k'|l$. Now, it is enough to prove that $l|k'$. This will follow if we can prove that $(a^h)^{k'} \equiv 1 \mod m$. Now:
   \[(a^h)^{k'} \equiv a^{h'dk/d} = (a^k)^{h'} \equiv 1 \mod m\]
 \end{proof}
 
@@ -1693,7 +1693,9 @@ If $k = \ord_m a$, then $a,a^2, \cdots , a^k$ are incongruent modulo $m$.
   are congruent modulo $m$ to $a_1, \cdots, a_{\phi(m)}$ in some order
 \end{theorem}
 \begin{proof}
-  TODO 
+  Since $(a^i, m) = 1$ for all $i$, each $a^i$ must be congruent to $a_j$ for some $j$. Since $\ord_m a = \phi(m)$, we know that 
+  \[a, a^2, \cdots, a^{\phi(m)}\]
+  are mutually incongruent modulo $m$.
 \end{proof}
 
 \begin{corollary}
@@ -1713,12 +1715,16 @@ If $k = \ord_m a$, then $a,a^2, \cdots , a^k$ are incongruent modulo $m$.
   Since $(m-1,m) = 1$  , there exists $i$ in $[1,\phi(m))$, such that $a^i \equiv m-1 \equiv -1 \mod m$. Then $a^{2i} \equiv 1 \mod m$. If $i < \phi(m)/2$, then $2i < \phi(m)$ and we get a contradiction as $a$ is a primitive root modulo $m$. If $i > \phi(m)/2$, then $0 < i-\phi(m)/2 < \phi(m)/2$. $(a^{i - \phi(m)/2})^2 \equiv 1 \mod m$. Since $2(i - \phi(m)/2) < \phi(m)$, this is again a contradiction as $a$ is a primitive root modulo $m$. Hence $i = \phi(m)/2$.
 \end{solution}
 
-\begin{theorem}
+\begin{exercise}
   Let $n \in \Z$. If $p$ is an odd prime dividing $n^2+1$, then $p \equiv 1 \mod 4$. 
-\end{theorem}
-\begin{proof}
-TODO   
-\end{proof}
+\end{exercise}
+\begin{solution}
+  If $p | n^2+1$, then:
+  \[n^2 + 1 \equiv 0 \mod p\]
+  \[n^2 \equiv -1 \mod p\]
+  \[n^4 \equiv 1 \mod p\]
+  Let $\ord_p n = k$. Since $p$ is a prime, $k | p-1$ from Fermat's Little Theorem. Moreover, from the equation abov, $k|4$. Since $n^2 \equiv -1 \mod p$, $k \nmid 2$. This implies that $k = 4$. So, $4 | p-1 \Rightarrow p \equiv 1 \mod 4$.
+\end{solution}
 
 \begin{exercise}
   Let $\ord_m a = h$, $\ord_m b = k$. Then:
@@ -1736,7 +1742,6 @@ TODO
   \[(a^l)^k \equiv a^{lk} b^{lk} \equiv (ab)^{lk} \equiv 1 \mod m\]
   Since $(h,k) = 1$, there exist integers such that $hx+ky = 1$. Now 
   \[a^l \equiv (a^{lh})^x (a^{lk})^y \equiv 1 \mod m\]
-  (polish, late for class)
 \end{solution}
 
 \begin{theorem}[Lucas' Theorem]
@@ -1748,7 +1753,7 @@ TODO
   which is a contradiction. Hence $t = 1$, or $k = m-1$. Thus $m-1 = \phi(m)$. Hence $m$ is prime.
 \end{proof}
 
-This gives us a primality test for integers. This is in fact faster than brute force checking in $O(\sqrt{n})$ since the number of prime factors of a number grows very slowly - see highly composite numbers. (or perhaps finding the necessary $x$ is slow?)
+This gives us a primality test for integers. It does seem slower than the $O(\sqrt n)$ method, since we have to check all $x \in [0,m]$.
 
 \begin{corollary}
   Let $m \geq 3$. Suppose  that there exists $x \in \N$ such that $x^{(m-1)/2} \equiv -1 \mod m$ and $x^{(m-1)/q} \equiv 1 \mod m$ for all odd prime factors $q$ of $m-1$. Then $m$ is prime.
