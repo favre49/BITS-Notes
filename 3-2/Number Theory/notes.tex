@@ -1128,12 +1128,36 @@ Let $a_1,...,a_k \in Z$. Let $n_1,...,n_k$ be integers $\geq 2$. We want to find
   \[N_3 = 60\]
   First, let us solve $N_1 x \equiv 1 \mod n_1$. Then,
   \[35x \equiv 1 \mod 12\]
-  \[x \equiv -1 mod 12\]
+  \[x \equiv -1 \mod 12\]
   Let $x_1 = -1$. The same way, we find $x_2 = -1$ and $x_3 = 0$. So,
   \[x = 11 \times 35 \times (-1) + 1 \times 84 \times (-1) + 0\]
   \[x \equiv 371 \mod 420\]
 \end{solution}
 
+\begin{theorem}
+  The linear system
+  \[x \equiv a \mod m\]
+  \[x \equiv b \mod n\]
+  is solvable if and only if $(m,n) | (a-b)$. If it is solvable, the solution is unique modulo $[m,n]$
+\end{theorem}
+
+This theorem has not been taught in class, but is useful nonetheless. The expected method of solving such a system and a hint towards the proof is in the exercise below.
+
+\begin{exercise}
+  Show that there is no solution to
+  \[x \equiv 19 \mod 40\]
+  \[x \equiv 13 \mod 44\]
+\end{exercise}
+\begin{solution}
+  Let $x \in \Z$ be a solution. We can transform these equations into:
+  \[x =19 + 40m \]
+  \[x = 13 + 44n \]
+  Subtracting one from the other,
+  \[44n - 40m = 6\]
+  This Diophantine equation has no solution.
+
+  Alternatively, the given equations imply that $4| x - 19$ and $4|x - 13$. By taking a linear combination, we get $4|6$ which is not true. Hence, no such $x$ can exist.
+\end{solution}
 
 \section{Modular Inverse}
 
@@ -1216,7 +1240,7 @@ by multiplying both sides by the inverse of $a$, getting the equation:
   If $(a,p) \neq 1$, then $p|a$. Hence $a \equiv a^p \equiv 0 \mod p$.
 \end{proof}
 
-Theorem 6.11 gives us the base for Fermat's test for non primality. Let $n \in \N$. If $a^n \not \equiv a \mod n$, then $n$ must be composite. Clearly, the converse does not hold - if $a^n \equiv a \mod n$, this is not proof that $n$ is prime! Composite numbers that follow the result in Fermat's little theorem are called Carmichael numbers.
+Theorem 6.12 gives us the base for Fermat's test for non primality. Let $n \in \N$. If $a^n \not \equiv a \mod n$, then $n$ must be composite. Clearly, the converse does not hold - if $a^n \equiv a \mod n$, this is not proof that $n$ is prime! Composite numbers that follow the result in Fermat's little theorem are called Carmichael numbers.
 
 \begin{theorem}
   Let $p_1, p_2, \cdots p_k$ be distinct prime numbers. Let $a \in \N$ and let
@@ -1559,7 +1583,7 @@ This section is not in syllabus or taught in class, but is helpful when proving 
   $f$ is multiplicative if and only if $F$, it's M\"{o}bius transform, is also multiplicative
 \end{corollary}
 \begin{proof}
-  One direction of this statement has already been proved in Theorem 7.3. The other direction is clear from noticing that the M\"{o}bius inversion formula could alternatively be stated by $f = \mu & F$. Since $F$ and $\mu$ are multiplicative, $f$ must be multiplicative.
+  One direction of this statement has already been proved in Theorem 7.3. The other direction is clear from noticing that the M\"{o}bius inversion formula could alternatively be stated by $f = \mu * F$. Since $F$ and $\mu$ are multiplicative, $f$ must be multiplicative.
 \end{proof}
 
 Theorem 7.8 allows us to solve lots of problems simply by stating that the convolution must be multiplicative. An example of a problem that uses Corollary 7.8.1 is given below.
