@@ -1045,10 +1045,34 @@ In BGP, an AS is identified by its unique \textbf{autonomous system number} or A
 
 \begin{itemize}
   \item AS-PATH, an attribute that contains the ASs through which the advertisement has passed. When a prefix is passed into an AS, it's ASN is added to the attribute. This allows routers to detect and prevent looping advertisements. If a router sees that its AS is contained in the path list, it will reject the advertisement.
-  \item  NEXT-HOP is the router interface that begins the AS_PATH. This allows routers to properly configure their forwarding tables.
+  \item  NEXT-HOP is the router interface that begins the AS-PATH. This allows routers to properly configure their forwarding tables.
 \end{itemize}
 
-BGP also has other attributes, including attributes to assign preference metrics.
+BGP also has other attributes, including attributes to assign preference metrics. 
+
+\subsection{Route Selection}
+
+While distributing routes within the ASs, a router may learn about more than one route to any prefix, in which case the router must select one of the possible routes. If there are two or more routes to the same prefix, BGP invokes the following elimination rules till only one route remains.
+
+\begin{itemize}
+  \item Routes are assigned local preference values as one of their attributes. The local preference of a route could have been set by the router or could have been learned by another router in the same AS. This is a policy decision for the network admin. The routes with the highest local preference values are selected.
+  \item From these routes, the routes with the shortest AS-PATH is selected.
+  \item From these routes, the route with the closest NEXT-HOP is selected. ``closest'' refers to the minimum least cost path, found by the intra-AS routing algorithm. This is known as \textbf{hot potato routing}.
+  \item If more than one route still remains, we use the BGP identifiers
+\end{itemize}
+
+\subsection{Policy Decisions}
+
+BGP provides the capability for implementing various policies, chosen by the network administrator. There are two kinds of policies - \textbf{import policy} and \textbf{export policy}.
+
+The import policy decides how to handle route advertisements received. It can either accept or filter the route and whether or not to set certain attributes such as the router preference metrics. The import policy could filter a route if, say, the AS did not want to send traffic over an AS in the AS-PATH, or if it already knows a preferable path for the prefix.
+
+The export policy decides which routes should be advertised. Generally, this depends on the relationship between nodes:
+\begin{itemize}
+  \item An AS will announce all routes learned form peers, providers and customers to it's customers
+  \item An AS will announce all routes learned from customers to it's peers and providers
+\end{itemize} 
+Of course, the AS will always announce routes originating from itself.
 
 \chapter{Data Link Layer}
 
