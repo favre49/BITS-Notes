@@ -689,9 +689,15 @@ This equation is satisfied when:
 \[q = \frac{1}{2} (1 - \mu (\Delta t)^{1/2} / \sigma)\]
 From this, we can find that:
 \[\Delta x = \sigma (\Delta t)^{1/2}\]
-Since $Z_i$ are i.i.d, the sum of them $X(t)$ for large $n$ is normal with mean $\mu t$ and variance $\sigma^2 t$ from the central limit theorem.
+Since $Z_i$ are i.i.d, the sum of them $X(t)$ for large $n$ is normal with mean $\mu t$ and variance $\sigma^2 t$ from the central limit theorem. Note that here $t$ refers to the interval $[0,t]$. If we consider the interval $[s,t]$, then the mean would be $\mu(t-s)$ and variance $\sigma^2(t-s)$.
 
-
+\begin{definition}[Weiner Process]
+  The stochastic process $\{X(t), t > 0\}$ is called a Weiner process with drift $\mu$ and variance $\sigma^2$ if
+  \begin{enumerate}
+    \item $X(t)$ has independent increments. This means that for every pair of disjoint intervals $(t,s)$ and $(u,v)$, the variables $X(t) - X(s)$ and $X(u) - X(v)$ are independent.
+    \item Every increment is normally distributed with mean $\mu(t-s)$ and $\sigma^2(t-s)$.
+  \end{enumerate}
+\end{definition}
 
 \section{Diffusion Process}
 
@@ -703,5 +709,31 @@ The above result comes from Taylor Expansion.
 Cancelling some terms and using the values of $p$ and $q$, we get the following partial differential equation:
 \[\frac{\partial f}{\partial t} + \mu \frac{\partial f}{\partial x} = \frac{\sigma^2}{2} \frac{\partial^2 f}{\partial x^2}\]
 This is called the \textbf{Advection Diffusion Equation}. $\sigma^2/2$ is called the diffusion coefficient.
+
+\section{Hitting Times and the Maximum Variable}
+
+Let $T_a$ denote the first time the Brownian motion process hits $a$. This $T_a$ obviously follows some distribution. Rigorously finding this distribution is a very involved task, and beyond the scope of the course. Instead, we can use a simpler argument.
+
+Let $a > 0$. We seek $F_{T_a}(t) = P(T_a \leq t)$.
+\[P(X(t) \geq a) = P(X(t) \geq a | T_a \leq t) P(T_a \leq t) + P(X(t) \geq a | T_a > t)P(T_a > t) \]
+
+If $T_a \leq t$, then the process hits $a$ at some point in $[0,t]$ and, by symmetry, it is just as likely to be above $a$ or below $a$ at time $t$.
+\[P(X(t) \geq a | T_a \leq t) = \frac{1}{2}\]
+Note that the idea of symmetry is called the \textbf{principle of reflection}. We have just assumed it to make sense (because it does, intuitively), but it can be proven to be true as well. 
+
+The second term of the first equation is obviously 0. Hence,
+\[P(T_a \leq t) = 2 P(X(t) \geq a)\]
+$X(t) = N[0, \sigma \sqrt t ]$. Hence.
+\begin{align*}
+  F_{T_a}(t) &= 2 P(X(t) \geq a)  \\
+             &= \frac{2}{\sqrt{2 \pi t}} \int_{a}^{\infty} e^{-x^2/2t}dx \\
+             &= \frac{2}{\sqrt{2 \pi}} \int_{|a|/\sqrt{t}}^{\infty} e^{-y^2/2}dy 
+\end{align*}
+This is also equivalent to:
+\[F_{T_a}(t) = 2 \left[ 1 - \phi \left[ \frac{a}{\sigma \sqrt{t}}\right]\right]\]
+where $\phi$ is the cumulative distribution function of a standard normal.
+
+Another random variable of interest is the maximum value a process attains in $[0,t]$. It's distribution is given by
+\[P \{\max_{0 \leq s \leq t} X(s) \geq a\} = \frac{2}{\sqrt{2 \pi}} \int_{a/\sqrt{t}}^{\infty} e^{-y^2/2} dy\]
 
 \end{document}
