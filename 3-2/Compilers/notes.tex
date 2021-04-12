@@ -1092,7 +1092,7 @@ A \textbf{control flow graph}  is a directed graph where the basic blocks form t
 
 The first and last nodes can be connected to two special nodes - the entry and exit node. In this way, the control flow graph diagrammatically shows the flow of execution in the graph.
 
-\section{Local and Global Optimizations}
+\section{Local Optimizations}
 
 Some examples of local optimizations are:
 \begin{itemize}
@@ -1139,6 +1139,62 @@ Interestingly, we can now perform dead code elimination to remove \texttt{a=b}.
 How do you perform dead code elimination? If $w = rhs$ appears in a basic block and $w$ does not appear anywhere else in the program, we can remove $w=rhs$ - it is dead.
 
 It must have become clear by now that typically, optimizations interact - one optimization may enable another optimization. Generally, an optimizing compiler repeats optimizations until no improvements are possible.
+
+\section{Global Optimizations}
+
+Using dataflow analysis, we may be able to extend some optimizations across the entire control flow graph.
+
+In general, a global optimization task will have the following traits:
+\begin{itemize}
+  \item The optimization depends on knowing a property of $x$ at a particular point in the program.
+  \item Proving $x$ at any point requires knowledge of the entire program
+  \item It is okay to be conservative. If the optimization requires $x$ to be true, we want to be absolutely sure $x$ is true. It is always safer to assume that we do not know for sure whether it is true or not.
+\end{itemize}
+
+To do this, we need to be able to perform \textbf{global dataflow analysis}.
+
+For instance, we could propagate constant folding. To be able to replace a variable $x$ with $k$, we must ensure that on every path to the use of $x$, the last statement modifying $x$ is $x=k$. To do this, we attach one of the following values with $x$ at every program point:
+\begin{itemize}
+  \item $\perp$, which indicates that the statement never executes.
+  \item $C$, which indicates that $x$ is a constant.
+  \item $T$, which says that $X$ is not a constant.
+\end{itemize}
+At the beginning of execution, we always assume $X = T$, since we do not know yet what the value of $X$ is. If we come across a statement $X=k$, then we will set $X=C$, since we know for sure it will be a constant. If, due to the control flow, we ever become unsure what the value of $X$ is, we will set $X=T$.
+
+To implement this, we need some rules. The idea is to ``push'' or ``transfer'' information from one statement to the next. For each statement $s$, we compute information of $x$ immediately before (denoted by $C(x,s,in)$) or after $s$ (denoted by $C(x,s,out)$). To do this, we define a \textbf{transfer function}, which encodes some rules:
+\begin{enumerate}
+  \item Let $s$ have predecessors $P_1, P_2, \cdots, P_n$. Then, if $C(P_i,x,out) = T$ for any $i$, then $C(s,x,in) = T$.
+  \item Let $s$ have predecessors $P_1, P_2, \cdots, P_n$. Then, if there is no $i$ such that $C(P_i,x,out) = T$, but there is $i,j$ such that $C(P_i,x,out)= D$ and $C(P_j,x,out) = C$, then $C(s,x,in) = T$.
+  \item If $C(P_i,x,out) = C | \perp$ for all $i$, then $C(s,x,in) = C$.
+  \item If $C(P_i,x,out) = \perp$ for all $i$, then $C(s,x,in) = \perp$.
+  \item If $C(s,x,in) = \perp$, then $C(s,x,out) = \perp$.
+  \item If $C(s,x,in) = T$ and $s$ is $x=k$, then $C(s,x,out) = C$.
+  \item If $s$ is $x = f(\cdots)$, then $C(s,x,out) = T$.
+  \item If $s$ is $y = \cdots$, then $C(s,x,out) = k$.
+\end{enumerate}
+
+Initially, as mentioned before, the values of the variables are $T$ right before the entry statement. However, everywhere else in the control flow graph, we consider the values of the variables to be $\perp$, indicating that we have not reached there yet. Doing this can be useful, especially in the case of loops. When considering loops or cycles in the graph, we need each basic block to have some initial values. Doing so also allows us to break cycles if possible.
+
+Notice that these values have an ordering - $\perp < C < T$. Values can only change in an increasing order on this ordering. All the constants are incomparable and are merely denoted by $C$. Let $lub$ be the least upper bound in this ordering. Some examples of the operation to aid in understanding are given here:
+\begin{itemize}
+  \item $lub(1, \perp) = 1$
+  \item $lub(C,T) = T$
+  \item $lub(1,2) = T$
+\end{itemize}
+Then, rules 1 through 4 can be written using $lub$ as:
+\[C(s,x,in) = lub( \{ C(p,x,out) | p \text{ is a predecessor of }s\} )\]
+This idea of ordering can also tell us something important - the value of a variable can change at most 2 times. This means that the optimization process will surely terminate. This tells us that the constant propagation algorithm is linear in program size.
+
+Once all of the constants have been globally propagated, we can perform dead code elimination. To do this, we need to perform a \textbf{liveness analysis}. A variable $x$ is live at statement $s$ if:
+\begin{itemize}
+  \item There exists a statement $s'$ that uses $x$
+  \item There is a path from $s$ to $s'$
+  \item That path has no intervening assignment to $x$
+\end{itemize}
+Liveness is a boolean property, denoted by $L(s,x,in)$. Just as before, we can write the transfer function as a set of rules:
+\begin{itemize}
+  \item 
+\end{itemize}
 
 
 \end{document}
