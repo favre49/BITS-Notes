@@ -804,6 +804,8 @@ An \textbf{approximation algorithm}  produces a feasible solution that is ``clos
 
 A \textbf{polynomial time approximation scheme} (PTAS) is a family of algorithms $\{A_\epsilon\}$ where there is an algorithm for each $\epsilon > 0$, such that $A_\epsilon$ is a $(1+\epsilon)$ - approximation algorithm for minimization and $(1-\epsilon)$ for maximization.
 
+A \textbf{fully polynomial time approximation scheme}  (FPTAS) is an approximation scheme such that the running time of $A_{\epsilon}$ is bounded by a polynomial in $1/\epsilon$.
+
 \subsection{Linear Programming}
 
 Before we can get started with some algorithms, we must discuss linear programming. Given an $n$-vector $c$, a $m$-vector $b$ and a $n \times m$ matrix $a$, a linear programming is of the form:
@@ -877,9 +879,13 @@ Given a fractional solution $\{x_i^*\}$, we define $S = \{i \in V : x_i^* \geq 0
 
 \subsection{The Set Cover Problem}
 
+\subsubsection{The Problem}
+
 In the set cover problem, we are given a ground set of elements $E = \{e_1, \cdots, e_n\}$ and some subsets of those elements $S_1, S_2, \cdots, S_m$ where each $S_j \subseteq E$ as well as a non negative weight $w_j \geq 0$ for each subset $S_j$. The goal is to find a minimum weight collection of subsets that covers all of $E$; that is, we wish to find $I \subseteq \{1, \cdots, m\}$ that minimizes $\sum_{j \in I} w_j$ such that $\bigcup_{j \in I}S_j = E$.
 
 The vertex cover problem is a special case of the set cover problem. We can convert a vertex cover problem into a set cover problem by letting the ground set be the set of edges, and a subset is created for each vertex $i$ containing edges incident to $i$.
+
+\subsubsection{The Rounding Algorithm}
 
 We can formulate it as the following ILP:
 \[\min \sum_{j=1}^m w_jx_j\]
@@ -909,6 +915,8 @@ This algorithm is in fact an $f$ approximation algorithm. By our construction, $
                       \leq f \cdot OPT
 \end{align*}
 
+\subsubsection{The Dual Rounding Algorithm}
+
 The dual LP for our set cover problem is given by:
 \[\max \sum_{i=1}^n y_i\]
 subject to:
@@ -920,7 +928,7 @@ By the weak duality theorem, for any feasible solution to the dual,
 
 Let $y^*$ be the optimal solution to the dual LP, and consider the solution in which we choose all subsets for which the corresponding dual inequality is tight, i.e. the inequality is met with equality for $S_j$:
 \[\sum_{i : e_i} y_i^* = w_j\]
-Let $I'$ denote the indices of the subsets in this solution. We will now prove that this algorithm is also an f-approximation algorithm for the set cover problem.
+Let $I'$ denote the indices of the subsets in this solution. We will now prove that this algorithm is also an $f$-approximation algorithm for the set cover problem.
 
 First, let us see if $S_j, j \in I'$ is a set cover. Suppose that $e_k$ is uncovered. Then, for ever $S_j$ containing $e_k$,
 \[\sum_{i : e_i \in S_j} y_i^* < w_j\]
@@ -930,6 +938,133 @@ by the definition of $\epsilon$. For each $j$ such that $e_k \notin S_j$,
 \[\sum_{i : e_i \in S_j} y_i' = \sum_{i : e_i \in S_j} y_i^* \leq w_j\]
 as before. This contradicts the optimality of $y^*$. Thus, it must be covered. Hence, $I'$ is a set cover.
 
+Now that we know it is a set cover, we can prove that is an $f$-approximation.
+\[j \in I' \Leftrightarrow w_j = \sum_{i : e_i \in S_j} y_i^*\]
+\begin{align*}
+  \sum_{j \in I'} w_j &= \sum_{j \in I'} \sum_{i : e_i \in S_j} y_i^* \\
+                      &= \sum_{i=1}^{n} |\{j \in I' : e_i \in S_j\}| \cdot y_i^* \\
+                      &\leq \sum_{i=1}^n f_i y_i^* \\
+                      &\leq f \sum_{i=1}^n y_i^* \\
+                      &\leq f \cdot OPT
+\end{align*}
+
+This algorithm is known as the \textbf{dual rounding algorithm}.
+
+\subsubsection{The Primal Dual Algorithm}
+
+The previous two algorithms for set cover required solving an LP. In the dual rounding algorithm, the optimal dual solution is a lower bound for OPT. Any feasible dual solution is also a lower bound for OPT, as:
+\[\sum_{i=1}^n y_i \leq OPT\]
+for any feasible dual solution.
+
+In the Primal-Dual Algorithm, we start with a dual feasible solution, and use information from the dual to infer a primal, possibly infeasible solution. If the primal solution is indeed infeasible, then the dual solution is modified to increase the value of the dual objective function.
+
+
+\begin{algorithm}[H]
+  \SetAlgoLined
+  $y = 0$ \\
+  $I = \phi$\\
+  \While{there exists $e_i \in \cup_{j \in I}S_j$} {
+    Increase the dual variable $y_i$ until there is some $l$ with $e_i \in S_l$ such that $\sum_{j : j \in S_l} y_j = w_l$ \\
+    $I = I \cup \{l\}$\\
+  }
+  \caption{Primal Dual Algorithm}
+\end{algorithm}
+
+\subsection{The Knapsack Problem}
+
+\subsubsection{The Problem}
+
+In the knapsack problem, we are given a set of $n$ items $I = \{1 \cdots n\}$where each item has a value $v_i$ and a size $s_i$. The knapsack has a capacity $B$, where $B$ is also a positive integer. The goal is to find a subset of items $S \subseteq I$ that maximizes the value $\sum_{i \in S} v_i$ of items in the knapsack, subject to the constraint $\sum_{i \in S} s_i \leq B$.
+
+\subsubsection{The Dynamic Programming Solution}
+
+There is an obvious DP solution to this.
+
+\begin{algorithm}[H]
+  \SetAlgoLined
+  $A(1) = \{(0,0), (s_1,w_1)\}$ \\
+  \For{$j$ from 2 to $n$}{
+    $A(j) = A(j-1$ \\
+    \For{each $(t,w) \in A(j-1$}{
+      \If{$t + s_j \leq B$}{
+        Add $(t+s_j, w+v_j)$ to $A(j)$ \\
+      }
+    }
+    Remove dominated pairs from $A(j)$ \\
+  }
+  \Return $\max_{(t,w) \in A(n)} w$
+  \caption{Dynamic Programming Solution}
+\end{algorithm}
+
+This will always find the correct solution in $O(n \min(B,V))$ time. This is not a polynomial time algorithm. Encoding the input number in binary would give it a length of $\log B$, so the running time $O(nB)$ is exponential in the size of the input number $B$. However, if we encoded it in unary, it woud be polynomial in the size of the input. This makes it \textbf{pseudopolynomial} .
+
+Formally, an algorithm for a problem $\Pi$ is said to be pseudopolynomial if its running time is polynomial in the size of the input when the numeric part of the input is encoded in unary.
+
+\subsection{FPTAS Solution} 
+
+Suppose we measure value as integer multiples of $\mu$ and convert each value $v_i$ by rounding down to the nearest integer multiple of $\mu$, called $v_i'$. We can then run the dynamic programming solution on the items with size $s_i$ and values $v_i'$. The optimal solution for this can be considered a near optimal solution for the true data.
+
+Imagine we used $\tilde{v}_i = v_i' \mu$ instead of $v_i$. Then, the value is inaccurate by at most $\mu$, so each optimal solution has its value changed by at most $n \mu$. We want the error introduced to be at most $\epsilon$ times a lower bound on the optimal value. We can see that $m = \max_{i \in I} v_i$ is a lower bound on $OPT$. Thus, it would make sense to have $\mu$ such that $n \mu = \epsilon M$, i.e.
+\[\mu =\frac{\epsilon M}{n}\]
+With the modified values,
+\[V' = \sum_{i=1}^n v_i' = \sum_{i=1}^n \left \lfloor \frac{v_i}{\epsilon M /n} \right \rfloor = O(n^2/\epsilon)\]
+Thus, the running time is $O(n \min(B,V')) = O(n^3 / \epsilon)$ and is bounded by a polynomial in $1/\epsilon$.
+
+Let us now show that this is an FPTAS with a solution at least $(1- \epsilon)$ times the value of an optimal solution. Let $S$ be the set of items returned by the algorithm, and let $O$ be an optimal set of items. Then:
+\begin{align*}
+  \sum_{i \in S} v_i &\geq \mu \sum_{i \in S} v_i'  \\
+                     &\geq \mu \sum{i \in O} v_i' \\
+                     &\geq \sum_{i \in O} v_i - |O| \mu \\
+                     &\geq \sum_{i \in O} v_i - n \mu \\
+                     &= \sum_{i \in O} v_i - \epsilon M
+                     &\geq OPT - \epsilon OPT
+                     &= (1-\epsilon) OPT
+\end{align*}
+
+\subsection{Complexity classes for Approximation}
+
+\subsubsection{NPO and APX}
+
+An optimization problem belongs to the class \textbf{NPO}  if and only if it's decision version is a member of \textbf{NP}.
+
+The complexity class \textbf{APX} is the set of NPO problems having a constant factor approximation algorithm.
+
+It is obvious that $\mathbf{APX} \subseteq \mathbf{NPO}$. Let us show that $\mathbf{APX} \neq \mathbf{NPO}$ by taking up the example of TSP - a problem not in APX but in NPO.
+
+This means that for any polynomial time computable function $\alpha(n)$, TSP cannot be approximated within a factor of $\alpha(n)$, unless $P = NP$.
+
+Assume that there exists a factor $\alpha(n)$ polynomial time approximation algorithm, $A$, for the general TSP algorithm. We will show that $A$ can be used for deciding the Hamiltonian cycle problem in polynomial time, implying $P=NP$.
+
+Consider the following reduction from a graph $G$ on $n$ vertices to an edge weighted complete graph $G'$. Assign a weight of 1 to edges of $G$, and a weight $\alpha(n) \cdot n$ to non edges, to obtain $G'$. Now, if $G$ has a Hamiltonian cycle, then the corresponding tour in $G'$ has a cost $n$. On the other hand, if it does not, then any tour must use an edge of cost $\alpha(n) \cdot n$, and therefore has cost greater than $\alpha(n) \cdot n$. Now we can use $A$ for deciding which of the two cases holds, and then return one answer accordingly.
+
+\subsubsection{PTAS and APX}
+
+We defined the class PTAS as the set of NPO problems that may be approximated to any constant factor close to 1 ($1 + \epsilon$ or $1 - \epsilon$). For a fixed $\epsilon$ the running time will be polynomial in input size $m$. In general, the complexity may not be polynomial in $1/\epsilon$.
+
+By definition, $PTAS \subseteq APX$, but we can show that $PTAS \neq APX$. An example of a problem in APX and not in PTAS is the \textbf{bin packing problem}.
+
+In the bin packing problem, we are given $n$ items with sizes $\alpha_1, \alpha_2, \cdots, \alpha_n \in [0,1]$. We want to find a packing in unit size bins that minimizes the number of bins used.
+
+The first-fit algorithm considers items in an arbitrary order. In the $i^{th}$ step, it has a list of partially packed bins, say $B_1, \cdots, B_k$. It attempts to put the next item $\alpha_i$ in one of these bins in this order. If $\alpha_i$ does not fit in any of the bins, it will open anew bin $B_{k+1}$ and put $\alpha_i$ in there.
+
+If the algorithm uses $m$ bins, then at least $m-1$ bins are more than half full. Therefore
+\[\sum_{i=1}^n \alpha_i > \frac{m-1}{2}\]
+Since the sum of the item sizes is a lower bound on $OPT$, $m-1 < 2 OPT \Rightarrow m < 2 OPT$.
+
+For any $epsilon > 0$, there is no approximation algorithm having a guarantee of $3/2 - \epsilon$ unless $P = NP$.
+
+If there was such an algorithm, we can use it to solve the NP-Hard problem of deciding if there is a way to partition $n$ non-negative numbers $a_1, \cdots, a_n$ into two sets each adding up to $(1/2) \sum_i \alpha_i$. Clearly, the answer to this question is ``yes'' $\Rightleftarrow$ the $n$ items can be packed in 2 bins of size $(1/2) \sum_i a_i$. If the answer is yes, the $3/2 - \epsilon$ factor algorithm will have to give an optimal packing, and thereby solve the partition problem.
+
+\subsubsection{FPTAS and PTAS}
+
+We already know that $FPTAS \subseteq PTAS$. Let us show that $FPTAS \neq PTAS$.
+
+An optimization problem $\Pi$ is \textbf{polynomially bounded} if there exists a polynomial $p$ such that, for any instance $x$ and for $y \in S_\Pi(x), Obj_\Pi(x,y) \leq p(|x|)$. No NP-Hard polynomially bounded optimization problem belongs to the class FPTAS unless $P=NP$.
+
+Suppose we have a FPTAS $A$ for $\Pi$ which for any instance $x$ and for any ration $\epsilon (0 < \epsilon < 1)$  runs in time bounded by $q(|x|, 1/\epsilon)$ for a suitable polynomial $q$. Since $\Pi$ is polynomially bounded, there exists a polynomial $p$ such that for any instance $x$, $OPT(x) \leq p(|x|)$. If we choose $\epsilon = 1/p(|x|)$, then $A(x,\epsilon)$ provides an optimal solution of $x$ as follows:
+\[A \in FPTAS \Rightarrow \frac{OPT(x)}{obj_\Pi(x,A(x,\epsilon))} \leq 1 + \frac{1}{p(|x|)}\]
+\[obj_\Pi (x,A(x,\epsilon)) \geq OPT(x) \frac{p(|x|)}{p(|x|) + 1} = - \frac{OPT(x)}{p(|x|)+1} + OPT(x) > OPT(x) - 1\]
+This means that $\obj_\Pi$ is $OPT(x)$, meaning $A$ is an optimal solution. If $P \neq NP$, then $FPTAS \neq PTAS$.
 
 \section{Problems}
 
