@@ -832,6 +832,53 @@ Hence,
 \[Cov[Y(t), Y(t+ \tau)] = \sigma^2 e^{-\mu \tau/2}\]
 Putting it all together,
 \[Y(t) = \frac{1}{e^{\mu t/2}} X[\sigma^2 e^{\mu t}]\]
+is a stationary covariance process called the \textbf{Ornstein-Uhlenbeck Process}.
+
+\section{Quadratic Variations}
+
+Let $W(t)$ be a standard Brownian motion. Let $\Pi_n$ be a partition on interval $[0,t]$, such that it divides the segment into equally spaced intervals of size $\delta t = t/n$. Let us define 
+\[Q_{\Pi_n} = \sum_{j=1}^n [W(t_j) - W(t_{j-1})]^2\]
+Taking it as $n$ tends to infinity,
+\begin{align*}
+  [W,W](t) &= \lim_{n \rightarrow \infty} Q_{\Pi_n}\\
+           &= \lim_{n \rightarrow \infty} \sum_{j=1}^n [W(t_j) - W(t_{j-1})]^2
+\end{align*}
+This is called the \textbf{quadratic variation}.
+
+Obviously, $Q_{\Pi_n}(t)$ is a stochastic process. Is $[W,W](t)$ a stochastic variable? It is, but at the same time, it does not have much in the way of randomness. This is given in the following theorem
+\begin{theorem}
+  $[W,W](t) = t$ ``almost surely''.
+\end{theorem}
+\begin{proof}
+  We know that $W(t_i) - W(T_{i-1})$ is a normal variable with mean 0 and variance $t_i - t_{i-1}$.
+  \begin{align*}
+    E[Q_{\Pi_n}] &= \sum_{i=1}^n E[(W(t_i) - W(t_{i-1}))^2] \\
+                 &= \sum_{i=1}^n V[W(t_i) - W(t_{i-1})] \\
+                 &= \sum_{i=1}^n (t_i - t_{i-1}) \\
+                 &= t
+  \end{align*}
+  Now let us handle the variance.
+    \[ V[Q_{\Pi_n}] &= \sum_{i=1}^n \left[ E[(W(t_i) - W(t_{i-1}))^4] - E[(W(t_i) - W(t_{i-1}))^2]^2 \right ] \]
+    Let $X$ be a normal distribution $N(0,\sigma^2)$. Then we can prove that $E(X^4) = 3 \sigma^4$. Hence,
+    \begin{align*}
+      V[Q_{\Pi_n}] &= \sum_{i=1}^n (3(t_i - t_{i-1})^2 - (t_i - t_{i-1})^2) \\
+                   &= 2 \sum_{i=1}^n (t_i - t_{i-1})^2 \\
+                   &= 2 n (\delta t)^2 \\
+                   &= \frac{2t^2}{n}
+    \end{align*}
+    Taking limit as $n \rightarrow \infty$, 
+    \[E[[W,W](t)] = t\] 
+    \[V[[W,W](t)] \rightarrow 0\]
+    This is what we mean by ``almost surely''. This process is almost deterministic.
+\end{proof}
+This gives us a nice result - the value of the quadratic variation of a Brownian motion is finite.
+
+\begin{theorem}
+  The quadratic variation of a function $f$ that is differentiable and whose derivative $f'$ is also continuous, is 0. 
+\end{theorem}
+\begin{proof}
+  TODO
+\end{proof}
 
 
 \end{document}
