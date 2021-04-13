@@ -1078,7 +1078,66 @@ Of course, the AS will always announce routes originating from itself.
 
 \section{Introduction}
 
-The Data Link Layer uses the services of the Physical layer to deliver link-layer packets, which are called \textbf{frames}.
+Any device running a link layer protocol is called a \textbf{node}. The communication channels connecting nodes are called \textbf{links}. A link can be \textbf{point to point} or \textbf{broadcast}. A broadcast link is a link which many nodes share at once, for instance a wireless connection. Links transfer link layer packets called \textbf{frames}.
+
+The link layer provides the following services:
+\begin{itemize}
+  \item \textbf{Framing}: Link layer protocols encapsulate network layer datagrams into a link layer frame.
+  \item \textbf{Link access} : The MAC protocol specifies the rules by which a frame is transmitted on a link. It serves to coordinate frame transmissions of many nodes over a single shared broadcast link.
+  \item \textbf{Reliable delivery} : A link layer protocol can provide reliable delivery service. However this is generally unnecessary overhead, and instead is implemented at the TCP level.
+  \item  \textbf{Logical Link Control} : The LLC interfaces between the Network layer and the MAC sub layer, providing multiplexing, error recovery and even flow control.
+\end{itemize}
+
+\section{Framing}
+
+The link layer receives streams of bits. How does the link layer figure out the start and end of a frame?
+
+One possible approach is to keep the link idle between frames. Unfortunately, this is tough because of the dependency on the physical layer. Some encodings need the idle time to encode data, and some physical layers cannot keep the link idle so as to maintain synchronization.
+
+Instead, we can use special characters to indicate the start and end of frames, called the \textbf{sentinel}. We only need one sentinel if we instead count the bytes to determine the end of the frame - we still need to use a sentinel to mark the beginning of a frame.
+
+This approach is used in what are called \textbf{byte oriented protocols}. They view frames as a collection of bytes, and a special byte is used to act as a sentinel.
+
+Byte oriented protocols were soon replaced with \textbf{bit oriented protocols} . We view frames as a collection of bits, not bytes. One example of this is the \textbf{High-level Data Link Control} or HDLC. Sentinels are special bit sequences instead of bytes.
+
+An obvious problem must have come to mind - what if the sentinel character appears inside the payload?
+
+One option used in byte oriented protocols is \textbf{byte stuffing}. Sentinel characters are escaped by a special DLE (Data Link Escape) character. This means that in the body, we would use ``DLE ETX'' instead of ``ETX'', where ETX is a sentinel character. Moreover, ``DLE'' is replaced with ``DLE DLE''.
+
+In bit oriented protocols, we use \textbf{bit stuffing}. Say we have the sentinel to be \texttt{01111110}. In the body of the message, we insert a 0 after every 5 consecutive 1s, and remove the 0 that follows 5 consecutive 1s.
+
+\section{Error Control}
+
+Errors can be created due to distortion of signals and noise at the physical layer. This can create random single bit errors, or even large bursty errors.
+
+Once we detect the frame, we could simply drop the frame, and expect higher layers like TCP to handle it. This is fine in applications where a few losses make very little difference, like in streaming.
+
+In some cases, it could be desirable to recover the lost frame. This means we could perform error correction, or have the link layer send a NAK to make the sender send once more.
+
+Error correction always needs more redundant bits per frame than error detection, and they are sent every time. This is necessary to find the wrong bit(s). On the other hand, retransmission necessitates sending copies every time.
+
+\subsection{Basics of Error Detection}
+
+In any error correction technique, we add some redundant information to a frame to detect and correct errors. Formally, the sender adds $k$ bits of redundant date to a $m$ bit message. The receiver will reapply the same algorithm to detect errors and take corrective action.
+
+The length of a code word is $n = m+k$. The number of bits in which two code words differ is called the \textbf{Hamming Distance}, and can be found using the XOR of the two code words.
+
+We have $2^m$ legal code words, let us find the smallest Hamming distance between two code words. This is called the code's Hamming distance.
+
+If the code's Hamming distance is $d$, we can detect up to $d-1$ errors, and can only correct up to $(d-1)/2$ errors.
+
+The \textbf{code rate} is the amount of space taken up by the actual data in a code word, given by
+\[\frac{m}{m+k}\]
+
+Our goal in creating a code is to reduce $k$ and create a high code rate, at the same time maximizing $d$. Moreover, it should be simple to encode and decode.
+
+\subsection{The Parity Bit}
+
+The simplest form of error detection is using a parity bit. Suppose the information $D$  has $d$ bits. Then in an even parity scheme, the sender will send one extra bit and choose it's value such that the number of 1s in the $d+1$ bits is even. In odd parity schemes, we want this to be odd.
+
+At the receiver side, they count the number of 1s in the received bits. If an odd number of 1s are found in a even parity scheme, we know that an odd number of bit errors have occurred.
+
+
 
 
 \end{document}
