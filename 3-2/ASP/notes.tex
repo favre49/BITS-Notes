@@ -694,10 +694,75 @@ Since $Z_i$ are i.i.d, the sum of them $X(t)$ for large $n$ is normal with mean 
 \begin{definition}[Weiner Process]
   The stochastic process $\{X(t), t > 0\}$ is called a Weiner process with drift $\mu$ and variance $\sigma^2$ if
   \begin{enumerate}
+    \item $X(0) = 0$
     \item $X(t)$ has independent increments. This means that for every pair of disjoint intervals $(t,s)$ and $(u,v)$, the variables $X(t) - X(s)$ and $X(u) - X(v)$ are independent.
     \item Every increment is normally distributed with mean $\mu(t-s)$ and $\sigma^2(t-s)$.
   \end{enumerate}
 \end{definition}
+
+A Weiner process is also called a \textbf{Brownian Motion}. If $\mu = 0$ and $\sigma = 1$, then it is called a \textbf{standard Brownian motion}.
+
+A Weiner process is called a \textbf{stationary covariance process} if $Cov[X(t), X(t + \tau)]$ if it is independent of $t$. This means that the covariance is a function of $\tau$.
+
+\begin{exercise}
+  Find $Cov[X(s), X(t)]$ where $X$ is a standard Brownian motion and $s \leq t$.
+\end{exercise}
+\begin{solution}
+  \[X(t) = X(s) + (X(t) - X(s))\]
+  \[X(s)X(t) = X(s)^2 + X(s)(X(t) - X(s))\]
+  \[Cov[X(s), X(t)] = E[X(s) X(t)] - E[X(s)] E[X(t)]\]
+  We already know that $X$ is a standard Brownian Motion, so $E[X(t)] = 0 \forall t$. Therefore
+  \[Cov[X(s), X(t)] = E[X(s)X(t)]\]
+  \[Cov[X(s), X(t)] = E[X(s)^2] + E[X(s)(X(t) - X(s))]\]
+  All increments of a Brownian motion are independent. Hence, the right term becomes 0.
+  \[Cov[X(s), X(t)] = E[X(s)^2] = Var[X(s)] = s\]
+\end{solution}
+
+\begin{exercise}
+  Let $X(t)$ be a standard Brownian motion.
+  \[Y(t) = t X(\frac{1}{t})\]
+  \[Y(0) = 0\]
+  Is $Y$ a Brownian motion?
+\end{exercise}
+\begin{solution}
+  We want to show that $Y(t)$ is a normal distribution, since the difference between two Gaussian distributions is also Gaussian.
+  \begin{align*}
+    F_{Y(t)} (x) &= P[Y(t) \leq x] \\
+                 &= P[tX(1/t) \leq x] \\
+                 &= P[X(1/t) \leq x/t]\\
+                 &= \frac{\sqrt t}{\sqrt{2 \pi}}\int_{-\infty}^{x/t} e^{-\frac{y^2t}{2}} dy \\
+                 &= \frac{1}{\sqrt{2 \pi t}} \int_{-\infty}^{x} e^{-\frac{\eta^2}{2t}} d \eta \\
+  \end{align*}
+  where $\eta = yt$. From this,
+  \[f_Y(x) = \frac{1}{\sqrt{2 \pi t}} e^{-\frac{x^2}{2t}}\]
+  which is a normal distribution with 0 mean and variance $t$.
+
+  The difference between two intervals is independent since the difference between $X$ is independent.
+\end{solution}
+
+\begin{exercise}
+  Let $X(t)$ be a Brownian motion where 
+  \[Z(t) = X(t) - tX(1), 0 < t \leq 1\]
+  Find the distribution of $Z$, it's expectation and it's covariance.
+\end{exercise}
+\begin{solution}
+  $Z(t)$ is normal, since the linear combination of normal distributions is also normal.
+
+  The expectation of $Z$ is given by:
+  \begin{align*}
+    E[Z(t)] &= E[X(t) - tX(1)] \\ 
+            &= \mu t - t \my \\
+            &= 0
+  \end{align*}
+  Let $0 \leq s < t \leq 1$. Then
+  \begin{align*}
+    Cov[Z(s), Z(t)] &= Cov[X(s) - sX(1), X(t) - tX(t)] \\
+                    &= Cov[X(s),X(t)] - sCov[X(1), X(t)] - tCov[X(s), X(1)] + stCov[X(1), X(1)] \\
+                    &= V[X(s)] - s V[X(t)] - tV[X(s)] + st V[X(1)] \\
+                    &= \sigma^2 s - s \sigma^2 t -t \sigma^2 s + st \sigma^2 \\
+                    &= \sigma^2 s (1-t)
+  \end{align*}
+\end{solution}
 
 \section{Diffusion Process}
 
@@ -735,5 +800,38 @@ where $\phi$ is the cumulative distribution function of a standard normal.
 
 Another random variable of interest is the maximum value a process attains in $[0,t]$. It's distribution is given by
 \[P \{\max_{0 \leq s \leq t} X(s) \geq a\} = \frac{2}{\sqrt{2 \pi}} \int_{a/\sqrt{t}}^{\infty} e^{-y^2/2} dy\]
+
+\section{Ornstein-Uhlenbeck Process}
+
+Let $X(t)$ be a standard Brownian motion. Then
+\[Y(t) = \frac{1}{\sqrt{g(t)}} X(\sigma^2g(t))\]
+where $g(0) = 1$ and is a strictly increasing function.
+
+First let us find the expectation of $Y$.
+\begin{align*}
+  E[Y(t)] &= \frac{1}{\sqrt{g(t)}} E[ X( \sigma^2 g(t))] \\
+          &= 0
+\end{align*}
+Next, let us calculate the variance of $Y$.
+\begin{align*}
+  V[Y(t)] &= \frac{1}{g(t)} V[X(\sigma^2 g(t))] \\
+          &= \frac{1}{g(t)} \sigma^2 g(t) \\
+          &= \sigma^2
+\end{align*}
+Finally, we can find the covariance of $Y$.
+\begin{align*}
+  Cov[Y(t), Y(t+\tau)] &= \frac{1}{\sqrt{g(t)g(t+\tau)}} Cov[X(\sigma^2 g(t)), X(\sigma^2 g(t+\tau))] \\
+                       &= \frac{1}{\sqrt{g(t)g(t+\tau)}} \sigma^2 g(t) \\
+                       &= \sigma^2 \left ( \frac{g(t)}{g(t+\tau)}\right)^{1/2}
+\end{align*}
+We want this process to be stationary covariant, i.e, 
+\[g(t + \tau) = g(t) g(\tau)\]
+Luckily, there is a simple function for this:
+\[g(t) = e^{\mu t}\]
+Hence,
+\[Cov[Y(t), Y(t+ \tau)] = \sigma^2 e^{-\mu \tau/2}\]
+Putting it all together,
+\[Y(t) = \frac{1}{e^{\mu t/2}} X[\sigma^2 e^{\mu t}]\]
+
 
 \end{document}
