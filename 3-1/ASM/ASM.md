@@ -65,13 +65,35 @@ E[X] = \int xf(x)dx
 
 Of course, in the case of discrete variables, this becomes a sum.
 
+Some properties of expectations are:
+
+* $E[aX+bY] = aE[X] + bE[Y]$
+* $E[XY] = E[X]E[Y]$ if $X$ and $Y$ are independent
+
 The **variance** of a function $\sigma^2$ is given by:
+\begin{align*}
+\sigma^2 &= \sum (x-\mu)^2 \cdot p(x) \\
+         &= E[(X-\mu)^2] \\
+         &= E[X^2] -E[X]^2
+\end{align*}
+The **standard deviation** is $\sigma$. Let us see some properties of variance:
 
-\begin{equation}
-\sigma^2 = \sum (x-\mu)^2 \cdot p(x) = E[(X-\mu)^2] = E[X^2] -E[X]^2
-\end{equation}
+* $Var(X+a) = Var(X)$
+* $Var(aX) = a^2 Var(X)$
+* $Var(aX+bY) = a^2Var(X) + b^2Var(Y) + 2abCov(X,Y)$
 
-The **standard deviation** is $\sigma$
+The **covariance** of two random variables is given by:
+\begin{align*}
+  Cov[X,Y] &= E[(X-E[X])(Y-E[Y])] \\
+  &= E[XY] - E[X]E[Y]
+\end{align*}
+Let us see some properties of covariance:
+
+* $Cov(X,a) = 0$
+* $Cov(X,X) = Var(X)$
+* $Cov(aX,bY) = abCov(X,Y)$
+* $Cov(X+a,Y+b) = Cov(X,Y)$
+* $Cov(aX+bY, cW + dV) = acCov(X,W) + bcCov(Y,W) + adCov(X,V) + bdCov(Y,V)$
 
 ## Distributions
 
@@ -158,7 +180,9 @@ We can easily compute probabilities of any normal random variable $X$ by standar
 Z = \frac{X-\mu}{\sigma}
 \end{equation}
 
-The coefficient of skewness is 0, and the coefficient of kurtosis is 3. Almost all values lie between $-3\sigma$ and $3\sigma$
+The coefficient of skewness is 0, and the coefficient of kurtosis is 3. Almost all values lie between $-3\sigma$ and $3\sigma$.
+
+If $X$ and $Y$ are independent random variables that are normally distributed, then their sum is also normally distributed, i.e. if $X = N(\mu_X, \sigma_X^2)$ and $Y = N(\mu_Y,\sigma_Y^2)$, then $Z = X+Y = N(\mu_X+\mu_Y, \sigma_X^2 + \sigma_Y^2)$
 
 ### Exponential distribution
 
