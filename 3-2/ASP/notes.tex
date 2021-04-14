@@ -483,6 +483,10 @@ Ergodism is a class property, since periodicity and persistency are both class p
 
 \chapter{Poisson Processes}
 
+\section{Author's Note}
+
+Proofs will be omitted in this chapter. For most theorems they are long and rigorous, and would be better understood directly from the textbook than being written here.
+
 \section{Memorylessness}
 
 \begin{definition}
@@ -540,33 +544,6 @@ We can prove that these definitions are equivalent.
   The probability distribution of a Poisson Process is:
   \[p_n(t) = e^{\lambda t} \frac{(\lambda t)^n}{n!}\]
 \end{theorem}
-\begin{proof}
-  Consider $p_n(t+h)$ for $n \geq 0$. $n$ events by epoch $t+h$. $n$ events by epoch $t+h$ can happen in the following ways:
-  \begin{itemize}
-    \item $n$ events by epoch $t$ and no event between $t$ and $t+h$. So,
-      \begin{align*}
-        P(A_1) &= P(N(t) = n) P(N(h) = 0 | N(t) = n) \\
-               &= p_n(t) p_0(h)\\
-               &= p_n(t)(1-\lambda h) + o(h)
-      \end{align*}
-    \item  $n-1$ events by epoch $t$ and one event between $t$ and $t+h$.
-      \[P(A_2) = p_{n-1}(t) (\lambda h) + o(h)\]
-    \item $n-2$ events by epoch $t$ and two events between $t$ and $t+h$.
-      \[P(A_3) = p_{n-2}(t) (p_2(h)) \leq p_2(h)\]
-      and so on for $A_4, A_5, ...$
-      \[\sum_{k=2}^n P(A_{k+1}) \leq \sum_{k=2}^n p_k(h) = o(h)\]
-  \end{itemize}
-  and so
-      \[p_n(t+h) = p_n(t) (1- \lambda h) + p_{n-1}(t) (\lambda h) + o(h), n \geq 1\]
-      Setting the limit $h \rightarrow 0$
-      \[p_n'(t) = -\lambda (p_n(t) - p_{n-1}(t))\]
-      If $n =0$, then we get:
-      \[p_0'(t) = -\lambda(p_0(t))\]
-      Obviously, $p_0(0) = 1$ and $p_n(0) = 0, n > 0$.
-  With this, we can prove our result using induction or generating functions. Using generating functions,
-  \[P(s,t) = \sum_{n=0}^{\infty} p_n(t)s^n\]
-  TODO
-\end{proof}
 
 \section{Interarrival times}
 
@@ -611,19 +588,19 @@ Let us suppose that several events can happen simultaneously at an instance, i.e
   If $M(t)$ denotes the total number of occurrences in an interval of length $t$ under the given conditions, then the generating function is given by:
   \[G(P(s)) = \exp [\lambda t \{P(s)-1\}]\]
 \end{theorem}
-\begin{proof}
-  To prove this, we use the lemma that the sum $S_n = X_1 + \cdots + X_n$ of a fixed number $n$ of identically and independently distributed random variables $X_i$ has the probability generating function $\{P(s)\}^n$, each $X_i$ having probability generating function $P(s)$.
-\end{proof}
 
 \section{Non-homogeneous Poisson Processes}
 
 In a non-homogeneous Poisson process, the rate $\lambda$ varies with time, i.e. $\lambda(t)$ is a function of $t$. $P_n(t)$ is the probability that $n$ events occur by time $t$.
 
 \begin{theorem}
-  \[P_n(t) = \frac{1}{n!} (m(t))^k e^{-m(t)}\] 
+  \[P_n(t) = \frac{1}{n!} (m(t))^n e^{-m(t)}\] 
   where
   \[m(t) = \int_0^t \lambda(x) dx\]
 \end{theorem}
+
+From this, we can find that:
+\[E[N(t)] = m(t)\]
 
 \section{Yule-Furry Process}
 
@@ -646,10 +623,61 @@ An example of such a process is a population of bacteria that can give birth to 
   \[Var(N(t)) = e^{\lambda t} (e^{\lambda t} - 1)\]
 \end{theorem}
 
+This means that starting with a single individual, the population size at time $t$ follows a geometric distribution with mean $e^{\lambda t}$.
+
+\begin{exercise}
+Let the waiting time $T_n$ be the time at which the population first reaches the value $n$. Then, if there is only one individual at the start, prove that the density function of $T_n$ is:
+\[f(t) = \lambda(n-1) e^{-\lambda t} (1 - e^{-\lambda})^{n-2}\]
+\end{exercise}
+\begin{solution}
+  \begin{align*}
+    1 - F_{T_n}(t) &= P[T_n > t] = P[N(t) \leq n-1]  \\
+                   &= \sum_{k=1}^n-1 p_k(t) \\
+                   &= e^{-\lambda t} \sum_{k=1}^n-1 (1-e^{-\lambda t})^{k-1} \\
+                   &= e^{-\lambda t} \sum_{k=0}^{n-2} (1 - e^{-\lambda t})^k \\
+                   &= 1 - (1- e^{-\lambda t})^{n-1}
+  \end{align*} 
+  Therefore,
+  \[F_{T_n}(t) = (1- e^{-\lambda t})^{n-1}\]
+  or
+  \[f_{T_n}(t) = F'_{T_n}(t) = \lambda e^{-\lambda t}(n-1) (1- e^{-\lambda t})^{n-2}\]
+\end{solution}
+
+
 Let us suppose that there is also immigration in addition to birth, such that in an interval of infinitesimal length $h$, the probability of a new member being added (by immigration) is $vh + o(h)$.
 
 Then the generating function of the probability is:
 \[P(s,t) = \frac{s^i e^{-\lambda t} e^{-v(1-s)t}}{(1 - s(1- e^{-\lambda t}))^i}\]
+
+\section{Birth And Death Process}
+
+The probability that the number of births between $t$ and $t+h$ is $k$, given that the number of individuals at epoch $t$ is $n$ is given by:
+\[p(k,h|n,t) = \begin{cases}
+  \lambda_n h + o(h) & k = 1 \\
+   o(h) & k \geq 2 \\
+  1-\lambda_n h + o(h) & k = 0
+\end{cases}\]
+The probability that the number of deaths between $t$ and $t+h$ is $k$, given that the number of individuals at epoch $t$ is $n$, is given by:
+\[q(k,h|n,t) = \begin{cases}
+  \mu_n h + o(h) & k = 1 \\
+  o(h) & k \geq 2 \\
+  1-\mu_n h + o(h) & k = 0
+\end{cases}\]
+This is called a \textbf{Birth and Death Process}. A birth increases population by one, while a death decreases it by one.
+
+If $\lambda_n = n \lambda $ and $\mu_n = n \mu$, then the process is called a \textbf{linear growth process}. Then, the PGF is given by:
+\begin{align*}
+  P(t,s) &= \sum_{n=0}^\infty p_n(t) s^n  \\
+         &= \left[ \frac{\mu(1-s) - (\mu - \lambda s) e^{-(\lambda -\mu)t}}{\lambda(1-s) - (\mu - \lambda s) e^{-(\lambda -\mu)t}} \right]^i
+\end{align*}
+where $i$ is the initial population size.
+
+The probability of population extinction is obviously $p_0(t)$. Then,
+\[p_0(t) = P(t,0) = \left [ \frac{\mu}{\lambda} \right]^i\]
+as $t \rightarrow \infty$.
+
+The mean population size will be:
+\[E[N(t)] = i e^{t(\lambda - \mu)}\]
 
 \chapter{Brownian Motion}
 
@@ -720,7 +748,7 @@ A Weiner process is called a \textbf{stationary covariance process} if $Cov[X(t)
 
 \begin{exercise}
   Let $X(t)$ be a standard Brownian motion.
-  \[Y(t) = t X(\frac{1}{t})\]
+  \[Y(t) = t X \left(\frac{1}{t} \right)\]
   \[Y(0) = 0\]
   Is $Y$ a Brownian motion?
 \end{exercise}
@@ -740,30 +768,6 @@ A Weiner process is called a \textbf{stationary covariance process} if $Cov[X(t)
   The difference between two intervals is independent since the difference between $X$ is independent.
 \end{solution}
 
-\begin{exercise}
-  Let $X(t)$ be a Brownian motion where 
-  \[Z(t) = X(t) - tX(1), 0 < t \leq 1\]
-  Find the distribution of $Z$, it's expectation and it's covariance.
-\end{exercise}
-\begin{solution}
-  $Z(t)$ is normal, since the linear combination of normal distributions is also normal.
-
-  The expectation of $Z$ is given by:
-  \begin{align*}
-    E[Z(t)] &= E[X(t) - tX(1)] \\ 
-            &= \mu t - t \my \\
-            &= 0
-  \end{align*}
-  Let $0 \leq s < t \leq 1$. Then
-  \begin{align*}
-    Cov[Z(s), Z(t)] &= Cov[X(s) - sX(1), X(t) - tX(t)] \\
-                    &= Cov[X(s),X(t)] - sCov[X(1), X(t)] - tCov[X(s), X(1)] + stCov[X(1), X(1)] \\
-                    &= V[X(s)] - s V[X(t)] - tV[X(s)] + st V[X(1)] \\
-                    &= \sigma^2 s - s \sigma^2 t -t \sigma^2 s + st \sigma^2 \\
-                    &= \sigma^2 s (1-t)
-  \end{align*}
-\end{solution}
-
 \section{Diffusion Process}
 
 Let $f(x,t) \Delta x$ be the probability of finding the particle at $(x, x+ \Delta x)$ at time $t$.
@@ -777,11 +781,10 @@ This is called the \textbf{Advection Diffusion Equation}. $\sigma^2/2$ is called
 
 \section{Hitting Times and the Maximum Variable}
 
-Let $T_a$ denote the first time the Brownian motion process hits $a$. This $T_a$ obviously follows some distribution. Rigorously finding this distribution is a very involved task, and beyond the scope of the course. Instead, we can use a simpler argument.
+Let $T_a$ denote the first time the Brownian motion process hits $a$. $T_a$ obviously follows some distribution. Rigorously finding this distribution is a very involved task, and beyond the scope of the course. Instead, we can use a simpler argument.
 
 Let $a > 0$. We seek $F_{T_a}(t) = P(T_a \leq t)$.
 \[P(X(t) \geq a) = P(X(t) \geq a | T_a \leq t) P(T_a \leq t) + P(X(t) \geq a | T_a > t)P(T_a > t) \]
-
 If $T_a \leq t$, then the process hits $a$ at some point in $[0,t]$ and, by symmetry, it is just as likely to be above $a$ or below $a$ at time $t$.
 \[P(X(t) \geq a | T_a \leq t) = \frac{1}{2}\]
 Note that the idea of symmetry is called the \textbf{principle of reflection}. We have just assumed it to make sense (because it does, intuitively), but it can be proven to be true as well. 
@@ -800,6 +803,29 @@ where $\phi$ is the cumulative distribution function of a standard normal.
 
 Another random variable of interest is the maximum value a process attains in $[0,t]$. It's distribution is given by
 \[P \{\max_{0 \leq s \leq t} X(s) \geq a\} = \frac{2}{\sqrt{2 \pi}} \int_{a/\sqrt{t}}^{\infty} e^{-y^2/2} dy\]
+
+\section{Brownian Bridge}
+
+If $X(t)$ is a Brownian motion, then a Brownian Bridge $Z(t)$ is given by:
+\[Z(t) = X(t) - tX(1), 0 \leq t < 1\]
+This can be generalized and better expressed as:
+\[Z(t) = (X(t) | X(T) = 0), t \in [0,T]\]
+This means that the Brownian bridge is a process pinned to the origin at both ends. For now, we will only consider the case where $T=1$, since this is what was discussed in class.
+
+$Z(t)$ is obviously normal since it is a linear combination of normal variables. It's expectation will be given by:
+\begin{align*}
+  E[Z(t)] &= E[X(t) - tX(1)] \\ 
+          &= \mu t - t \mu \\
+          &= 0
+\end{align*}
+Let $0 \leq s < t \leq 1$. Then
+\begin{align*}
+  Cov[Z(s), Z(t)] &= Cov[X(s) - sX(1), X(t) - tX(t)] \\
+                  &= Cov[X(s),X(t)] - sCov[X(1), X(t)] - tCov[X(s), X(1)] + stCov[X(1), X(1)] \\
+                  &= V[X(s)] - s V[X(t)] - tV[X(s)] + st V[X(1)] \\
+                  &= \sigma^2 s - s \sigma^2 t -t \sigma^2 s + st \sigma^2 \\
+                  &= \sigma^2 s (1-t)
+\end{align*}
 
 \section{Ornstein-Uhlenbeck Process}
 
@@ -836,7 +862,7 @@ is a stationary covariance process called the \textbf{Ornstein-Uhlenbeck Process
 
 \section{Quadratic Variations}
 
-Let $W(t)$ be a standard Brownian motion. Let $\Pi_n$ be a partition on interval $[0,t]$, such that it divides the segment into equally spaced intervals of size $\delta t = t/n$. Let us define 
+Let $W(t)$ be a standard Brownian motion. Let $\Pi_n$ be a partition on interval $[0,t]$, such that it divides the segment into equally spaced intervals of size $\Delta t = t/n$. Let us define 
 \[Q_{\Pi_n} = \sum_{j=1}^n [W(t_j) - W(t_{j-1})]^2\]
 Taking it as $n$ tends to infinity,
 \begin{align*}
@@ -858,18 +884,18 @@ Obviously, $Q_{\Pi_n}(t)$ is a stochastic process. Is $[W,W](t)$ a stochastic va
                  &= t
   \end{align*}
   Now let us handle the variance.
-    \[ V[Q_{\Pi_n}] &= \sum_{i=1}^n \left[ E[(W(t_i) - W(t_{i-1}))^4] - E[(W(t_i) - W(t_{i-1}))^2]^2 \right ] \]
-    Let $X$ be a normal distribution $N(0,\sigma^2)$. Then we can prove that $E(X^4) = 3 \sigma^4$. Hence,
-    \begin{align*}
-      V[Q_{\Pi_n}] &= \sum_{i=1}^n (3(t_i - t_{i-1})^2 - (t_i - t_{i-1})^2) \\
-                   &= 2 \sum_{i=1}^n (t_i - t_{i-1})^2 \\
-                   &= 2 n (\delta t)^2 \\
-                   &= \frac{2t^2}{n}
-    \end{align*}
-    Taking limit as $n \rightarrow \infty$, 
-    \[E[[W,W](t)] = t\] 
-    \[V[[W,W](t)] \rightarrow 0\]
-    This is what we mean by ``almost surely''. This process is almost deterministic.
+  \[ V[Q_{\Pi_n}] &= \sum_{i=1}^n \left[ E[(W(t_i) - W(t_{i-1}))^4] - E[(W(t_i) - W(t_{i-1}))^2]^2 \right ] \]
+  Let $X$ be a normal distribution $N(0,\sigma^2)$. Then we can prove that $E(X^4) = 3 \sigma^4$. Hence,
+  \begin{align*}
+    V[Q_{\Pi_n}] &= \sum_{i=1}^n (3(t_i - t_{i-1})^2 - (t_i - t_{i-1})^2) \\
+                 &= 2 \sum_{i=1}^n (t_i - t_{i-1})^2 \\
+                 &= 2 n (\delta t)^2 \\
+                 &= \frac{2t^2}{n}
+  \end{align*}
+  Taking limit as $n \rightarrow \infty$, 
+  \[E[[W,W](t)] = t\] 
+  \[V[[W,W](t)] \rightarrow 0\]
+  This is what we mean by ``almost surely''. This process is almost deterministic.
 \end{proof}
 This gives us a nice result - the value of the quadratic variation of a Brownian motion is finite.
 
