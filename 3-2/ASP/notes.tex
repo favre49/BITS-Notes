@@ -707,7 +707,7 @@ Let $X(t)$ is such that as $\Delta t \rightarrow 0$, $V[X(t)] \rightarrow \sigma
 \[\lim_{\Delta t \rightarrow 0} \frac{4pqt (\Delta x)^2}{\Delta t} = \sigma^2 t\]
 \[\lim_{\Delta t \rightarrow 0} \frac{4pq (\Delta x)^2}{\Delta t} = \sigma^2\]
 For this limit to exist, 
-\[\Delta x = \frac{\sigma}{2\sqrt{pq}} (\Delta t)^{1/2}\]
+\[\Delta x = \sigma (\Delta t)^{1/2}\]
 Also Let $X(t)$ is such that 
 \[\lim_{\Delta t \rightarrow 0} E[X(t)] = \mu t\]
 \[\lim_{\Delta t \rightarrow 0} \frac{(p-q) \Delta x}{\Delta t} = \mu\]
@@ -715,8 +715,6 @@ Also Let $X(t)$ is such that
 This equation is satisfied when:
 \[p = \frac{1}{2} (1 + \mu (\Delta t)^{1/2} / \sigma)\]
 \[q = \frac{1}{2} (1 - \mu (\Delta t)^{1/2} / \sigma)\]
-From this, we can find that:
-\[\Delta x = \sigma (\Delta t)^{1/2}\]
 Since $Z_i$ are i.i.d, the sum of them $X(t)$ for large $n$ is normal with mean $\mu t$ and variance $\sigma^2 t$ from the central limit theorem. Note that here $t$ refers to the interval $[0,t]$. If we consider the interval $[s,t]$, then the mean would be $\mu(t-s)$ and variance $\sigma^2(t-s)$.
 
 \begin{definition}[Weiner Process]
@@ -724,7 +722,7 @@ Since $Z_i$ are i.i.d, the sum of them $X(t)$ for large $n$ is normal with mean 
   \begin{enumerate}
     \item $X(0) = 0$
     \item $X(t)$ has independent increments. This means that for every pair of disjoint intervals $(t,s)$ and $(u,v)$, the variables $X(t) - X(s)$ and $X(u) - X(v)$ are independent.
-    \item Every increment is normally distributed with mean $\mu(t-s)$ and $\sigma^2(t-s)$.
+    \item Every increment is normally distributed with mean $\mu(t-s)$ and variance $\sigma^2(t-s)$.
   \end{enumerate}
 \end{definition}
 
