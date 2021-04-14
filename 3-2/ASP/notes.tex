@@ -585,7 +585,7 @@ Let us suppose that several events can happen simultaneously at an instance, i.e
 \end{enumerate}
 
 \begin{theorem}
-  If $M(t)$ denotes the total number of occurrences in an interval of length $t$ under the given conditions, then the generating function is given by:
+  If $M(t)$ denotes the total number of occurrences in an interval of length $t$ under the given conditions, then the generating function of $M(t)$ is given by:
   \[G(P(s)) = \exp [\lambda t \{P(s)-1\}]\]
 \end{theorem}
 
@@ -717,18 +717,21 @@ This equation is satisfied when:
 \[q = \frac{1}{2} (1 - \mu (\Delta t)^{1/2} / \sigma)\]
 Since $Z_i$ are i.i.d, the sum of them $X(t)$ for large $n$ is normal with mean $\mu t$ and variance $\sigma^2 t$ from the central limit theorem. Note that here $t$ refers to the interval $[0,t]$. If we consider the interval $[s,t]$, then the mean would be $\mu(t-s)$ and variance $\sigma^2(t-s)$.
 
-\begin{definition}[Weiner Process]
-  The stochastic process $\{X(t), t > 0\}$ is called a Weiner process with drift $\mu$ and variance $\sigma^2$ if
+\begin{definition}[Wiener Process]
+  The stochastic process $\{X(t), t > 0\}$ is called a Wiener process with drift $\mu$ and variance $\sigma^2$ if
   \begin{enumerate}
-    \item $X(0) = 0$
     \item $X(t)$ has independent increments. This means that for every pair of disjoint intervals $(t,s)$ and $(u,v)$, the variables $X(t) - X(s)$ and $X(u) - X(v)$ are independent.
     \item Every increment is normally distributed with mean $\mu(t-s)$ and variance $\sigma^2(t-s)$.
   \end{enumerate}
 \end{definition}
 
-A Weiner process is also called a \textbf{Brownian Motion}. If $\mu = 0$ and $\sigma = 1$, then it is called a \textbf{standard Brownian motion}.
+A Wiener process is also called a \textbf{Brownian Motion}. If $X(0) = 0,\mu = 0$ and $\sigma = 1$, then it is called a \textbf{standard Brownian motion}.
 
-A Weiner process is called a \textbf{stationary covariance process} if $Cov[X(t), X(t + \tau)]$ if it is independent of $t$. This means that the covariance is a function of $\tau$.
+Since $X(t) - X(0)$ is normally distributed with mean $\mu t$ and variance $\sigma^2 t$, the \textbf{transition probability density function} $f$ is given by:
+\begin{align*}
+  f(x_0,x;t) &= P[x \leq X(t) < x+\delta x | X(0) = x_0] \\
+             &= \frac{1}{\sigma \sqrt{2 \pi t}} \exp \left\{- \frac{(x-x_0-\mu t)^2}{2 \sigma^2 t} \right\} \delta x
+\end{align*}
 
 \begin{exercise}
   Find $Cov[X(s), X(t)]$ where $X$ is a standard Brownian motion and $s \leq t$.
@@ -768,7 +771,7 @@ A Weiner process is called a \textbf{stationary covariance process} if $Cov[X(t)
 
 \section{Diffusion Process}
 
-Let $f(x,t) \Delta x$ be the probability of finding the particle at $(x, x+ \Delta x)$ at time $t$.
+Let $f(x,t) \Delta x$ be the probability of finding the particle in a Wiener Process at $(x, x+ \Delta x)$ at time $t$.
 \[f(x,t) \Delta x = p f(x - \Delta x, t - \Delta t) \Delta x + q f(x + \Delta x, t - \Delta t) \Delta x\]
 \[f(x,t) = p \left[f(x,t) - \frac{\partial f}{\partial x} - \frac{\partial f}{\partial t} + \frac{1}{2} \frac{\partial ^ 2 f}{\partial x^2} + 0 (\Delta t) \right] + q\left[f(x,t) + \frac{\partial f}{\partial x} - \frac{\partial f}{\partial t} + \frac{1}{2} \frac{\partial ^ 2 f}{\partial x^2} + 0 (\Delta t) \right]  \]
 The above result comes from Taylor Expansion.
@@ -776,6 +779,10 @@ The above result comes from Taylor Expansion.
 Cancelling some terms and using the values of $p$ and $q$, we get the following partial differential equation:
 \[\frac{\partial f}{\partial t} + \mu \frac{\partial f}{\partial x} = \frac{\sigma^2}{2} \frac{\partial^2 f}{\partial x^2}\]
 This is called the \textbf{Advection Diffusion Equation}. $\sigma^2/2$ is called the diffusion coefficient.
+
+Solving the diffusion equation will yield the transition probability density function already discussed.
+
+If $\mu = 0$, it is called the heat equation.
 
 \section{Hitting Times and the Maximum Variable}
 
@@ -826,6 +833,8 @@ Let $0 \leq s < t \leq 1$. Then
 \end{align*}
 
 \section{Ornstein-Uhlenbeck Process}
+
+A Weiner process is called a \textbf{stationary covariance process} if $Cov[X(t), X(t + \tau)]$ if it is independent of $t$. This means that the covariance is a function of $\tau$. The process we will now define is an example of this.
 
 Let $X(t)$ be a standard Brownian motion. Then
 \[Y(t) = \frac{1}{\sqrt{g(t)}} X(\sigma^2g(t))\]
