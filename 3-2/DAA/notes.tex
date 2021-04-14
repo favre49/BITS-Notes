@@ -1064,7 +1064,61 @@ An optimization problem $\Pi$ is \textbf{polynomially bounded} if there exists a
 Suppose we have a FPTAS $A$ for $\Pi$ which for any instance $x$ and for any ration $\epsilon (0 < \epsilon < 1)$  runs in time bounded by $q(|x|, 1/\epsilon)$ for a suitable polynomial $q$. Since $\Pi$ is polynomially bounded, there exists a polynomial $p$ such that for any instance $x$, $OPT(x) \leq p(|x|)$. If we choose $\epsilon = 1/p(|x|)$, then $A(x,\epsilon)$ provides an optimal solution of $x$ as follows:
 \[A \in FPTAS \Rightarrow \frac{OPT(x)}{obj_\Pi(x,A(x,\epsilon))} \leq 1 + \frac{1}{p(|x|)}\]
 \[obj_\Pi (x,A(x,\epsilon)) \geq OPT(x) \frac{p(|x|)}{p(|x|) + 1} = - \frac{OPT(x)}{p(|x|)+1} + OPT(x) > OPT(x) - 1\]
-This means that $\obj_\Pi$ is $OPT(x)$, meaning $A$ is an optimal solution. If $P \neq NP$, then $FPTAS \neq PTAS$.
+This means that $obj_\Pi$ is $OPT(x)$, meaning $A$ is an optimal solution. If $P \neq NP$, then $FPTAS \neq PTAS$.
+
+\section{Probabilistic Turing Machine}
+
+\subsection{Definition}
+
+A PTM is a TM with two transition functions $\delta_0, \delta_1$. To execute a PTM $M$ on an input $x$ we choose in each step with probability $0.5$ to apply $\delta_0$, and probability $0.5$ to apply $\delta_2$. This choice is independent of all previous choices. We denote the random variable corresponding to the output of $M$ by $M(x)$.
+
+For a function $T:N \rightarrow N$, we say that $M$ runs in $T(n)$ time if for any input $x$, $M$ halts on $X$ within $T(|x|)$ steps regardless of the choices made.
+
+\subsection{The complexity class BPTIME and BPP}
+
+For a language $L \subseteq \{0,1\}^*$ and $x \in \{0,1\}^*$, we define $L(X) = 1$ if $x \in L$ and $L(x) = 0$ otherwise.
+
+For $T : N \rightarrow N$ and $L \subseteq \{0,1\}^*$ we say that a PTM decides $L$ in time $T(n)$ if for every $x \in \{0,1\}^*$, $M$ halts in $T(|x|)$ steps regardless of its random choices, and $P(M(x) = L(x)) \geq 2/3$. 
+
+$\mathbf{BPTIME}(T(n))$ is the class of languages decided by PTMs in $O(T(n))$.
+
+$\mathbf{BPP}$ is defined as:
+\[\mathbf{BPP} = \bigcup_{c} \mathbf{BPTIME}(n^c)\]
+
+\subsection{The complexity class RTIME and RP}
+
+$\mathbf{RTIME}(T(n))$ contains every language $L$ for which there is a PTM $M$ running in $T(n)$ time such that:
+\[x \in L \Rightarrow P[M(x) = 1] \geq \frac{2}{3}\]
+\[x \notin L \Rightarrow P[M(x) = 1] = 0\]
+
+Then $\mathbf{RP}$ is defined as:
+\[\mathbf{RP} = \bigcup_{c > 0} \mathbf{RTIME}(n^c)\]
+
+The complexity class $\mathbf{CoRP}$ is such that $L \in \mathbf{CoRP}$ if and only if:
+\[x \in L \Rightarrow P[M(x) = 0] = 0\]
+\[x \notin L \Rightarrow P[M(x) = 0] \geq \frac{2}{3}\]
+
+\subsection{The complexity class ZTIME and ZPP}
+
+The class $\mathbf{ZTIME}(T(n))$ contains all the languages for which there is an expected time $O(T(n))$ PTM $M$ such that for every input $x$, whenever $M$ halts on $x$, the output $M(x)$ is exactly $L(x)$.
+
+We define 
+\[\mathbf{ZPP} = \bigcup_{c > 0} \mathbf{ZTIME}(n^c)\]
+
+\subsection{The relation between complexity classes}
+
+We have the following properties:
+
+\begin{itemize}
+  \item $\mathbf{ZPP} = \mathbf{RP} \cap \mathbf{CoRP}$
+  \item $\mathbf{RP} \subseteq \mathbf{BPP}$
+  \item $\mathbf{CoRP} \subseteq \mathbf{BPP}$
+  \item $\mathbf{RP} \subseteq \mathbf{NP}$
+  \item $\mathbf{P} \subseteq \mathbf{BPP}$
+  \item $\mathbf{P} \subseteq \mathbf{RP}$
+  \item $\mathbf{P} \subseteq \mathbf{CoRP}$
+  \item $\mathbf{P} \subseteq \mathbf{ZPP}$
+\end{itemize}
 
 \section{Problems}
 
