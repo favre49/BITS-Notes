@@ -397,7 +397,7 @@ The socket address is stored in the following struct
   };
 \end{lstlisting}
 
-AF stands for address family and PF stands for protocol family. For IPv4 internet protocols, we use AF_INET.
+AF stands for address family and PF stands for protocol family. For IPv4 internet protocols, we use AF\_INET.
 
 There is also the following construct, that contains information about the address family, port number, internet address and the size of the struct sockaddr.
 
@@ -758,7 +758,7 @@ Cubic TCP is actually real-time dependent, not RTT dependent. The following vari
 \begin{itemize}
   \item $\beta$, the multiplicative decrease factor
   \item $w_{max}$, the window size before last reduction
-  \item $T$, the tie elapsed since the last window reduction
+  \item $T$, the time elapsed since the last window reduction
   \item $C$, a scaling constant,
   \item $cwnd$, the current congestion window
 \end{itemize}
@@ -809,7 +809,7 @@ The router has 4 high level components:
       \item Switching via a bus. Here the input port directly transfers a packet to the output port via a shared bus, without intervention by the routing processor. The packet is prepended with a header and sent to the bus. All the output ports will receive the packet but only the one mentioned in the header will recognize it and act accordingly. Here the router switching speed is limited by the bus speed. If multiple packets arrive to the router at the same time, they must go to the bus in a queue since only one packet can use the bus at a time.
       \item Switching via an interconnection network. This is a more sophisticated network using a crossbar switch. A crossbar switch consists of $2N$ buses that connect $N$ input ports and $N$ output ports. Each of the input buses intersect with all the output buses, and can be opened or closed at any time by the switching fabric.
     \end{itemize}
-  \item \textbf{Output Ports} : It stores packets received by the switching fabric and transmits these on the outgoing link by performing the necessary link layer and physical layer functions.
+  \item \textbf{Output Ports} : It stores packets received by the switching fabric and transmits these on the outgoing link by performing the necessary link layer and physical layer functions. The output port is also responsible for \textbf{packet scheduling} on the packets queued at it. This means that it must choose one packet among those queued for transmission. This can be done in an FCFS manner or using something like weighted fair queueing. Besides this, the output port must decide what packet to remove when the queue buffer is fill. This is the subject of study for \textbf{Active Queue Management} algorithms like \textbf{Random Early Detection}. In RED, a weighted average is maintained for the length of the output queue. If the average length is less than a minimum threshold, then the packet is admitted to the queue. If it is greater than some maximum threshold, the arriving packet is dropped. In between those, a packet is marked or dropped depending on some probability decided by a function of the threshold.
   \item \textbf{Routing Processor}  : The routing processor executes the routing protocols, maintains the routing tables and computes the forwarding table. Shadow copies of the forwarding tables are stored in every input port.
 \end{itemize}
 
@@ -826,7 +826,7 @@ The protocol works as follows:
 
 \begin{enumerate}
   \item The client sends a ``DHCP discover'' message, which is a broadcast message looking for a DHCP server. The \texttt{src} field will hold IP address 0.0.0.0, since no IP address has been given. The \texttt{dest} field will hold the IP address 255.255.255.255, since the message is being broadcast. Every message also has a transaction ID, to keep track of the messages.
-  \item The server responds with a ``DHCP offer''. The \texttt{src} field will hold the IP address of the DHCP server, and the \texttt{dest} field will once again have the broadcast IP address. It will also have a field \texttt{yiaddrr} holding the leased IP address, and a field \texttt{lifetime} for the tie of the lease. Of course, it will also have the same transaction ID as the discover message.
+  \item The server responds with a ``DHCP offer''. The \texttt{src} field will hold the IP address of the DHCP server, and the \texttt{dest} field will once again have the broadcast IP address. It will also have a field \texttt{yiaddrr} holding the leased IP address, and a field \texttt{lifetime} for the time of the lease. Of course, it will also have the same transaction ID as the discover message.
   \item The client will respond with a ``DHCP request''. It needs to respond again because the client may receive multiple DHCP offers, and hence the server cannot immediately provide the client with an address. The client hence chooses one of the offers and responds. The request will once again have the \texttt{src} 0.0.0.0, and the broadcast destination address. Now, the transaction ID will be different. The \texttt{lifetime} and \texttt{yiaddrr} field will be the same as sent in the DHCP offer, so that the server knows who had sent it.
   \item Finally, the server sends a ``DHCP ACK''. This has the same contents as the DHCP offer, but with the same transaction ID as in the request. After receiving this, the client assumes the given IP address.
 \end{enumerate}
@@ -839,7 +839,7 @@ The key field of IPv4 datagram are:
   \item \textbf{Version Number} : This 4 bit  field specify the IP protocol version of the datagram
   \item \textbf{Header Length}  : Since the IPv4 datagram can contain a variable number of options, these 4 bits are needed to determine where the IP datagram data actually begins.
   \item \textbf{Type of Service} : The type of service bits were included in the IPv4 header to allow different types of IP datagrams to be distinguished from each other. For instance, we may want to distinguish between real time and non real time traffic
-  \item \textbf{Datagram length}  : The total length of the IP datagram (header + datae) measured in bytes. It is a 16 bit field.
+  \item \textbf{Datagram length}  : The total length of the IP datagram (header + data) measured in bytes. It is a 16 bit field.
   \item \textbf{Identifiers, flags, and fragmentation offset} : These three fields have to do with fragmentation
   \item \textbf{Time to live} : The TTL field is included to ensure that datagrams do not circulate forever. This field is decremented by one each time the datagram is processed by a router. If the TTL field reaches 0, the datagram must be dropped.
   \item \textbf{Protocol} : This field is used only when an IP datagram reaches its destination, and indicates the transport layer protocol to which the data portion of the IP datagram should be passed. A value of 6 means TCP, and a value of 17 means UDP.
@@ -888,7 +888,7 @@ Consider a client outside the local network wants to connect to a server with ad
 
 \section{IPv6}
 
-IPv6 is the successor to the IPv4 protocl, allowing for a larger address space as well as some other improvements.
+IPv6 is the successor to the IPv4 protocol, allowing for a larger address space as well as some other improvements.
 
 In Fig we can see the IPv6 datagram format.
 
@@ -962,7 +962,7 @@ Routing algorithms can be of many (not necessarily exclusive) types:
 
 LS algorithms are global algorithms - they have complete information about the network topology and all link costs. This is done in practice via link state broadcast algorithms, where each node broadcasts to all the other nodes on the network.
 
-One LD algorithm is Djikstra's algorithm, which can compute all least-cost paths from a source node $u$ to all the other nodes. After the $k^{th}$ iteration, the least cost paths are known to $k$ destination nodes. The algorithm is well known, but remember the following notation:
+One LS algorithm is Djikstra's algorithm, which can compute all least-cost paths from a source node $u$ to all the other nodes. After the $k^{th}$ iteration, the least cost paths are known to $k$ destination nodes. The algorithm is well known, but remember the following notation:
 \begin{itemize}
   \item $D(v)$ - the cost of the least cost path from $u$ to $v$
   \item $p(v)$ the predecessor on the least cost path
@@ -979,7 +979,7 @@ While the LS algorithm us an algorithm using global information, the DV algorith
 
 The DV algorithm is governed by the \textbf{Bellman Ford Algorithm}, given by:
 \[d_x (y) = \min_v \{c(x,v) + d_v(y)\}\]
-Each node $x$ begins with $D_x(y)$, an estimate of the cost of the least cost path form itself to node $y$, for all nodes in $N$. Let $\mathbf{D}_x = [D_x(y) : y \in N]$ be the distance vector for node $x$. With the DV algorithm, each node $x$ maintains the following information:
+Each node $x$ begins with $D_x(y)$, an estimate of the cost of the least cost path from itself to node $y$, for all nodes in $N$. Let $\mathbf{D}_x = [D_x(y) : y \in N]$ be the distance vector for node $x$. With the DV algorithm, each node $x$ maintains the following information:
 \begin{itemize}
   \item For each neighbour $v$, the cost $c(x,v)$ from $x$ to directly attached neighbour $v$
   \item Node $x$ distance vector $\mathbf{D}_x$
@@ -996,7 +996,6 @@ Though we can be sure that the distances will eventually converge, how long can 
   \caption{Routing network example}%
   \label{fig:}
 \end{figure}
-his various body parts in order to get them back. 
 If, like in example (a), we reduce the link cost from 4 to 1, what will happen? Let us consider the distance table entries of $y$ and $z$ to $x$. First, $y$ will notice the link cost change, change the distance vector and send it to $z$. $z$ will then update it's own distance vector (since the minimum cost is now 2) and notify $y$ of this. $y$ will not make any changes, so the process stops here. We only needed 2 iterations.
 
 But what about in example (b)? The link cost changed from 4 to 60. $y$ will detect this, and compute a new minimum cost path to $x$ as:
@@ -1037,7 +1036,9 @@ So far, we have considered only intra-AS routing protocols. For ASs to communica
 
 In BGP, pairs of routers exchange routing information over TCP connections on port 179. These are between the gateway routers of multiple ASs, as well as between routers within an AS. The two routers at the end of a TCP connection are called \textbf{BGP peers}, and the link is called a \textbf{BGP session} . If the BGP session spans two ASs, then it is an \textbf{external BGP session}. Otherwise, it is an \textbf{internal BGP session}.
 
-In BGP, destinations are not hosts, but instead CIDRized prefixes, each representing a subnet or collection of subnets. BGP allows each AS to learn which destinations are reachable via it's neighbouring ASs. This is done over the eBGP session connecting two gateway routers - each AS will send information about it's neighbours.
+Once this session is created, routers will exchange two types of messages - KEEPALIVE and UPDATE. Keepalive messages are sent to let a neighbouring router know we are still alive, but have no updates. The update message will contain a list of withdrawn routes, attributes and network layer reachability inforomation.
+
+In BGP, destinations are not hosts, but instead CIDRized prefixes, each representing a subnet or collection of subnets. BGP allows each AS to learn which destinations are reachable via it's neighbouring ASs. This is done over the eBGP session connecting two gateway routers - each AS will send information about it's neighbours.The gateway routers will then distribute the prefixes within the AS using the iBGP sessions.
 
 \subsection{Attributes and Routes}
 
@@ -1054,22 +1055,22 @@ BGP also has other attributes, including attributes to assign preference metrics
 
 While distributing routes within the ASs, a router may learn about more than one route to any prefix, in which case the router must select one of the possible routes. If there are two or more routes to the same prefix, BGP invokes the following elimination rules till only one route remains.
 
-\begin{itemize}
+\begin{enumerate}
   \item Routes are assigned local preference values as one of their attributes. The local preference of a route could have been set by the router or could have been learned by another router in the same AS. This is a policy decision for the network admin. The routes with the highest local preference values are selected.
   \item From these routes, the routes with the shortest AS-PATH is selected.
-  \item From these routes, the route with the closest NEXT-HOP is selected. ``closest'' refers to the minimum least cost path, found by the intra-AS routing algorithm. This is known as \textbf{hot potato routing}.
-  \item If more than one route still remains, we use the BGP identifiers
-\end{itemize}
+  \item From these routes, the route with the closest NEXT-HOP is selected. ``Closest'' refers to the minimum least cost path, found by the intra-AS routing algorithm. This is known as \textbf{hot potato routing}.
+  \item If more than one route still remains, we use the BGP identifiers.
+  \end{enumerate}
 
 \subsection{Policy Decisions}
 
 BGP provides the capability for implementing various policies, chosen by the network administrator. There are two kinds of policies - \textbf{import policy} and \textbf{export policy}.
 
-The import policy decides how to handle route advertisements received. It can either accept or filter the route and whether or not to set certain attributes such as the router preference metrics. The import policy could filter a route if, say, the AS did not want to send traffic over an AS in the AS-PATH, or if it already knows a preferable path for the prefix.
+The import policy decides how to handle route advertisements received. It can either accept or filter the route and decides whether or not to set certain attributes such as the router preference metrics. The import policy could filter a route if, say, the AS did not want to send traffic over an AS in the AS-PATH, or if it already knows a preferable path for the prefix.
 
 The export policy decides which routes should be advertised. Generally, this depends on the relationship between nodes:
 \begin{itemize}
-  \item An AS will announce all routes learned form peers, providers and customers to it's customers
+  \item An AS will announce all routes learned from peers, providers and customers to it's customers
   \item An AS will announce all routes learned from customers to it's peers and providers
 \end{itemize} 
 Of course, the AS will always announce routes originating from itself.
@@ -1118,13 +1119,11 @@ Error correction always needs more redundant bits per frame than error detection
 
 \subsection{Basics of Error Detection}
 
-In any error correction technique, we add some redundant information to a frame to detect and correct errors. Formally, the sender adds $k$ bits of redundant date to a $m$ bit message. The receiver will reapply the same algorithm to detect errors and take corrective action.
+In any error correction technique, we add some redundant information to a frame to detect and correct errors. Formally, the sender adds $k$ bits of redundant date to a $m$ bit message, creating a code word of length $n=m+k$. The receiver will reapply the same algorithm to detect errors and take corrective action.
 
-The length of a code word is $n = m+k$. The number of bits in which two code words differ is called the \textbf{Hamming Distance}, and can be found using the XOR of the two code words.
+The number of bits in which two code words differ is called the \textbf{Hamming Distance}, and can be found using the XOR of the two code words. The Hamming distance of a set of codewords is the minimum Hamming distance between any pair of code words. In this case, there will be $2^m$ valid code words.
 
-We have $2^m$ legal code words, let us find the smallest Hamming distance between two code words. This is called the code's Hamming distance.
-
-If the code's Hamming distance is $d$, we can detect up to $d-1$ errors, and can only correct up to $(d-1)/2$ errors.
+To be able to design error correcting/detecting code, it is necessary that any two valid code words are sufficiently dissimilar such that one valid code cannot turn into another by the corruption of a single (or maybe multiple) bit(s). As such, if the Hamming distance of a set of code words is $d$, then we can only detect up to $d-1$ errors, since there exists a set of $d$ errors that could transform any code word into another valid code word. Such a set can also only correct up to $(d-1)/2$ errors.
 
 The \textbf{code rate} is the amount of space taken up by the actual data in a code word, given by
 \[\frac{m}{m+k}\]
@@ -1137,6 +1136,30 @@ The simplest form of error detection is using a parity bit. Suppose the informat
 
 At the receiver side, they count the number of 1s in the received bits. If an odd number of 1s are found in a even parity scheme, we know that an odd number of bit errors have occurred.
 
+However, a single parity bit is unable to detect an even number of bit errors. This is a bigger problem when errors occur in bursts. In such cases, the probability of undetected errors in a frame can approach 50\%.
+
+To improve our chances, we can extend the idea into 2 dimensions. Here the $d$ bits are divided into $i$ rows and $j$ columns. Then, we compute a parity value for each row and column. The resulting $i+j+1$ parity bits comprise the link layer frame's error detection bits.
+
+Now, if a single bit error occurs, we can tell which row and which column this happens in. This way, we can identify the problem bit and even correct the single bit error. This approach can also detect any combination of 2 bit errors.
+
+\subsection{Cyclic Redundancy Check}
+
+Consider a $d$ bit piece of data $D$. The sender and receiver agree on a $r+1$ bit pattern $G$ called the \textbf{generator}. The most significant bit of $G$ must be 1. Then, for a given set of data, $D$, the sender will choose $r$ additional bits $R$ and append them to $D$ such that the resulting $d+r$ bit pattern is exactly divisible by $G$ using modulo 2 arithmetic. The resultant $d+r$ bit number is given by $D \cdot 2^r \oplus R$.
+
+The receiver will divide the $d+r$ received bits by $G$. If the remainder is non zero, the receiver knows that an error has occurred - otherwise, the data is accepted as being correct.
+
+So how to compute $R$? Before this let us see how we perform operations in modulo 2 arithmetic.
+
+\begin{itemize}
+  \item Addition and subtraction both correspond to the XOR operation.
+  \item Multiplication corresponds to the AND operation.
+  \item Division is done the same way as long division. When you want to subtract a number, you add append 1 to the quotient and perform an XOR (since it is the modulo 2 subtraction operation) with the divisor. Otherwise, you could append 0 and perform the XOR with 0 instead. When it is impossible to go further, the leftover is the remainder.
+\end{itemize}
+
+With this information, we can go ahead and see how to compute $R$.
+\[D \cdot 2^r \oplus R = nG\]
+\[D \cdot 2^r = nG \oplus R\]
+\[R = remainder(\frac{D \cdot 2^r}{G})\]
 
 
 
