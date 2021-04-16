@@ -1196,5 +1196,24 @@ Liveness is a boolean property, denoted by $L(s,x,in)$. Just as before, we can w
   \item 
 \end{itemize}
 
+\section{Register Allocation}
+
+Intermediate code uses an unlimited number of temporaries, which is not possible in a real system. Hence, we need to map temporaries to registers in a meaningful way while keeping system constraints in mind. To do this, we assign multiple temporaries to each register without changing program behaviour.
+
+Temporaries $t_1$ and $t_2$ can share a register if at any point in the program at most one of $t_1$ and $t_2$ is live.
+
+To figure out how to assign registers, we can use graph coloring. We create a graph with as many nodes as there are variables, and add an edge between two variables if they are live at the same time. This is called the \textbf{Register Interference Graphs}. After we construct the RIG, the register allocation algorithm is dependent on the architecture.
+
+One such register allocation algorithm is by using graph coloring, where each color is a register. If the RIG is $k$ colourable, then we can use $k$ registers for the program. Coloring a graph is NP-Hard, but we can use some heuristics to find an approximate answer.
+
+One such heuristic is:
+\begin{enumerate}
+  \item Pick a node $t$ with fewer than $k$ neighbours in the RIG.
+  \item put $t$ on a stack.
+  \item Eliminate $t$ and its edges form the RIG.
+  \item Take the last node from the stack, and at each step pick a color different from those assigned to already colored neighbors.
+\end{enumerate}
+If this is possible to do, the graph must be $k$ colourable.
+
 
 \end{document}
