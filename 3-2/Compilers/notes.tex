@@ -775,13 +775,13 @@ Some semantic errors could be:
 
 The attribute grammar framework is the generalization of CFGs where each grammar symbol has an associated set of attributes. The semantic attributes are computed according to some semantic rules.
 
-The attribute grammar framework is generally notated by the \textbf{syntax directed definition}. Attributes are associated with grammar symvols and rules are associated with productions. If $X$ is a symbol and $a$ is one of its attributes, then we write $X.a$ to denote the value of $a$ at a particular parse tree node labeled $X$.
+The attribute grammar framework is generally notated by the \textbf{syntax directed definition}. Attributes are associated with grammar symbols and rules are associated with productions. If $X$ is a symbol and $a$ is one of its attributes, then we write $X.a$ to denote the value of $a$ at a particular parse tree node labeled $X$.
 
 Non terminals can have two types of attributes:
 
 \begin{itemize}
-  \item A \textbf{synthesizes attribute} for a non terminal $A$ at a parse tree node $N$ is defined by a semantic rule associated with the production at $N$. Note that the production must have $A$ as it's head.
-  \item An \textbf{inherited attribute} for a non terminal $B$ at a parse tree node $N$ is defined by a semantic rule associated with the production at the parent of $N$. The production must have $B$ as a symbol in it's body.
+  \item A \textbf{synthesized attribute} for a non terminal $A$ at a parse tree node $N$ is defined by a semantic rule associated with the production at $N$. Note that the production must have $A$ as it's head. This means  that the synthesized attribute is defined only by attributes at $N$ and at its children.
+  \item An \textbf{inherited attribute} for a non terminal $B$ at a parse tree node $N$ is defined by a semantic rule associated with the production at the parent of $N$. The production must have $B$ as a symbol in it's body. This means that the inherited attribute is defined only by attributes at $N$, it's parent and it's siblings.
 \end{itemize}
 
 An SDD that uses only synthesized attributes is said to be an S-attributed definition.
@@ -840,15 +840,15 @@ L attributed definitions contain both synthesized and inherited attributes. A sy
 depends only on
 \begin{itemize}
   \item The attributes of the symbols to the left of $X_j$
-    \irem The inherited attributes of $X_j$
+    \item The inherited attributes of $X_j$
 \end{itemize}
 
 $A \rightarrow BC \{B.S = A.S\}$ is an example of an L-attributed definition.
 
 In an L-attributed definition, attributes can be evaluated in depth first order, which is natural for both top down and bottom up parsing.
 
-The following SDD is a L-attributed definition
-\[A \rightarro LM\]
+The following SDD is a L-attributed definition:
+\[A \rightarrow LM\]
 \[L.i = f_1(A.i)\]
 \[M.i = f_2(L.s)\]
 \[A.s = f_3(M.s)\]
@@ -874,7 +874,7 @@ If we have a production $B \rightarrow X \{a\} Y$, then action $a$ is done after
 
 To evaluate the SDT, we assume the actions are terminal symbols and create the parse tree. From this, the actions form leaf nodes in the parse tree. Then, we can perform a DFS traversal to evaluate all the actions.
 
-For the SDT to have a defined output, we should ensure that all attributes arecomputed before they are used. For instance, the following SDT would give an error:
+For the SDT to have a defined output, we should ensure that all attributes are computed before they are used. For instance, the following SDT would give an error:
 \[S \rightarrow A_1 A_2 \{A_1.in = 1, A_2.in = 2\}\]
 \[A \rightarrow a \{print(A.in)\}\]
 Obviously, $A_i$ cannot do it's action until $A_i.in$ is defined.
@@ -965,7 +965,7 @@ Jump statements could be conditional or unconditional. An example of an uncondit
 
 \subsection{Address and Pointer Assignments}
 
-Three Address codes allow for address and pointer assignments. For instance, \texttt{x = \&y} will work like in C, as will \texttt{x = *y}. Just like in, arithmetic cannot be done on pointers.
+Three Address codes allow for address and pointer assignments. For instance, \texttt{x = \&y} will work like in C, as will \texttt{x = *y}. Just like in C, arithmetic cannot be done on pointers.
 
 \subsection{Procedure Calls and Returns}
 
@@ -985,7 +985,7 @@ More statements may be needed depending upon the requirement of a language. Some
 
 \subsection{Quadruples}
 
-Quadruples are a way to represent three address code. A quadruple or a quad has four fields - $op, arg_1, arg_2, result$. For instance, if we have the instruction \texttt{x=y+z}, the quad would be $(+,x,y,z)$.
+Quadruples are a way to represent three address code. A quadruple or a quad has four fields - $op, arg_1, arg_2, result$. For instance, if we have the instruction \texttt{x=y+z}, the quad would be $(+,z,y,x)$.
 
 Instructions with unary operators do not use $arg_2$. For the copy assignment \texttt{x=y}, we consider \texttt{=} as the $op$. In all the other cases, the assignment operator is implied.
 
@@ -993,9 +993,9 @@ Operators like \texttt{param} use neither $arg$ or $result$. Conditional and unc
 
 \subsection{Triples}
 
-Another way to implement three address code is using triples. A triple has only three fields - $op,arg_1,arg_2$. The result of an operation is no referred to by it's position in the instruction list. Hence, instead of referring to some temporary $t_1$ as $arg$, we would refer to $(0)$.
+Another way to implement three address code is using triples. A triple has only three fields - $op,arg_1,arg_2$. The result of an operation is now referred to by it's position in the instruction list. Hence, instead of referring to some temporary $t_1$ as $arg$, we would refer to $(0)$.
 
-Quadruples are still ideal compared to tripled, because during optimization we generally rearrange instructions to avoid hazards. If you do this with triples, you also have to changed the number of the referenced instruction.
+Quadruples are still ideal compared to triples, because during optimization we generally rearrange instructions to avoid hazards. If you do this with triples, you also have to changed the number of the referenced instruction.
 
 To fix this issue, \textbf{indirect triples}  store a list of pointers to triples, rather than a listing of the actual triples. This way, the compiler can reorder the instruction list without affecting the triples themselves.
 
