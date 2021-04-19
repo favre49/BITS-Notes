@@ -1932,11 +1932,110 @@ From this, if $p \nmid a$, and $a = p_1^{e_1} p_2^{e_2} \cdots p_k^{e_k}$, then:
 \begin{exercise}
   Prove that 
   \[\legendre{2}{p} = \begin{cases}
-    TODO
+    1 & \text{if } p \equiv 1,7 \mod 8 \\
+    -1 & \text{if } p \equiv 3,5 \mod 8 \\
   \end{cases}\]
+  for all odd primes $p$.
 \end{exercise}
 \begin{solution}
   Suppose $p \equiv 1 \mod 8$. So,
+  \[p = 8k+1, k \in N\]
+  Look at the first $(p-1)/2 = 4k$ even integers:
+  \[2,4,6,\cdots, 8k\]
+  Now, 
+  \[2 \cdot 4 \cdot 6 \cdots 8k = 2^{4k} (4k)!\]
+  Moreover,
+  \[2 \cdot 4 \cdot 6 \cdots 4k \cdot (4k+2) \cdot (4k+4) \cdots (8k) \]
+  \[\equiv 2 \cdot 4 \cdot 6 \cdots 4k \cdot (-4k+1) \cdot (-4k+3) \cdots (-3)(-1) \mod p\]
+  \[\equiv (-1)^{2k} 2 \cdot 4 \cdot 6 \cdots 4k \cdot (4k-1) \cdots 3 \cdot 1 \mod p\]
+  \[\equiv (4k)! \mod p\]
+Hence, 
+\[2^{4k} \equiv 1 \mod p\]. This implies that
+\[\legendre{2}{p} = 1\]
+Now, let $p = 8k+3$. Then, we would look at the first $(p-1)/2 = 4k+1$ even integers. By the same arguments, we find that
+\[2^{4k} \equiv -1 \mod p\]
+and hence
+\[\legendre{2}{p} = -1\]
 \end{solution}
+
+\section{Gauss' Lemma}
+
+\begin{definition}
+  Let $p$ be an odd prime. Then, every integer coprime to $p$ is congruent modulo $p$ to exactly one integer in the list:
+  \[-\frac{p-1}{2}, \cdots , -1, -1, 1, 2 , \cdots \frac{p-1}{2}\]
+  The set of these integers is called the symmetric set of residues modulo $p$.
+\end{definition}
+
+\begin{definition}
+  Let $a \in \Z$ with $p \nmid a$. The unique integer $s$ in the symmetric set of residues congruent  to $a$ is called the symmetric reduction of $a \mod p$.
+\end{definition}
+
+  The symmetric reductions of:
+  \[a, 2a, \cdots \frac{p-1}{2} a\]
+  help determine whether $a$ is a quadratic residue modulo $p$ or not. Let $\nu_a$ be the number of integers $k \in [1,(p-1)/2]$ such that the symmetric reduction of $ka$ is negative. Then, we get the following theorem.
+
+\begin{theorem}[Gauss' Lemma]
+  Let $p$ be an odd prime, and let $a \in \Z$ with $p \nmid a$. Then
+    \[\legendre{a}{p} = (-1)^{v_a}\]
+\end{theorem}
+\begin{proof}
+  To prove Gauss' Lemma, we need the following lemma as a prerequisite:
+
+  Let $p$ be an odd prime and let $a \in Z$ such that $p \nmid a$. Let $s_1, \cdots, s_{(p-1)/2}$ denote the symmetric reductions of:
+  \[a, 2a, \cdots \frac{p-1}{2}a\]
+  Then:
+  \[|s_1|, \cdots , |s_{(p-1)/2}|\]
+  form a permutation of the integers $1,2,\cdots, (p-1)/2$.
+
+  To prove this, it is enough to show that $s_i$ and $s_j$ are distinct values. Suppose $|s_i| = |s_j|$. Then, either $s_i = s_j$ or $s_i = -s_j$. If the former is the case, then $ia \equiv ja$, or $i \equiv j \mod p$. If the latter is the case, then $ia \equiv -ja \mod p$, or $(i+j)a \equiv 0 \mod p$. Since $(a,p) = 1$, $i+j \equiv 0 \mod p$. However, $2 \leq i+j \geq p-1$, so this cannot be the case. Hence, all the numbers must be distinct, and the lemma holds.
+
+  Now let us prove Gauss' Lemma. For $i = 1, \cdots (p-1)/2$, let $s_i$ denote the symmetric reduction of $ia$. Now,
+  \[a \cdot 2a \cdots \frac{p-1}{2}a = \left( \frac{p-1}{2} \right)! a^{(p-1)/2}\]
+  Also,
+  \begin{align*}
+    a \cdot 2a \cdots \frac{p-1}{2}a &\equiv s_1 s_2 \cdots s_{(p-1)/2} \mod p \\
+                                     &= (-1)^{v_a} 1 \cdots \frac{p-1}{2} \mod p \\
+                                     &= \left( \frac{p-1}{2}\right)! (-1)^{v_a} \mod p
+  \end{align*}
+  The reduction follows from the aforementioned lemma. Putting all this together,
+  \[a^{(p-1)/2} \equiv (-1)^{v_a} \mod p\]
+  By Euler's criterion, we get that:
+  \[\legendre{a}{p} = (-1)^{v_a}\]
+\end{proof}
+
+\section{Quadratic Reciprocity Law}
+
+\begin{theorem}[Quadratic Reciprocity Law]
+  Let $p,q$ be distinct odd primes, then:
+  \[\legendre{p}{q} \legendre{q}{p} = (-1)^{\frac{p-1}{2} \cdot \frac{q-1}{2}}\]
+  Equivalently,
+  \[\legendre{q}{p} = \begin{cases}
+    \legendre{p}{q} & \text{if } p \equiv 1 \mod 4 \text{ or } q \equiv 1 \mod 4  \\
+    -\legendre{p}{q} & \text{if } p \equiv q \equiv 3 \mod 4
+  \end{cases}\]
+\end{theorem}
+\begin{proof}
+  
+\end{proof}
+
+\begin{exercise}
+  Determine all numbers $a \in [1,13]$ that are quadratic residues modulo 101. 
+\end{exercise}
+\begin{solution}
+  Since $\legendre{a^2}{p} = 1$ for all primes $p$ and for every $a \in \Z$, we have:
+  \[\legendre{1}{101} = \legendre{4}{101} = \legendre{9}{101} = 1\]
+  Since $101 \equiv 5 \mod 8$, we have $\legendre{2}{101} = -1$. We can check using Gauss' Lemma that $\legendre{3}{101} = -1$. Using the Quadratic Reciprocity law, 
+  \[\legendre{5}{101} = \legendre{101}{5} = \legendre{1}{5} = 1\]
+  Similarly,
+  \[\legendre{7}{101} = \legendre{101}{7} = \legendre{3}{7} = -1\]
+  All the leftover numbers, can be done similarly.
+\end{solution}
+
+From the Quadratic Reciprocity law, we can find the parity of $v_a$. Let $p$ be an odd prime and let $a$ be an odd positive integer coprime to $p$. Then for $k = 1, \cdots, p-1$, let $q_k, r_k$ denote the quotient and remainder of $ka$ upon division by $p$. Then:
+\begin{enumerate}
+  \[v_a \equiv \sum_{k=1}^{(p-1)/2} q_k \mod 2\]
+\end{enumerate}
+
+
 
 \end{document}
