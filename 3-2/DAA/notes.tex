@@ -1085,6 +1085,8 @@ $\mathbf{BPTIME}(T(n))$ is the class of languages decided by PTMs in $O(T(n))$.
 $\mathbf{BPP}$ is defined as:
 \[\mathbf{BPP} = \bigcup_{c} \mathbf{BPTIME}(n^c)\]
 
+Algorithms in the class $\mathbf{BPP}$ are called \textbf{Atlantic City Algorithms}.
+
 \subsection{The complexity class RTIME and RP}
 
 $\mathbf{RTIME}(T(n))$ contains every language $L$ for which there is a PTM $M$ running in $T(n)$ time such that:
@@ -1096,7 +1098,9 @@ Then $\mathbf{RP}$ is defined as:
 
 The complexity class $\mathbf{CoRP}$ is such that $L \in \mathbf{CoRP}$ if and only if:
 \[x \in L \Rightarrow P[M(x) = 0] = 0\]
-\[x \notin L \Rightarrow P[M(x) = 0] \geq \frac{2}{3}\]
+\[x \notin L \Rightarrow P[M(x) = 0] \geq \frac{2}{3}\]\
+
+Algorithms in the class \textbf{RP} and \textbf{CoRP}   are called \textbf{Monte Carlo Algorithms}.
 
 \subsection{The complexity class ZTIME and ZPP}
 
@@ -1104,6 +1108,8 @@ The class $\mathbf{ZTIME}(T(n))$ contains all the languages for which there is a
 
 We define 
 \[\mathbf{ZPP} = \bigcup_{c > 0} \mathbf{ZTIME}(n^c)\]
+
+Algorithms in this class are called \textbf{Las Vegas Algorithms}.
 
 \subsection{The relation between complexity classes}
 
@@ -1119,6 +1125,26 @@ We have the following properties:
   \item $\mathbf{P} \subseteq \mathbf{CoRP}$
   \item $\mathbf{P} \subseteq \mathbf{ZPP}$
 \end{itemize}
+
+\subsection{Markov and Chebyshev's Inequalities}
+
+See my notes on ASP for this.
+
+\subsection{Chernoff Bounds for the Sum of Poisson Trials}
+
+Let $X_i$ be independent random variables such that $P(X_i=1) = p_i$. Let $X = \sum X_i$, and let $\mu = E[X] = \sum E[X_i] = \sum p_i$.
+
+For a given $\delta > 0$, we are interested in bounds on $P(X \geq (1+\delta)\mu)$ and $P(X \leq (1 - \delta) \mu)$, i.e., the probability that $X$ deviates from $\mu$ by $\delta \mu$ or more.
+\[E[e^{tx_i}] = p_i e^t + (1-p_i) = 1+p_i(e^t - 1) \leq e^{p_i(e^t-1)}\]
+\[E[e^{tX}] = \prod E[e^{tX_i}] \leq e^{(e^t-1) \sum p_i} = e^{(e^t-1)\mu}\]
+For any $t > 0$:
+\[P(X \geq a) = P(e^{tX} \geq a^{ta}) \leq \frac{E[e^{tX}]}{e^{ta}} \leq \frac{e^{(e^t-1) \mu}}{e^{ta}}\]
+Putting $a = (1+\delta) \mu$, we get:
+\[P(X \geq (1+\delta) \mu) \leq \frac{e^{(e^t-1)\mu}}{e^{t(1+\delta)\mu}}\]
+For any $\delta > 0$, we can set $t = \ln (1+\delta) > 0$ to get:
+\[P(X \geq (1+\delta) \mu) \leq \left ( \frac{e^{\delta}}{(1+\delta)^{1+\delta}} \right)^\mu\]
+Using this same approach, we can find $P(X \leq (1-\delta) \mu)$. By setting $t = \ln (1-\delta) < 0$ for $0 < \delta < 1$,
+\[P(X \leq (1- \delta) \mu) \leq \left( \frac{e^{-\delta}}{(1-\delta)^{1-\delta}}\right)^\mu\]
 
 \section{Problems}
 
