@@ -1918,6 +1918,9 @@ Theorem 9.1 gives us a method to transform a quadratic congruence to a smaller, 
   \[\legendre{a}{p} \legendre{b}{p} = \legendre{ab}{p}\] 
 \end{corollary}
 
+From this, if $p \nmid a$, and $a = p_1^{e_1} p_2^{e_2} \cdots p_k^{e_k}$, then:
+\[\legendre{a}{p} = \left (\legendre{p_1}{p} \right)^{e_1} \cdots \left( \legendre{p_k}{p} \right)^{e_k}\]
+
 \begin{corollary}
   Let $p$ be an odd prime. Then:
   \[\legendre{-1}{p} = \begin{cases}
@@ -1927,8 +1930,13 @@ Theorem 9.1 gives us a method to transform a quadratic congruence to a smaller, 
 \end{corollary}
 
 \begin{exercise}
-  Use Euler's criterion to find 
-  \[\legendre{79}{31}\]
+  Prove that 
+  \[\legendre{2}{p} = \begin{cases}
+    TODO
+  \end{cases}\]
 \end{exercise}
+\begin{solution}
+  Suppose $p \equiv 1 \mod 8$. So,
+\end{solution}
 
 \end{document}

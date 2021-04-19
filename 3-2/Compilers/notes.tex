@@ -532,7 +532,7 @@ The Goto operation, defined by Goto($I,X$), where $I$ is a set of items and $X$ 
 
 \subsection{LR(0) Automaton}
 
-The goal of the LR(0) parser is to create a LR(0) automaton, also called the Goto graph. The states of the automaton are the sets of items of the LR(0) collection, and the transitions are given by the Goto function. The start state of this automaton is Closure($\{S' \rightarrow .S\}$). All the states are accepting states.
+The goal of the LR(0) parser is to create a LR(0) automaton, also called the \textbf{Goto graph}. The states of the automaton are the closure sets of items of the LR(0) collection, and the transitions are given by the Goto function. The start state of this automaton is Closure($\{S' \rightarrow .S\}$). All the states are accepting states.
 
 This automaton helps us with shift-reduce decisions. Suppose that the string $\gamma$ of grammar symbols takes the LR(0) automaton from the start state 0 to some state $j$. Then, shift on the next input symbol $a$ if state $j$ has a transition on $a$. Otherwise, we reduce; the items in state $j$ tell us which production to use.
 
@@ -859,8 +859,6 @@ The following SDD is not a L-attributed definition
 \[Q.i = f_5(R.s)\]
 \[A.s = f_6(Q.s)\]
 
-(why?)
-
 \section{Translation Scheme}
 
 A \textbf{syntax directed translation scheme} (SDT) is a context free grammar with program fragments called \textbf{semantic actions}  embedded within production bodies. By convention, curly braces or quotes are placed around actions.
@@ -1132,7 +1130,7 @@ Another possible optimization is \textbf{copy propagation}. If $w = x$ appears i
 can be optimized into:
 
 \texttt{b = z+y;}\\
-\texttt{a=b;}\\
+\texttt{a = b;}\\
 \texttt{x = 2*b;}\\
 Interestingly, we can now perform dead code elimination to remove \texttt{a=b}.
 
@@ -1146,7 +1144,7 @@ Using dataflow analysis, we may be able to extend some optimizations across the 
 
 In general, a global optimization task will have the following traits:
 \begin{itemize}
-  \item The optimization depends on knowing a property of $x$ at a particular point in the program.
+  \item The optimization depends on knowing a property $x$ at a particular point in the program.
   \item Proving $x$ at any point requires knowledge of the entire program
   \item It is okay to be conservative. If the optimization requires $x$ to be true, we want to be absolutely sure $x$ is true. It is always safer to assume that we do not know for sure whether it is true or not.
 \end{itemize}
@@ -1192,9 +1190,14 @@ Once all of the constants have been globally propagated, we can perform dead cod
   \item That path has no intervening assignment to $x$
 \end{itemize}
 Liveness is a boolean property, denoted by $L(s,x,in)$. Just as before, we can write the transfer function as a set of rules:
-\begin{itemize}
-  \item 
-\end{itemize}
+\begin{enumerate}
+  \item $L(p,x,out)$ will be $\lor \{L(S,x,in) | S \text{ is a  successor of } p\}$.
+  \item If $L(p,x,in) = 1$ if $p$ is a function on $x$.
+  \item If $p = (x = e)$, then $L(p,x,in) = 0$, if $e$ doesn't refer to $x$.
+  \item If $p$ does not refer to $x$, then $L(p,x,in) = L(p,x,out)$.
+\end{enumerate}
+When we perform liveness analysis, we set all $L(...)$ to false, and then use the rules on it.
+
 
 \section{Register Allocation}
 
@@ -1202,18 +1205,39 @@ Intermediate code uses an unlimited number of temporaries, which is not possible
 
 Temporaries $t_1$ and $t_2$ can share a register if at any point in the program at most one of $t_1$ and $t_2$ is live.
 
-To figure out how to assign registers, we can use graph coloring. We create a graph with as many nodes as there are variables, and add an edge between two variables if they are live at the same time. This is called the \textbf{Register Interference Graphs}. After we construct the RIG, the register allocation algorithm is dependent on the architecture.
+To figure out how to assign registers, we can use graph colouring. We create a graph with as many nodes as there are variables, and add an edge between two variables if they are live at the same time. This is called the \textbf{Register Interference Graphs}. After we construct the RIG, the register allocation algorithm is dependent on the architecture.
 
-One such register allocation algorithm is by using graph coloring, where each color is a register. If the RIG is $k$ colourable, then we can use $k$ registers for the program. Coloring a graph is NP-Hard, but we can use some heuristics to find an approximate answer.
+One such register allocation algorithm is by using graph colouring, where each colour is a register. If the RIG is $k$ colourable, then we can use $k$ registers for the program. Coloring a graph is NP-Hard, but we can use some heuristics to find an approximate answer.
 
 One such heuristic is:
 \begin{enumerate}
   \item Pick a node $t$ with fewer than $k$ neighbours in the RIG.
   \item put $t$ on a stack.
   \item Eliminate $t$ and its edges form the RIG.
-  \item Take the last node from the stack, and at each step pick a color different from those assigned to already colored neighbors.
+  \item Take the last node from the stack, and at each step pick a colour different from those assigned to already coloured neighbours.
 \end{enumerate}
 If this is possible to do, the graph must be $k$ colourable.
+
+Sometimes, the RIG may not be $k$ colourable, i.e., we do not have enough registers to store all the variables. In this case, we need to ``spill'' the registers into memory. Say we need to spill a variable $f$. Then, we allocate a memory location for $f$, at an address say $a_f$. Before each operation that reads $f$, we execute \texttt{f := load a\_f}, and after every write, execute \texttt{store f, a\_f}.
+
+This is useful, but we can make it even better - we can break $f$ into multiple pseudo-registers - $f_1,f_2,...$. When we do this, we also have to take care of liveness information. $f_i$ will be live only:
+\begin{itemize}
+  \item Between a \texttt{f\_i = load a\_f} and the next instruction
+  \item Between a \texttt{store f\_i,a\_f} and the preceding instruction
+\end{itemize}
+Now we can see why we do this - we can reduce the live range of $f$, and hence have fewer neighbours in the RIG. Once we do this, we can make Fig X colourable (TODO).
+
+It is not always this simple. Additional spills could be needed, and we have to decide what to spill. When we spill, we want to minimize the cost of a spill, where the cost is given by:
+\[Cost = \text{No. of occurrences} - \text{No. of conflicts} + (\text{5 if node corresponds to variable in loop, 0 otherwise})\]
+Some possible heuristics are:
+\begin{itemize}
+  \item Spill the temporaries with the most conflicts
+  \item Spill the temporaries with few definitions and uses
+  \item Avoid spilling in inner loops
+\end{itemize}
+
+
+
 
 
 \end{document}
