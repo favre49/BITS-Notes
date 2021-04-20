@@ -2003,6 +2003,29 @@ and hence
   \[\legendre{a}{p} = (-1)^{v_a}\]
 \end{proof}
 
+The question must arise - how do we calculate $v_a$? It can be done with the following lemma:
+
+\begin{lemma}
+  Let $p$ be an odd prime and let $a$ be an odd, positive integer coprime to $p$. For $k \in [1,p-1]$, let $q_k,r_k$ denote the quotient and remainder of $ka$ upon division by $p$. Then
+  \[v_a \equiv \sum_{k=1}^{(p-1)/2} q_k \mod 2\]
+\end{lemma}
+\begin{proof}
+  From the definitions, we get that $ka = pq_k + r_k$. So,
+  \[\sum_{k=1}^{(p-1)/2} ka = p \sum_{l=1}^{(p-1)/2} q_k + \sum_{k=1}^{(p-1)/2} r_k\]
+  Moreover,
+  \[a\sum_{k=1}^{(p-1)/2}k = a \sum_{k=1}^{(p-1)/2} |s_k|\]
+  Working modulo 2, 
+  \[\sum_{k=1}^{(p-1)/2} s_k \equiv \sum_{k=1}^{(p-1)/2} q_k + \sum_{k=1}^{(p-1)/2} r_k\mod 2\]
+  We were able to remove $a$ and $p$ from the equation since they are odd, so their value modulo 2 is 1.
+  \[\sum_{k=1}^{(p-1)/2} q_k \equiv \sum_{k=1}^{(p-1)/2} (r_k - s_k) \mod 2\]
+  If $s_k > 0$, then $s_k = r_k$. If $s_k < 0$, then $r_k = s_k+p$. Hence,
+  \[\sum_{k=1}^{(p-1)/2} q_k \equiv \sum_{k : s_k > 0} (r_k - s_k) + \sum_{k : s_k < 0} (r_k - s_k) \equiv 0 + \sum_{k : s_k < 0} p \mod 2 \]
+  Since $p$ is odd, 
+  \[\sum_{k=1}^{(p-1)/2} q_k \equiv v_a \mod 2\]
+\end{proof}
+
+This sum has a geometric interpretation - the sum is telling us the number of lattice points strictly inside the triangle bounded by the $x$ axis, the vertical line $x=p/2$, and the line $y = \frac{a}{p}x$.
+
 \section{Quadratic Reciprocity Law}
 
 \begin{theorem}[Quadratic Reciprocity Law]
@@ -2015,7 +2038,18 @@ and hence
   \end{cases}\]
 \end{theorem}
 \begin{proof}
-  
+  Consider the rectangle with vertices $(0,0), (p/2,0), (p/2,q/2),(q/2,0)$. It's diagonal will have the equation $y = \frac{q}{p}x$.
+
+  Let the number of lattice points in the rectangle be $N$. Then,
+  \[N = \frac{p-1}{2} \cdot \frac{q-1}{2}\]
+  Also, we can count it by the number of lattice points in the triangle and the number of lattice points on the diagonal. From the geometric interpretation of lemma 9.6, the sum of points in the triangles will be:
+  \[\sum_{k=1}^{(p-1)/2} \left \lfloor \frac{kq}{p} \right \rfloor + \sum_{l=1}^{(p-1)/2} \left \lfloor \frac{lp}{q} \right \rfloor \]
+  The number of lattice points on the diagonal is 0. Assume that a lattice point $(a,b)$ is on the diagonal. Then, $pb = qa$, or $p | a$. However, $a \in [1,(p-1)/2]$, which is a contradiction. Hence.
+  \[\frac{p-1}{2} \cdot \frac{q-1}{2} = \sum_{k=1}^{(p-1)/2} \left \lfloor \frac{kq}{p} \right \rfloor + \sum_{l=1}^{(p-1)/2} \left \lfloor \frac{lp}{q} \right \rfloor\]
+  From Gauss' Lemma, 
+  \[\legendre{p}{q} \legendre{q}{p} = (-1)^{\sum_{k=1}^{(p-1)/2} \left \lfloor \frac{kq}{p} \right \rfloor} \cdot (-1)^{\sum_{l=1}^{(p-1)/2} \left \lfloor \frac{lp}{q} \right \rfloor }\]
+  Hence,
+  \[\legendre{p}{q} \legendre{q}{p} = (-1)^{\frac{p-1}{2} \frac{q-1}{2}}\]
 \end{proof}
 
 \begin{exercise}
@@ -2031,11 +2065,47 @@ and hence
   All the leftover numbers, can be done similarly.
 \end{solution}
 
-From the Quadratic Reciprocity law, we can find the parity of $v_a$. Let $p$ be an odd prime and let $a$ be an odd positive integer coprime to $p$. Then for $k = 1, \cdots, p-1$, let $q_k, r_k$ denote the quotient and remainder of $ka$ upon division by $p$. Then:
+\begin{exercise}
+  Determine if the following congruence is solvable:
+  \[3x^2 + 6x + 5 = 0 \mod 73\]
+\end{exercise}
+\begin{solution}
+  $ax^2 + bx^2 + c \equiv 0 \mod p$ has a solution if and only if $y^2 \equiv b^2 - 4ac \mod p$ has a solution, i.e.
+  \[\legendre{b^2-4ac}{p} = 1\]
+  In this case, $a=3,b=6,c=5$
+  \begin{align*}
+    \legendre{-24}{73} &= \legendre{-1}{73} \legendre{4}{73} \legendre{2}{73} \legendre{3}{73} \\
+                       &= 1 \cdot 1 \cdot 1 \cdot 1 \\
+                       &= 1
+  \end{align*}
+\end{solution}
+
+\section{The Jacobi Symbol}
+
+\begin{definition}
+  Let $m \in N$ be odd and let $a \in Z$ with $(a,m) = 1$. If 
+  \[m = p_1^{e_1} \cdots p_k^{e_k}\]
+  is the prime factorization of $m$, we define
+  \[\legendre{a}{m} = \prod_{i=1}^k \left ( \legendre{a}{p_i}\right)^{e_i}\]
+  to be the Jacobi Symbol
+\end{definition}
+
+Essentially, the Jacobi symbol is a generalization of the Legendre symbol from primes to all odd numbers.
+
+\begin{lemma}
+  Let $m \in \N$   be odd and let $a \in \Z$ be such that $(a,m) = 1$. Then, if $x^2 \equiv a \mod m$ is solvable, $\legendre{a}{m} = 1$.
+\end{lemma}
+\begin{proof}
+  If $x^2 \equiv a \mod m$ is solvable, then $x_2 \equiv a \mod p_i$ is solvable for all $i$. Hence, 
+  \[\legendre{a}{m} = \prod \left( \legendre{a}{p_i} \right)^{e_i} = 1\]
+\end{proof}
+Notice that the converse to this lemma is not true - we can show that $x^2 \equiv 2 \mod 15$ is not solvable, but $\legendre{2}{15} = 1$.
+
+The Jacobi symbol also has the following properties:
 \begin{enumerate}
-  \[v_a \equiv \sum_{k=1}^{(p-1)/2} q_k \mod 2\]
+  \item If $b \equiv a \mod m$, then $\legendre{a}{m} = \legendre{b}{m}$
+  \item $\legendre{a}{m} \legendre{b}{m} = \legendre{ab}{m}$
+  \item $\legendre{a^2}{m} = 1$
 \end{enumerate}
-
-
 
 \end{document}
