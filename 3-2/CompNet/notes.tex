@@ -1161,6 +1161,41 @@ With this information, we can go ahead and see how to compute $R$.
 \[D \cdot 2^r = nG \oplus R\]
 \[R = remainder(\frac{D \cdot 2^r}{G})\]
 
+So far we have looked at CRC from the view of binary numbers, but we can also look at it from the view of polynomials. We represent our message $D$ as a polynomial $M(x)$ of degree $d-1$. For instance,
+\[11000101 = x^7 + x^6 + x^2 + 1\]
+The generator will also be represented by some polynomial $G(x)$.
+
+This allows us to have a better way to describe the capabilities of CRC:
+\begin{itemize}
+  \item CRC can detect all single bit errors, if $x^k$ and $x^0$ have non zero coefficients
+  \item CRC can detect all double bit errors if $C(x)$ has at least 3 terms
+  \item CRC can detect all odd bit errors, if $C(x)$ contains the factor $x+1$.
+  \item Any bursts of length $\leq k$, if $C(x)$ includes the constant term $x^0$.
+\end{itemize}
+
+\section{Media Access Control}
+
+There are three types of transmission:
+\begin{itemize}
+  \item Unicast, where the packet is intended for only one node
+  \item Broadcast, where the packet is intended for everyone
+  \item Multicast, where the packet is intended for a subset of nodes
+\end{itemize}
+
+When two or more simultaneous transmissions are done by nodes, there may be collisions on shared channels. To control this, we have MAC protocols - they determine when a node can transmit to ensure no interference.
+
+What does the ideal MAC protocol look like? Say we have a broadcast channel of rate $R$ bps. When one node wants to transmit, it should send at a rate $R$, and when $M$ nodes want to transmit, each should send at an average rate of $R/M$.
+
+\subsection{Channel Partitioning Protocols}
+
+One way to implement MAC is to divide resources into smaller pieces, and allocate a piece to each node for exclusive use. This is done in \textbf{channel partitioning protocols}. Some examples are:
+\begin{itemize}
+  \item \textbf{Time Division Multiplexing} : Time is divided into time frames, which are again divided into $N$ time slots. Every sender is allocated a single time slot to perform transmission. This is simple, but a sender would be limited to a throughput of $R/N$ even when the other senders are idle.
+  \item \textbf{Frequency Division Multiplexing}  : The spectrum is divided into multiple frequency bands, and each sender/receiver tunes into their assigned frequency band. Just like in TDM, even if all the senders are idle, we still are limited to $R/N$ throughput. Moreover, sender and receiver need to coordinate listening on their channels.
+\end{itemize}
+
+\subsection{Random Access Protocols}
+
 
 
 \end{document}
