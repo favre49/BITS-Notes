@@ -1068,64 +1068,6 @@ This means that $obj_\Pi$ is $OPT(x)$, meaning $A$ is an optimal solution. If $P
 
 \section{Probabilistic Turing Machine}
 
-\subsection{Definition}
-
-A PTM is a TM with two transition functions $\delta_0, \delta_1$. To execute a PTM $M$ on an input $x$ we choose in each step with probability $0.5$ to apply $\delta_0$, and probability $0.5$ to apply $\delta_2$. This choice is independent of all previous choices. We denote the random variable corresponding to the output of $M$ by $M(x)$.
-
-For a function $T:N \rightarrow N$, we say that $M$ runs in $T(n)$ time if for any input $x$, $M$ halts on $X$ within $T(|x|)$ steps regardless of the choices made.
-
-\subsection{The complexity class BPTIME and BPP}
-
-For a language $L \subseteq \{0,1\}^*$ and $x \in \{0,1\}^*$, we define $L(X) = 1$ if $x \in L$ and $L(x) = 0$ otherwise.
-
-For $T : N \rightarrow N$ and $L \subseteq \{0,1\}^*$ we say that a PTM decides $L$ in time $T(n)$ if for every $x \in \{0,1\}^*$, $M$ halts in $T(|x|)$ steps regardless of its random choices, and $P(M(x) = L(x)) \geq 2/3$. 
-
-$\mathbf{BPTIME}(T(n))$ is the class of languages decided by PTMs in $O(T(n))$.
-
-$\mathbf{BPP}$ is defined as:
-\[\mathbf{BPP} = \bigcup_{c} \mathbf{BPTIME}(n^c)\]
-
-Algorithms in the class $\mathbf{BPP}$ are called \textbf{Atlantic City Algorithms}.
-
-\subsection{The complexity class RTIME and RP}
-
-$\mathbf{RTIME}(T(n))$ contains every language $L$ for which there is a PTM $M$ running in $T(n)$ time such that:
-\[x \in L \Rightarrow P[M(x) = 1] \geq \frac{2}{3}\]
-\[x \notin L \Rightarrow P[M(x) = 1] = 0\]
-
-Then $\mathbf{RP}$ is defined as:
-\[\mathbf{RP} = \bigcup_{c > 0} \mathbf{RTIME}(n^c)\]
-
-The complexity class $\mathbf{CoRP}$ is such that $L \in \mathbf{CoRP}$ if and only if:
-\[x \in L \Rightarrow P[M(x) = 0] = 0\]
-\[x \notin L \Rightarrow P[M(x) = 0] \geq \frac{2}{3}\]\
-
-Algorithms in the class \textbf{RP} and \textbf{CoRP}   are called \textbf{Monte Carlo Algorithms}.
-
-\subsection{The complexity class ZTIME and ZPP}
-
-The class $\mathbf{ZTIME}(T(n))$ contains all the languages for which there is an expected time $O(T(n))$ PTM $M$ such that for every input $x$, whenever $M$ halts on $x$, the output $M(x)$ is exactly $L(x)$.
-
-We define 
-\[\mathbf{ZPP} = \bigcup_{c > 0} \mathbf{ZTIME}(n^c)\]
-
-Algorithms in this class are called \textbf{Las Vegas Algorithms}.
-
-\subsection{The relation between complexity classes}
-
-We have the following properties:
-
-\begin{itemize}
-  \item $\mathbf{ZPP} = \mathbf{RP} \cap \mathbf{CoRP}$
-  \item $\mathbf{RP} \subseteq \mathbf{BPP}$
-  \item $\mathbf{CoRP} \subseteq \mathbf{BPP}$
-  \item $\mathbf{RP} \subseteq \mathbf{NP}$
-  \item $\mathbf{P} \subseteq \mathbf{BPP}$
-  \item $\mathbf{P} \subseteq \mathbf{RP}$
-  \item $\mathbf{P} \subseteq \mathbf{CoRP}$
-  \item $\mathbf{P} \subseteq \mathbf{ZPP}$
-\end{itemize}
-
 \subsection{Markov and Chebyshev's Inequalities}
 
 See my notes on ASP for this.
@@ -1145,6 +1087,122 @@ For any $\delta > 0$, we can set $t = \ln (1+\delta) > 0$ to get:
 \[P(X \geq (1+\delta) \mu) \leq \left ( \frac{e^{\delta}}{(1+\delta)^{1+\delta}} \right)^\mu\]
 Using this same approach, we can find $P(X \leq (1-\delta) \mu)$. By setting $t = \ln (1-\delta) < 0$ for $0 < \delta < 1$,
 \[P(X \leq (1- \delta) \mu) \leq \left( \frac{e^{-\delta}}{(1-\delta)^{1-\delta}}\right)^\mu\]
+
+\subsection{Definition}
+
+A PTM is a TM with two transition functions $\delta_0, \delta_1$. To execute a PTM $M$ on an input $x$ we choose in each step with probability $0.5$ to apply $\delta_0$, and probability $0.5$ to apply $\delta_2$. This choice is independent of all previous choices. We denote the random variable corresponding to the output of $M$ by $M(x)$.
+
+For a function $T:N \rightarrow N$, we say that $M$ runs in $T(n)$ time if for any input $x$, $M$ halts on $X$ within $T(|x|)$ steps regardless of the choices made.
+
+\subsection{The complexity class BPTIME and BPP}
+
+For a language $L \subseteq \{0,1\}^*$ and $x \in \{0,1\}^*$, we define $L(X) = 1$ if $x \in L$ and $L(x) = 0$ otherwise.
+
+For $T : N \rightarrow N$ and $L \subseteq \{0,1\}^*$ we say that a PTM decides $L$ in time $T(n)$ if for every $x \in \{0,1\}^*$, $M$ halts in $T(|x|)$ steps regardless of its random choices, and $P(M(x) = L(x)) \geq 2/3$. 
+
+$\mathbf{BPTIME}(T(n))$ is the class of languages decided by PTMs in $O(T(n))$.
+
+$\mathbf{BPP}$ is defined as:
+\[\mathbf{BPP} = \bigcup_{c} \mathbf{BPTIME}(n^c)\]
+
+Algorithms in the class $\mathbf{BPP}$ are called \textbf{Atlantic City Algorithms}.
+
+Let $M$ be an Atlantic City algorithm accepting $L$ with error probability bounded from above by $p$. We want to reduce error probability to $\epsilon$. We create a PTM $M'$ which simulate $M$ $n$ times, and picks the majority answer. Hence,
+\[P(error) = P(X < \frac{n}{2})\]
+where $X$ is a r.v. defined by $X = \sum_{i=1}^n X_i$. $X_i$ corresponds to the $i^{th}$ trial such that $X_i=1$ if $i^{th}$ simulation of $M(x)$ gives correct answer.
+\[P(X_i = 1) \geq 1-p\]
+\[P(X_i = 0) \leq p\]
+\[E(X_i) \geq 1-p\]
+\[\mu \geq n(1-p) \geq \frac{n}{2}\]
+We apply Chernoff's Bounds, and find that
+\[n \geq \frac{\ln \epsilon}{ \frac{1}{2} + (\frac{1}{2} - p) \ln{\frac{0.5-p}{1-p}}}\]
+
+\subsection{The complexity class RTIME and RP}
+
+$\mathbf{RTIME}(T(n))$ contains every language $L$ for which there is a PTM $M$ running in $T(n)$ time such that:
+\[x \in L \Rightarrow P[M(x) = 1] \geq \frac{2}{3}\]
+\[x \notin L \Rightarrow P[M(x) = 1] = 0\]
+
+Then $\mathbf{RP}$ is defined as:
+\[\mathbf{RP} = \bigcup_{c > 0} \mathbf{RTIME}(n^c)\]
+
+The complexity class $\mathbf{CoRP}$ is such that $L \in \mathbf{CoRP}$ if and only if:
+\[x \in L \Rightarrow P[M(x) = 0] = 0\]
+\[x \notin L \Rightarrow P[M(x) = 0] \geq \frac{2}{3}\]\
+
+Algorithms in the class \textbf{RP} and \textbf{CoRP}   are called \textbf{Monte Carlo Algorithms}.
+
+Let $M$ be a Monte Carlo algorithm with error probability bounded by $p$, accepting $L$. We want to reduce this to $\epsilon$. Consider a PTM $M'$  which simulate $M$, $n$  times. Then, the probability of error would be $p^n$. Hence, to reduce it to $\epsilon$, we want
+\[n \geq \frac{\log \epsilon}{\log p}\]
+
+\subsection{The complexity class ZTIME and ZPP}
+
+The class $\mathbf{ZTIME}(T(n))$ contains all the languages for which there is an expected time $O(T(n))$ PTM $M$ such that for every input $x$, whenever $M$ halts on $x$, the output $M(x)$ is exactly $L(x)$.
+
+We define 
+\[\mathbf{ZPP} = \bigcup_{c > 0} \mathbf{ZTIME}(n^c)\]
+
+Algorithms in this class are called \textbf{Las Vegas Algorithms}.
+
+\subsection{The relation between complexity classes}
+
+We have the following properties:
+
+\begin{enumerate}
+  \item $\mathbf{ZPP} = \mathbf{RP} \cap \mathbf{CoRP}$
+  \item $\mathbf{RP} \subseteq \mathbf{BPP}$
+  \item $\mathbf{CoRP} \subseteq \mathbf{BPP}$
+  \item $\mathbf{RP} \subseteq \mathbf{NP}$
+  \item $\mathbf{P} \subseteq \mathbf{BPP}$
+  \item $\mathbf{P} \subseteq \mathbf{RP}$
+  \item $\mathbf{P} \subseteq \mathbf{CoRP}$
+  \item $\mathbf{P} \subseteq \mathbf{ZPP}$
+  \end{enumerate}
+
+  First let us prove property (1). Let $L \in ZPP$, which means there exists a PTM $M$ such that $x \in L \Rightarrow M(x) = 1$  and $M(x) = 0$ otherwise, with an expected polynomial time complexity of $p(n)$. 
+
+  Let us show that $L \in \mathbf{RP}$. We construct a PTM $M_1$ that simulates the moves of $M$ in $3p(n)$ steps. If during this time $M$ outputs 0 or 1, then $M_1$ outputs 0 or 1. If $M$ does not give any output, then $M_1$ outputs 0.
+
+  $L$ must also be a member of $\mathbf{CoRP}$. We do the same thing as with $M_1$, but it instead gives output 1 if $M$ does not give any output. We can see the error in this case from Markov's inequality:
+  \[P(error) \leq P(T(n) > 3p(n)) < \frac{1}{3}\]
+  This way, $ZPP \subseteq RP \cap CoRP$.
+
+  Let $L \in RP \cap CoRP$. This means there exist PTMs $M_1$ and $M_2$ such that both run in polynomial time. Let the larger time complexity be $p(n)$. Then, 
+  \[x \in L \Rightarrow P(M_1(x) = 0) \leq \frac{1}{3}\]
+  \[x \notin L \Rightarrow P(M_1(x) = 1)  = 0\]
+  \[x \in L \Rightarrow P(M_2(x) = 0) = 0\]
+  \[x \notin L \Rightarrow P(M_2(x) = 1) \leq \frac{1}{3}\]
+  We construct a PTM $M$ that runs $M_1$ and $M_2$ simultaneously. If they both output 0, then $M$ outputs 0. If they both output 1, then $M$ outputs 1. If $M_1$ outputs and $M_2$ outputs 1, then $M$ repeats running them until it finds a solution. We can prove that the expected running time of this is $\frac{3}{2}p(n)$.
+
+\subsection{The Birthday Problem}
+
+If there are $m$ people and $n$ possible birthdays, then the probability that they all have different birthdays is:
+\[\left( 1-\frac{1}{n} \right) \cdots \left( 1 - \frac{m-1}{n} \right) = \prod_{j=1}^{m-1} \left( 1 - \frac{j}{n} \right)\]
+Using the fact that $1 - \frac{k}{n}$ is approximately $e^{-k/n}$ when $k$ is small compared to $n$, we see that if $m$ is small compared to $n$ then:
+\[\prod_{j=1}^{m-1} \left( 1 - \frac{j}{n} \right) = \prod_{j=1}^{m-1} e^{-j/n} = e^{-m(m-1)/2n} = e^{-m^2/2n}\]
+Let $E_k$ be the event that the $k^{th}$ person's birthday does not match any of the birthdays of the first $k-1$ people. Then the probability that the first $k$ fail to have distinct birthdays is:
+\[P(\overline{E_1} \cup \overline{E_2} \cup \cdots \cup \overline{E_k}) \leq \sum_{i=1}^k P(\overline{E_i}) \leq \sum_{i=1}^k \frac{i-1}{n} = \frac{k(k-1)}{2n}\]
+If $k \leq \sqrt{n}$ this probability is less than $0.5$, so with $\sqrt{n}$ people the probability is at least 0.5 that all birthdays will be distinct.
+
+Now assume that the first $\sqrt{n}$ people all have distinct birthdays. Each person after that has probability of at least $1/sqrt{n}$ of having the same birthday as one of the first $\sqrt{n}$ people. Hence the probability that the next $\sqrt{n}$ peole all have different birthdays than the first $\sqrt{n}$ people is at most:
+\[\left(1 - \frac{1}{\sqrt{n}} \right)^{\sqrt{n}} < \frac{1}{e} < \frac{1}{2}\]
+Hence, once there are $2 \sqrt{n}$ people, the probability is at most $1/e$ that all birthdays will be distinct.
+
+\subsection{The Balls and Bins Model}
+
+The birthday paradox is an example of a more general mathematical framework that is often formulated in the terms of balls and bins. We have $m$ balls that are thrown into $n$ bins, with the location of each ball chosen independently and uniformly at random from the $n$ possibilities. What does the distribution of the balls in the bins look like? The question behind the birthday paradox is whether or not there is a bin with two balls. 
+
+When $n$ balls are thrown independently and uniformly at random into $n$ bins, the probability that the maximum load is more than $3 \ln{n} / \ln{\ln{n}}$ is at most $1/n$ for $n$ sufficiently large.
+
+The probability that bin 1 receives $m$ balls is at most $\binom{n}{m}(\frac{1}{n})^m$. We use the inequality
+\[\binom{n}{m} \left(\frac{1}{n}\right)^m \leq \frac{1}{m!} \leq \left( \frac{e}{m} \right)^m\]
+Applying a union bound again allows us to find that, for $m \geq 3 \ln n / \ln{\ln{n}}$, the probability that any bin receives at least $m$ balls is bounded above by:
+\begin{align*}
+  n \left( \frac{e}{m} \right)^m &\leq n \left( \frac{e \ln{\ln{n}}}{3 \ln{n}} \right)^{3 \ln{n} / \ln{\ln{n}}} \\
+                                 &\leq n \left( \frac{\ln{\ln{n}}}{\ln{n}} \right)^{3 \ln{n} / \ln{\ln{n}}} \\
+                                 \leq \frac{1}{n}
+\end{align*}
+For sufficiently large $n$ (steps omitted because I am lazy).
 
 \section{Problems}
 
