@@ -913,5 +913,32 @@ This gives us a nice result - the value of the quadratic variation of a Brownian
   TODO
 \end{proof}
 
+\section{Ito's Calculus and Stochastic Differential Equations}
+
+\begin{lemma}[Ito's Lemma]
+Let $X_t$ be a standard Weiner process and $f(t,x)$ be a twice differentiable function in $x$. Then,
+\[df(t,X_t) = \left[ \partial_t f(t,X_t) + \frac{1}{2} \partial^2_{xx} f(t,X_t) \right ]  dt + \partial_x f(t,X_t) dX_t \]
+\end{lemma}
+
+The proof for this is too complicated to include in this course.
+
+\begin{lemma}[Ito's Second Lemma]
+  Let $X$ be a stochastic process such that:
+  \[dX = \theta(t) dt + \Delta(t) dW\]
+  and $f(t,x)$ is another stochastic process,
+  \[df = \left[ f_t(t,X_t) + \frac{1}{2} f_{xx}(t,X(t)) \Delta^2(t) \right] dt + f_{x}(t,X(t)) dX \]
+\end{lemma}
+
+This is a generalization of Ito's Lemma.
+
+\begin{exercise}
+  Solve the following stochastic differential equation:
+  \[dX = \theta (\mu - X) dt + \sigma dW\]
+  where $W$ is a standard Weiner Process.
+\end{exercise}
+\begin{solution}
+  Comparing with Ito's Second Lemma,
+  \[\Delta(t) = \sigma, \theta(t) = \theta (\mu - X)\]
+\end{solution}
 
 \end{document}
