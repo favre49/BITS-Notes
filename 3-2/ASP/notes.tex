@@ -941,4 +941,35 @@ This is a generalization of Ito's Lemma.
   \[\Delta(t) = \sigma, \theta(t) = \theta (\mu - X)\]
 \end{solution}
 
+\chapter{Martingale} 
+
+\section{Introduction}
+
+\begin{definition}
+  A martingale is defined as an integer time stochastic process with the properties that $E[|Z_n|] < \infty$ for all $n \geq 1$ and
+  \[E[Z_n | Z_{n-1}, Z_{n-2}, \cdots , Z_1] = Z_{n-1}\]
+\end{definition}
+
+This means that the value of a martingale at the next step, given it's historic values, is it's current value.
+
+To work with martingales, we need to know two important identities.
+\begin{lemma}
+  \[E[Y] = E[E[Y|X]]\] 
+\end{lemma}
+\begin{proof}
+ \begin{align*}
+   E[Y|X] &= \sum_y yP_{Y|X}(y)  \\
+          &= \sum y \frac{P(Y=y, X=x)}{P(X=x)}\\
+   E[E[Y|X]] &= \sum_x \sum_y y \frac{P(Y=y,X=x)}{P(X=x)} P(X=x) \\
+             &= \sum_y y \sum_x P(X=x,Y=y) \\
+             &= \sum_y y P(Y=y) \\
+             &= E[Y]
+ \end{align*} 
+\end{proof}
+
+\begin{lemma}
+  \[E[Y|X] = E[E[Y|X,Z]|X]\] 
+\end{lemma}
+
+
 \end{document}
