@@ -1196,6 +1196,45 @@ One way to implement MAC is to divide resources into smaller pieces, and allocat
 
 \subsection{Random Access Protocols}
 
+Here the senders act ``politely''. A sender will listen to see if another node is transmitting, and only transmit if no one else is transmitting. If this clashes with another sender, it will back off and try again. When the sender transmits, it will transmit at the full rate.
+
+Such protocols need to be able to detect collisions, and recover from possible collisions. Unfortunately, when under high load, such protocols suffer from a high amount of collisions affecting efficiency.
+
+\subsection{Aloha}
+
+Aloha is a simple random access protocol, developed by the University of Hawaii to interconnect the Hawaiian Islands. Senders transmit whenever they have a packet to send. Senders can determine the status of the packet (intact or collision) at the end of the transmission. If collision has happened, the sender waits a random amount of time and tries again.
+
+When discussing a MAC protocol, we want to know it's efficiency. This means we want to know the probability that a transmitted frame does not suffer collision. In our case, we will discuss the efficiency when there are $n, n \rightarrow \infty$ members in the network.
+
+We assume that the frames have equal length, and the probability of $k$ transmission attempts per frame time is Poisson with mean $G$ per frame time:
+\[P(k) = \frac{G^k e^{-G}}{k!}\]
+Obviously, $G < 1$, since otherwise there would be queueing.
+
+The throughput will be given by:
+\[Throughput = G \times P_s\]
+where $P_s$ is the probability that a frame is successful. Our aim is to find $P_s$.
+
+Assume there is a frame that comes in at $t_0$ and ends at $t_0+t$. Then, it would collide with any frame that arrived after $t_0-t$ and before $t_0+t$. This period of length $2t$ is called the \textbf{vulnerability period}. 
+
+Consider a sequence of successive transmission attempts on the channel. For some given $i$, let $T_i$ be the time interval between the $i$ and $i+1$ transmission attempt. $i$ attempt will be successful if both $T_i$ and $T_{i-1}$ exceed frame time. Since the arrival time is exponential distribution (see ASP notes),
+\[P(T > frame\_time) = e^{-G}\]
+So, the probability of success will be:
+\[P_s = e^{-2G}\]
+Finally, 
+\[Throughput = G e^{-2G}\]
+This makes the throughput maximize at around 18\%.
+
+This can be improved using \textbf{slotted Aloha}. Time is divided into discrete intervals called slots, which correspond to frame time. Nodes will transmit frames only at the beginning of slots. This reduces the vulnerable period by half, i.e. from $t_0-t$ to $t_0$. This means throughput is now:
+\[Throughput = G e^{-G}\]
+and the throughput is maximum at 36.8\%.
+
+\subsection{Taking Turns Protocols}
+
+In taking turn protocols, we quickly poll to see who wants to talk, and give time slots to only the speakers. This is somewhere between channel partitioning protocols and random protocols.
+
+There are multiple ways to do this. For instance, we could have a centralized polling framework, where a central coordinator polls nodes in a round robin fashion. However, this creates a larger polling overhead, and there is a single point of failure (the coordinator).
+
+Instead, we could use a decentralized framework like \textbf{token passing} , where a control token is passed from one node to the next in a certain order. However, there is still a single point of failure - the token being passed. It could be dropped, which would result in the system breaking.
 
 
 \end{document}
