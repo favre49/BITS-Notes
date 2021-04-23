@@ -2108,4 +2108,65 @@ The Jacobi symbol also has the following properties:
   \item $\legendre{a^2}{m} = 1$
 \end{enumerate}
 
+\begin{lemma}
+  If $m$ is an odd number,
+  \[\legendre{-1}{m} = (-1)^{(m-1)/2}\] 
+\end{lemma}
+\begin{proof}
+  TODO
+\end{proof}
+
+\begin{theorem}[Generalized Quadratic Reciprocity Law]
+  Let $m,n$ be coprime odd natural numbers. Then,
+  \[\legendre{m}{n} \legendre{n}{m}  = (-1)^{\frac{m-1}{2} \cdot \frac{n-1}{2}}\]
+\end{theorem}
+\begin{proof}
+  Suppose $m = \prod_i^k p_i^{e_i}$ and $n = \prod_i^l q_i^{d_i}$. Then,
+  \[\legendre{m}{n} = \prod_{i=1}^l \legendre{m}{q_i}^{d_i} = \prod_{i=1}^l \prod_{j=1}^k \legendre{p_j}{q_i}^{e_jd_i}\]
+  In the same way,
+  \[\legendre{m}{n} = \prod_{j=1}^k \prod_{i=1}^l \legendre{q_i}{p_j}^{d_ie_j}\]
+  Hence, 
+  \begin{align*}
+    \legendre{m}{n} \legendre{n}{m} &= \prod_{i=1}^l \prod_{j=1}^k \left( \legendre{p_j}{q_i}  \legendre{q_i}{p_j} \right)^{d_ie_j} \\
+                                    &= \prod_{i=1}^l \prod_{j=1}^k ((-1)^{(p_j-1)(q_i-1)/4})^{d_ie_j} \\
+                                    &= (-1)^{\sum d_i \frac{q_i-1}{2} \cdot \sum_j e_j \frac{p_j-1}{2}}
+  \end{align*}
+  TODO rest.
+\end{proof}
+
+\chapter{Finite Continued Fractions}
+
+\begin{definition}
+  A finite continued fraction is an expression of the form:
+  \[a_0 + \cfrac{1}{a_1 + \cfrac{1}{a_2 + \cfrac{1}{\ddots \cfrac{1}{a_{n-1} + \frac{1}{a_n}}}}}\]
+  where $a_i > 0 \forall i > 0$. The numbers $a_0, \cdots, a_n$ are called the partial quotients of the fraction. It is denoted by $[a_0; a_1, a_2, \cdots a_n]$
+\end{definition}
+
+If all the partial quotients are integers, then the fraction is said to be simple.
+
+\begin{theorem}
+  The value of any finite simple continued fraction is a rational number. 
+\end{theorem}
+\begin{proof}
+  Let $[a_0; a_1, \cdots, a_n]$ be a finite simple continued fraction. We can prove this by induction on $n$. It is a trivial result for $n=1$. Assume that the result holds for $n=k$. Then,
+  \[[a_0; a_1, \cdots, a_{k+1}] = a_0 + \frac{1}{[a_1; a_2, \cdots, a_{k}]}\]
+  By our hypothesis, the denominator is a rational number. Therefore, $[a_0 ; a_1, \cdots, a_{k+1}]$ is also a rational number. By PMI, the result is true for all $n.
+\end{proof}
+
+The converse is also true - we can express any rational number as a finite simple continued fraction. We illustrate that with the following example.
+
+\begin{exercise}
+  Express $\frac{11}{8}$ as a simple continued fraction.
+\end{exercise}
+\begin{solution}
+  \[11 = 8 \cdot 1 + 3\] 
+  \[\frac{11}{8} = 1 + \frac{3}{8} = 1 + \cfrac{1}{\frac{8}{3}}\]
+  \[8 = 3 \cdot 2 + 2\]
+  \[\frac{8}{3} = 2 + \frac{2}{3}\]
+  \[\frac{11}{8} = 1 + \frac{1}{2 + \frac{2}{3}} = 1 + \cfrac{1}{2 + \cfrac{1}{1 + \frac{1}{2}}}\]
+  We can stop now since all the numerators are unit.
+\end{solution}
+
+
+
 \end{document}
