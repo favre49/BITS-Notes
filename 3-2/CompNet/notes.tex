@@ -1228,6 +1228,18 @@ This can be improved using \textbf{slotted Aloha}. Time is divided into discrete
 \[Throughput = G e^{-G}\]
 and the throughput is maximum at 36.8\%.
 
+\subsection{CSMA Protocols}
+
+CSMA protocols ``listen before talk'' - this means that if a node has a frame to send, it will first listen to the channel. If the channel is busy, it will not send a frame. If the channel is idle, the frame will be sent.
+
+CSMA protocols can be of two types:
+\begin{itemize}
+  \item \textbf{Persistent} : Persistent CSM is employed by Ethernet. If a node has a frame to send and the channel is idle, it will submit. If there is a collision, we will wait a random amount of tie and start over. This is obviously better than Aloha, and is in fact slightly better than slotted Aloha.
+
+    An improvement over this (called 1-persistent CSM) is \textbf{p-persistent CSM}. This uses a slotted system. When the channel is idle, the sender transmits with a probability $p$. This process is repeated until the frame gets sent or the channel becomes busy. This is somewhere between non-persistence and persistence.
+  \item \textbf{Non-persistent} : In Non-persistent CSM, if a node has a frame to send and the channel is busy, then the node will stop sensing, and wait a random amount of time before trying again. If the channel is idle, it will submit. If this results in a collision, we will wait a random amount of time and start over. This results in better channel utilization than persistent CSM, but can result in longer delays.
+\end{itemize}
+
 \subsection{Taking Turns Protocols}
 
 In taking turn protocols, we quickly poll to see who wants to talk, and give time slots to only the speakers. This is somewhere between channel partitioning protocols and random protocols.
