@@ -1234,11 +1234,23 @@ CSMA protocols ``listen before talk'' - this means that if a node has a frame to
 
 CSMA protocols can be of two types:
 \begin{itemize}
-  \item \textbf{Persistent} : Persistent CSM is employed by Ethernet. If a node has a frame to send and the channel is idle, it will submit. If there is a collision, we will wait a random amount of tie and start over. This is obviously better than Aloha, and is in fact slightly better than slotted Aloha.
+  \item \textbf{Persistent} : Persistent CSMS is employed by Ethernet. If a node has a frame to send and the channel is idle, it will submit. If there is a collision, we will wait a random amount of tie and start over. This is obviously better than Aloha, and is in fact slightly better than slotted Aloha.
 
-    An improvement over this (called 1-persistent CSM) is \textbf{p-persistent CSM}. This uses a slotted system. When the channel is idle, the sender transmits with a probability $p$. This process is repeated until the frame gets sent or the channel becomes busy. This is somewhere between non-persistence and persistence.
-  \item \textbf{Non-persistent} : In Non-persistent CSM, if a node has a frame to send and the channel is busy, then the node will stop sensing, and wait a random amount of time before trying again. If the channel is idle, it will submit. If this results in a collision, we will wait a random amount of time and start over. This results in better channel utilization than persistent CSM, but can result in longer delays.
+    An improvement over this (called 1-persistent CSMA) is \textbf{p-persistent CSMA}. This uses a slotted system. When the channel is idle, the sender transmits with a probability $p$. This process is repeated until the frame gets sent or the channel becomes busy. This is somewhere between non-persistence and persistence.
+  \item \textbf{Non-persistent} : In Non-persistent CSMA, if a node has a frame to send and the channel is busy, then the node will stop sensing, and wait a random amount of time before trying again. If the channel is idle, it will submit. If this results in a collision, we will wait a random amount of time and start over. This results in better channel utilization than persistent CSMA, but can result in longer delays.
 \end{itemize}
+
+How do we detect collision? Collision can happen when two stations attempt transmission at the same time on an idle channel, or due to the effect of propagation delay. This detection is done at a hardware level. The worst case delay for detecting a collision is one RTT.
+
+On detecting a collision, we send a jamming signal of 32 bits. This lengthens the frame, allowing the problem-frame to be detected.
+
+In Ethernet, we also restrict the minimum frame size to 64 bytes. When a sender has a frame to send, it checks if the channel is idle for 96 bit time, and then start transmission. This allows it to check for the jamming signal (64 packet size + 32 jamming signal size).
+
+There is also a concept of \textbf{exponential backoff} . When transmitting a frame after the $n^{th}$ collision,
+\begin{enumerate}
+  \item Choose K at random from $\{0,1,2,\cdots, 2^{m-1}\}$ where $m$ is the minimum of $n,10$.
+  \item Wait for $K*512$ bit time and return to step 1.
+\end{enumerate}
 
 \subsection{Taking Turns Protocols}
 
