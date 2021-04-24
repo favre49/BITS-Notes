@@ -2,7 +2,7 @@
 
 This repository has my notes from my 3rd year, since all classes were held online. 
 
-In the first semester (found in `3-1`), I wrote them in Markdown, and in the second semester (fount in `3-2`) I wrote them in LaTeX. The compiled PDFs are also provided, and found in the `output` folder for notes written in LaTeX.
+In the first semester (found in `3-1`), I wrote them in Markdown, and in the second semester (found in `3-2`) I wrote them in LaTeX. The compiled PDFs are also provided, and found in the `output` folder for notes written in LaTeX.
 
 ## Disclaimers
 
