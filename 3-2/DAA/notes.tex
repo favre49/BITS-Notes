@@ -1200,9 +1200,19 @@ Applying a union bound again allows us to find that, for $m \geq 3 \ln n / \ln{\
 \begin{align*}
   n \left( \frac{e}{m} \right)^m &\leq n \left( \frac{e \ln{\ln{n}}}{3 \ln{n}} \right)^{3 \ln{n} / \ln{\ln{n}}} \\
                                  &\leq n \left( \frac{\ln{\ln{n}}}{\ln{n}} \right)^{3 \ln{n} / \ln{\ln{n}}} \\
-                                 \leq \frac{1}{n}
+                                 &\leq \frac{1}{n}
 \end{align*}
 For sufficiently large $n$ (steps omitted because I am lazy).
+
+\section{Euclid's Algorithm}
+
+See Number Theory notes for the necessary prerequisites and understanding this algorithm.
+
+Let us find the complexity of Euclid's algorithm. In Number Theory, we proved that the number of steps is at most 5 times the number of digits in it's base 10 representation. This implies that it is $O(\log n)$.
+
+
+
+
 
 \section{Problems}
 
