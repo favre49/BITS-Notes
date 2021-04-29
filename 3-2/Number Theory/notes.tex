@@ -2150,11 +2150,33 @@ If all the partial quotients are integers, then the fraction is said to be simpl
 \begin{proof}
   Let $[a_0; a_1, \cdots, a_n]$ be a finite simple continued fraction. We can prove this by induction on $n$. It is a trivial result for $n=1$. Assume that the result holds for $n=k$. Then,
   \[[a_0; a_1, \cdots, a_{k+1}] = a_0 + \frac{1}{[a_1; a_2, \cdots, a_{k}]}\]
-  By our hypothesis, the denominator is a rational number. Therefore, $[a_0 ; a_1, \cdots, a_{k+1}]$ is also a rational number. By PMI, the result is true for all $n.
+  By our hypothesis, the denominator is a rational number. Therefore, $[a_0 ; a_1, \cdots, a_{k+1}]$ is also a rational number. By PMI, the result is true for all $n$.
 \end{proof}
 
-The converse is also true - we can express any rational number as a finite simple continued fraction. We illustrate that with the following example.
+The converse is also true - we can express any rational number as a finite simple continued fraction. 
 
+\begin{theorem}
+  Any rational number can be written as a finite simple continued fraction.
+\end{theorem}
+\begin{proof}
+  Let the number be $\frac{a}{b}$, where $b > 0$. By the Euclidean algorithm,
+  \[a = ba_0 + r_1, 0 < r_1 < b\]
+  \[b = r_1a_1 + r_2, 0 < r_2 < r_1\]
+  \[r_1 = r_2a_2 + r_3, 0 < r_3 < r_2\]
+  \[\cdots\]
+  \[r_{n-2} = r_{n-1}a_{n-1} + r_n\]
+  \[r_{n-1} = r_na_n + 0\]
+  Note that $a_i > 0$. Now, 
+  \begin{align*}
+    \frac{a}{b} &= a_0 + \frac{r_1}{b} \\
+                &= a_0 + \cfrac{1}{\frac{b}{r_1}} \\
+                &= a_0 + \cfrac{1}{a_1 + \frac{r_2}{r_1}} \\
+                &= a_0 + \cfrac{1}{a_1+\cfrac{1}{a_2+\frac{r_3}{r_2}}}\\
+                &\cdots\\
+                &= a_0 + \cfrac{1}{a_1 + \cfrac{1}{a_2 +\cfrac{\ddots}{\cfrac{1}{a_{n-1} + \frac{1}{a_n}}}}}
+  \end{align*}
+\end{proof}
+We illustrate this with the following example.
 \begin{exercise}
   Express $\frac{11}{8}$ as a simple continued fraction.
 \end{exercise}
@@ -2167,6 +2189,38 @@ The converse is also true - we can express any rational number as a finite simpl
   We can stop now since all the numerators are unit.
 \end{solution}
 
+\begin{definition}
+  The continued fractoin obtained from $[a_0;a_1, \cdots, a_n]$ by truncating after the $k^{th}$ partial denominator $a_k$ is called the $k^{th}$ convergent of the continued fraction and is denoted by $C_k$, i.e.
+  \[C_k = [a_0;a_1,\cdots,a_k]\]
+\end{definition}
+
+We can make some trivial observations:
+\begin{itemize}
+  \item $C_0 = a_0$
+  \item $C_n =[a_0;a_1, \cdots, a_n]$
+  \item If $k < n$ then 
+    \[ \left[a_0; a_1, \cdots, a_{k-1}, a_k + \frac{1}{a_{k+1}} \right] = C_{k+1}\]
+\end{itemize}
+
+\begin{theorem}
+  The $k^{th}$ convergent of the finite continued fraction $[a_0; a_1, \cdots, a_n]$ is 
+  \[C_k = \frac{p_k}{q+k}\]
+  where
+  \[p_0 = a_0, q_0 = 1\]
+  \[p_1 = a_0a_1 + 1, q_1 = a_1\]
+  \[p_k = a_k p_{k-1} + p_{k-2}, q_k = a_k q_{k-1} + q_{k-2}\]
+\end{theorem}
+\begin{proof}
+  We can prove this by induction on $k$. It is trivial to show that the result shows for $k \leq 2$. Assume that the result holds for all $k=m < n$  So,
+  \[C_m = \frac{p_m}{q_m} = \frac{a_m p_{m-1} + p_{m-2}}{a_m q_{m-1} + q_{m-2}}\]
+  Note that $p_{m-1}, p_{m-2}, q_{m-1}, q_{m-2}$ don't depend on $q_m$. Replacing $a_m$ by $a_m + \frac{a_m}{a_{m+1}}$, we get:
+  \[\left[ a_0; a_1, \cdots, a_{m-1}, a_m + \frac{q}{a_{m+1}}\right] = \frac{\left(a_m + \frac{1}{a_{m+1}}\right)p_{m-1} + p_{m-2}}{\left(a_m + \frac{1}{a_{m+1}}\right)q_{m-1} + q_{m-2}}\]
+  \begin{align*}
+    C_{m+1} &= \frac{a_{m+1}(a_mp_{m-1} + p_{m-2})+p_{m-1}}{a_{m+1}(a_mq_{m-1} + q_{m-2})} \\
+            &= \frac{a_{m+1}p_m + p_{m-1}}{a_{m+1}q_m + q_{m-1}}
+  \end{align*}
+  By PMI, we have proved this result true.
+\end{proof}
 
 
 \end{document}
