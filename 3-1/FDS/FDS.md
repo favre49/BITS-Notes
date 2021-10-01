@@ -21,7 +21,7 @@ where $\Gamma$ is the Gamma function.
 
 Interestingly, as d tends to infinity, the volume tends to 0!
 
-# Curse of dimensionality 
+# Curse of dimensionality
 
 ## Sampling
 
@@ -188,6 +188,27 @@ If $A$ is a $m \times n$ matrix, $U$ is a $m \times m$ matrix, $S$ is a $m \time
 
 We can order eigenvectors in different orders to produce $U$ and $V$. We order the eigenvectors in a decreasing order of eigenvalues.
 
+# Polynomial Curve Fitting
+
+In polynomial curve fitting we try to model some data $D$ having $N$ observations $(y_i,x_i)$ using a polynomial curve, i.e.
+$$f(x,\mathbf{w}) = \sum_{j=0}^M w_jx^j$$
+$M$ is the order of the polynomial. The error of this curve is generally modelled by the **sum of squares error**, given by
+$$E(\mathbf{w}) = \frac{1}{2} \sum_{n=1}^{N} (f(x_n,\mathbf{w}) - t_n)^2$$
+Clearly, we want to choose the coefficients $\mathbf{w}$ to minimize the error. This can be done through the following steps:
+$$\frac{\partial E}{ \partial w_i} = \sum_{n=1}^N (y(x_n,w) - t_n)x_n^{i} = \sum_{n=1}^N \left(\sum_{j=0}^M w_j x_n^j - t_n\right)x_n^i $$
+Setting this to 0,
+$$\sum_{n=1}^N \sum_{j=0}^M w_j x_n^{i+j} = \sum_{n=1}^N t_n x_n^i$$
+This forms a set of $M+1$ equations (one for each $i$) that we can solve to find the optimal $\mathbf{w}$.
+
+Choosing the order $M$ of the polynomial is an important choice. If it is too low, we will underfit, but if it is too large, we would overfit. To check this, we might divide our data into two parts - training and testing sets. We find $\mathbf{w}$ for the training set, but measure error for both the training and testing sets. Generally the metric used is the **Root Mean Square Error**, given by:
+$$E_{RMS} = \sqrt{\frac{2E(\mathbf{w})}{N}}$$
+If we plot the training and testing errors across many orders, we will see that for low orders, the training and testing errors are high (underfitting), while for high orders, the training error will be low but the testing error may be very high (overfitting). From this plot we could also find which orders are ideal, i.e. don't underfit or overfit. 
+
+There are many ways to prevent overfitting of the modelling function on the dataset. We could increase the size of the dataset (this will be infeasible after a point), or we could use Bayesian modelling instead. Another way is to use **regularization**. When we regularize, we add extra terms to our error function to penalize behaviour we dislike, like large fluctuations or large coefficient values. For the latter case, we may do something like this:
+$$E(\mathbf{w}) = \frac{1}{2} \sum_{n=1}^N (f(x_n,\mathbf{w}) - t_n)^2 + \frac{\lambda}{2} ||w||^2$$
+Here $\lambda$ determines the relative importance of the regularization term to the error term, i.e. it controls the amount of regularization.
+
+
 # Basis Functions
 
 Basis functions are elements of a particular basis of a function space. Any continuous function in the function space can be represented as a linear combination of basis functions, just as every vector in a vector space can be represented as a linear combination of basis vectors. So, if we have a system of $k$ basis functions $\psi_k(t)$, we can express $f(t)$ as:
@@ -264,8 +285,8 @@ $$\vec{w} \cdot \vec{x} - b = 0$$
 Where $\vec{w}$ is the normal vector to the hyperplane. It is not necessarily normalized. Out of the set of possible hyperplanes, SVM aims to choose the one with the maximum **margin**. The margin is the shortest distance between the **convex hull** of the two classes. The convex hull is defined as the smallest convex set that contains the points. This margin comes out to be $\frac{2}{||\vec{w}||}$. The equation by which we choose the class can be given by:
 
 $$f(\vec{x}) = \begin{cases}
-  1 & \text{if } \vec{w} \cdot \vec{x} + b \geq 1 \\ 
-  -1 & \text{if } \vec{w} \cdot \vec{x} + b \leq -1 
+  1 & \text{if } \vec{w} \cdot \vec{x} + b \geq 1 \\
+  -1 & \text{if } \vec{w} \cdot \vec{x} + b \leq -1
 \end{cases}$$
 
 Armed with this knowledge, we are able to formulate this as a constrained optimization problem:
@@ -274,7 +295,7 @@ $$
 \text{Minimize } L(w) = \frac{||w||^2}{2}, \text{subject to the constraint } f(x)
 $$
 
-This is a **convex optimization problem**.This could also be coded as a dual problem, where we find the best plane that bisects the distance between two convex hulls. This is why SVMs are said to possess **duality**. This approach has many solutions, including one using quadratic programming.
+This is a **convex optimization problem** and can be solved using Lagrangian multipliers. This could also be coded as a dual problem, where we find the best plane that bisects the distance between two convex hulls. This is why SVMs are said to possess **duality**. This approach has many solutions, including one using quadratic programming.
 
 It is obvious that this only works if out data is linearly separable, which may not always be the case. In the case it is not, we need to redefine out problem and include **slack variables**, which will loosen some constraints. For each datapoint $i$, we define $\xi_i$, it's associated slack variable. It defines the degree to which the constraint on datapoint $i$ can be violated. We also add this to our cost function to minimize their use. This results in the redefinition as:
 
@@ -344,7 +365,7 @@ In accordance with **Occam's Razor**, if two models have comparable errors, we w
 
 ## Constrained optimization
 
-The constrained optimization problem involves minimizing or maximizing some cost function in the presence of some given constraints. The form in which we first express the problem (say, as a maximization problem) is called the **primal** and if we express it in the opposite form (minimization) we call it the **dual**. Sometimes, we may want to solve the dual problem instead of the primal because it is simpler. 
+The constrained optimization problem involves minimizing or maximizing some cost function in the presence of some given constraints. The form in which we first express the problem (say, as a maximization problem) is called the **primal** and if we express it in the opposite form (minimization) we call it the **dual**. Sometimes, we may want to solve the dual problem instead of the primal because it is simpler.
 
 ### Lagrange Multipliers
 
@@ -370,7 +391,7 @@ Let us consider the problem of optimizing $f(x)$ given $g_i(x) \leq 0$ and $h_j(
 
 ## Hessian Matrix
 
-The Hessian Matrix is given by 
+The Hessian Matrix is given by
 
 $$H_{ij} = \frac{\partial^2 f}{\partial x_i \partial x_j} \forall i,j$$
 
@@ -522,11 +543,11 @@ This way, we can easily get the gradients with respect to each of our weights, a
 
 # Tensors
 
-A **tensor** is a multidimensional array of scalars. These scalars can come from any **field**. A field is a mathematical collection of numbers where 0,1,addition,multiplication and division are defined. 
+A **tensor** is a multidimensional array of scalars. These scalars can come from any **field**. A field is a mathematical collection of numbers where 0,1,addition,multiplication and division are defined.
 
 Every tensor is characterized by an **order**. A zero order tensor is a scalar, a first order tensor is a vector, a second order tensor looks like a (say) $3 \times 3$ matrix, etc. In general, an $n^{th}$ order tensor has $3^n$ components(*check*). Generally, if unspecified, a tensor is a second order tensor.
 
-A tensor could also be called an $n$ way array. For instance, a matrix is a 2 way array. 
+A tensor could also be called an $n$ way array. For instance, a matrix is a 2 way array.
 
 We generally use the **Gibbs Notation** for tensors:
 
