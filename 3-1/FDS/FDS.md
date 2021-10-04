@@ -202,7 +202,7 @@ This forms a set of $M+1$ equations (one for each $i$) that we can solve to find
 
 Choosing the order $M$ of the polynomial is an important choice. If it is too low, we will underfit, but if it is too large, we would overfit. To check this, we might divide our data into two parts - training and testing sets. We find $\mathbf{w}$ for the training set, but measure error for both the training and testing sets. Generally the metric used is the **Root Mean Square Error**, given by:
 $$E_{RMS} = \sqrt{\frac{2E(\mathbf{w})}{N}}$$
-If we plot the training and testing errors across many orders, we will see that for low orders, the training and testing errors are high (underfitting), while for high orders, the training error will be low but the testing error may be very high (overfitting). From this plot we could also find which orders are ideal, i.e. don't underfit or overfit. 
+If we plot the training and testing errors across many orders, we will see that for low orders, the training and testing errors are high (underfitting), while for high orders, the training error will be low but the testing error may be very high (overfitting). From this plot we could also find which orders are ideal, i.e. don't underfit or overfit.
 
 There are many ways to prevent overfitting of the modelling function on the dataset. We could increase the size of the dataset (this will be infeasible after a point), or we could use Bayesian modelling instead. Another way is to use **regularization**. When we regularize, we add extra terms to our error function to penalize behaviour we dislike, like large fluctuations or large coefficient values. For the latter case, we may do something like this:
 $$E(\mathbf{w}) = \frac{1}{2} \sum_{n=1}^N (f(x_n,\mathbf{w}) - t_n)^2 + \frac{\lambda}{2} ||w||^2$$
@@ -414,7 +414,6 @@ $$d-c = \beta(b-a)$$
 $$\frac{d-c}{b-c} = \frac{c-a}{b-a}$$
 
 From this, we can surmise that:
-
 $$\alpha < 1$$
 $$\beta = 1-2 \alpha$$
 $$\frac{\beta}{1-\alpha} = \alpha$$
@@ -621,3 +620,62 @@ $$D(i,j) = |x_i - y_j| + min(D(i-1,j), D(i-1,j-1),D(i,j-1))$$
 The local paths this creates are called 0-45-90 paths. Here, 45 degree paths are more likely to be taken. So, we add $\eta$ penalty to 45 degree paths.
 
 Type 1 DTW is generally more efficient than Type 2 DTW.
+
+# Decision Trees
+
+Decision trees are a classification scheme that encode a set of rules in the form of a rooted tree. Classification is done by starting at the root node, and recursively picking an action based on the conditions on each of the edges. Every internal node is hence a test on one attribute, and the leaf node is a class label.
+
+For a given dataset, there are exponentially many decision trees that can be constructed from a given set of attributes. Finding the most accurate tree is NP-Hard.
+
+Decision tree generation consists of two parts - construction, where we create the decision tree, and pruning, where we remove unnecessary branches that reflect noise or outliers.
+
+## Hunt's Algorithm
+
+Hunt's algorithm is an algorithm to construct a decision tree. Let $D_t$ be the set of training records that reach a node $t$, and $\{y_1, \cdots, y_c\}$ be the class labels. Then, we perform the following steps:
+
+- If $D_t$ contains records that belong to the same class $y_t$, then $t$ is a leaf node labeled as $y_t$. If $D_t$ is empty, then we can have a leaf node labelled by the default class $y_d$.
+- If $D_t$ contains records that belong to more than one class, use an attribute test to split the data into smaller subsets. Recursively apply the procedure to each child node.
+
+To determine the best split, we use a greedy approach, where we prefer that the data is split into nodes with more homogenous class distribution, i.e. more of it is the same class. To formally state the "amount of homogeneity", we need a measure of **node impurity**. The higher the node impurity, the less homogenous the node. Some measures are listed below:
+
+- **Gini Index**, given by:
+$$GINI(t) = 1 - \sum_j p(j|t)^2$$
+Gini is at least 0 (when all records are in the same class) and at most $1 - 1/n_c$ when the records are equally distributed among all the classes.
+- **Entropy**, given by:
+    $$Entropy(t) = - \sum_j p(j | t) \log p(j|t)$$
+- **Misclassification Error**, given by:
+    $$Error(t) = 1 - \max_j p(j|t)$$
+
+Here $p(j|t)$ is the fraction of records associated with node $t$ belonging to class $i$.
+
+The **gain** of a test condition compares the impurity of the parent node with the impurity of the child nodes:
+$$\Delta = I(parent) - \sum_{j=1}^k \frac{N(v_j)}{N} I(v_j)$$
+Here $I$ is the impurity measure, $N$ is the number of records at the parent node, $N(v_j)$ is the number of records at the child node, and $K$ is the number of attribute values. When $I$ is the entropy, this is termed the **information gain**. We always choose the split that **maximizes** the gain.
+
+Another way to find the best split is to define the quality of a split by:
+$$GINI_{split} = \sum_{i=1}^k \frac{n_i}{n} GINI(i)$$
+where $n_i$ is the number of records at child $i$ and $n$ is the number of records at the parent. We aim to **minimize** the GINI split. GINI generally favours multi-way splitting.
+
+When we are trying to split on a continuous attribute, we generally split based on one value, i.e. "is $x$ greater than $v$". $v$ can be any number in the data. To efficiently find the GINI value for every split, we can sort the possible values of $v$, and keep track of the count of elements greater and less than it as we iterate over the possible values of $v$.
+
+We could also split based on information gain, which finds the reduction in entropy by a given split, and we always pick the split that maximizes this reduction. The issue is that this splitting criteria tends to prefer splits that result in a large number of partitions that are small but very pure, which does not generalize well. Instead, we can define another metric:
+$$SPLITINFO = - \sum_{i=1}^k \frac{n_i}{n} \log \frac{n_i}{n}$$
+$$GAINRATIO = \frac{GAIN_{split}}{SPLITINFO}$$
+The gain ration adjusts the information gain by the entropy of the partitioning and penalizes the behaviour of large number of small partitions.
+
+## Overfitting
+
+Decision trees can overfit, either due to noise in the data, or due to a lack of data points (see the slides for examples).
+
+To address this issue, we generally prune the tree. We can do this while constructing the tree through **pre-pruning**, which employs some sort of stopping rule to prevent the subtree from being constructed in it's entirety. For example, 
+
+- Stop if the number of instances is under some threshold
+- Stop if the class distribution of instances are independent of the available features
+- Sstop if expanding the current node does not reduce the impurity measures
+
+We can also prune the tree after it's construction, by doing some operations like:
+- Replacing the subtree with a single leaf node
+- Moving a subtree to a higher level in the decision tree, subsuming it's parent
+
+How do we know whether to prune a certain subtree or not? One possibility is to use a **Cost Complexity Pruning Algorithm**, where the pruning operation is performed if it does not increase the estimated error rate. However, training error isn't really a useful estimator of "goodness", and generally this results in almost no pruning. Another possibility is to use a **Minimum Description Length Algorithm**, which states that the best tree is the one that can be encoded using the fewest number of bits. As such, our pruning algorithm will attempt to find the subtree that can be encoded with the least number of bits.
+
