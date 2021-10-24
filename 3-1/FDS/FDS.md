@@ -188,11 +188,20 @@ We could also have repeated knots, where knots can be defined at the same $x$ va
 
 Two vectors are orthogonal if their dot product is 0. A normal vector is a vector whose length is 1. A set of vectors are orthonormal if they are both of unit length and are orthogonal to one another.
 
-We can make a set of vectors orthonormal by the means of **Gram-Schmidt Orthonormalization**. Here, we go vector by vector, using the previously normalized vectors to generate a new vector. This can be given by the equation:
+We can make a set of vectors orthonormal by the means of the **Gram-Schmidt Process**. Given a set of linearly independent vectors $\{v_1, \cdots v_k\}$, the process will generate orthonormal vectors $\{e_1,e_2, \cdots, e_k\}$ that span the same subspace as the input.
 
-$$w_k = v_k - \sum^{k-1}_{i=1}(u_i \cdot v_k)u_i$$
+Let us define the projection of $v$ on $u$ $proj_u(v)$ as
+$$proj_u(v) = \frac{u \cdot v}{||u||^2} u$$
+Then, the process works as follow:
+$$u_1 = v_1$$
+$$u_2 = v_2 - proj_{u_1}(v_2)$$
+$$u_3 = v_3 - proj_{u_1}(v_3) - proj_{u_2}(v_3)$$
+generalizing, 
+$$u_i = v_i - \sum_{j < i} proj_{u_j}(v_i)$$
+The set of vectors $u$ form an orthogonal set. We can get an orthonormal set $\{e_i\}$ where
+$$e_i = \frac{u_i}{||u_i||}$$
 
-for all $k$ vectors.
+_Note: Technically, this works in any inner product space_
 
 ### Covariance Matrix
 
@@ -314,7 +323,7 @@ _TODO:The formulas given in the slides are inconsistent. Have to fix._
 
 Support Vector Machines are supervised learning models used for classification and regression analysis. SVMs find a hyperplane in N-dimensional space that distinctly classifies data points. This hyperplane can be given by:
 
-$$\vec{w} \cdot \vec{x} - b = 0$$
+$$\vec{w} \cdot \vec{x} + b = 0$$
 
 Where $\vec{w}$ is the normal vector to the hyperplane. It is not necessarily normalized. Out of the set of possible hyperplanes, SVM aims to choose the one with the maximum **margin**. The margin is the shortest distance between the **convex hull** of the two classes. The convex hull is defined as the smallest convex set that contains the points. This margin comes out to be $\frac{2}{||\vec{w}||}$. The equation by which we choose the class can be given by:
 
@@ -413,11 +422,9 @@ where $\eta$ is the learning rate.
 
 Perceptrons, by themselves, are not very useful. They are unable to even emulate an XOR gate. This is because if we only have an input layer and an output layer of perceptrons, it acts as a linear classifier. However, if we add intermediate "hidden" layers, we can imitate non-linear functions.
 
-A multilayer perceptron or MLP is the same as an artificial neural network. The output of any layer is the dot product of the weight and the hidden layer output, plus the bias. So, it is given by:
-
-$$z = \sum w_i^{h_i} h_i^1 + bias$$
-
-The output of a single neuron is decide by it's activation function. Most activation functions attempt to clamp the outputs down to some range. One way of doing so is a step function - it is 1 if positive but 0 if negative. The issue with this is that some tiny change in weights could lead to large changes in output. However, we want the weights to produce gradual changes in output.
+A multilayer perceptron or MLP is the same as an artificial neural network. Every node in a layer calculates the dot product of the weights of the connections and the output of the previous layer, i.e. $\sum_i w_ih_i$ and then adds a bias term $b$. Hence,
+$$z = \sum w_i h_i + b$$
+The output of the node is then given by $y = f(z)$, where $f$ is an **activation function**. Most activation functions attempt to clamp the outputs down to some range. One way of doing so is a step function - it is 1 if positive but 0 if negative. The issue with this is that some tiny change in weights could lead to large changes in output. However, we want the weights to produce gradual changes in output.
 
 Instead, we might want to use a **sigmoid function**. The curve crosses 0.5 at $z=0$, and unlike the step function it is differentiable and smooth. This also creates non-linearity, which is useful for creating non-linear decision boundaries. With this, we can finally solve XOR.
 
@@ -429,7 +436,7 @@ In **unsupervised learning**, the network does not need the correct answer assoc
 
 **Hebb's Rule** states that the changes in the strength of synaptic connections is proportional to the correlation of firing to connecting neurons. If two neurons consistently fire simultaneously, then any connection between them will become stronger. If they never do, the connection eventually dies.
 
-## Backpropogartion
+## Backpropogation
 
 Keep in mind the chain rule for differentiation.
 
@@ -437,7 +444,7 @@ $$\frac{d}{dx}f(g(x)) = \frac{d}{dg}f(g(x)) \cdot \frac{d}{dx} g(x)$$
 
 Also, the derivative of a sigmoid function $\sigma(x)$ is $\sigma(x) (1-\sigma(x))$
 
-The backpropogation algorithm consists of two passes - a forward pass and a backward pass. The forward pass is the calculation of the outputs of each node, getting the final output. The error of this is given by:
+The backpropogation algorithm consists of two passes - a forward pass and a backward pass. The forward pass is the calculation of the outputs of each node, getting the final output. The error of this is given by the sum of squares error:
 
 $$E_{total} = \sum \frac{1}{2}(target - output)^2$$
 
