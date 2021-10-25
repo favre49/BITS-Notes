@@ -305,9 +305,9 @@ $$m_2 = \frac{1}{N_2}\sum_{x \in C_2} x$$
 We seek to find the vector $\mathbf{w}$ such that we maximize $w^T(m_2-m_1)$. Since we can make this arbitrarily large by increasing $||w||$, we enforce $||w|| = 1$.
 
 Let $y_n = w^T x_n$. The within-class variance is given by
-$$s_i^2 = \sum_{n \in C_i} (y_n - m_i)^2$$
+$$s_i^2 = \sum_{n \in C_i} (y_n - w^Tm_i)^2$$
 The total within class variance is $s_1^2 + s_2^2$. Then, the **Fisher Criterion** is given by:
-$$J(w) = \frac{\sigma_{between}}{\sigma_{within}} = \frac{(m_2 - m_1)^2}{s_1^2 + s_2^2}$$
+$$J(w) = \frac{\sigma_{between}}{\sigma_{within}} = \frac{||m_2 - m_1||^2}{s_1^2 + s_2^2}$$
 We can also rewrite this as
 $$J(w) = \frac{w^T S_B w}{w^T S_W w}$$
 where
@@ -315,9 +315,20 @@ $$S_B = (m_2-m_1)(m_2-m_1)^T$$
 $$S_W = \sum_{x \in C_1} (x-m_1)(x-m_1)^T + \sum_{x \in C_2} (x-m_2)(x-m_2)^T$$
 If we differentiate w.r.t. $w$, we find that $J(w)$ is maximized when:
 $$(w^T S_B w)S_W w = (w^T S_W w)S_B w$$
-$S_B$ is in the same direction as $(m_2 - m_1)$, so we can see that $w \propto S_w^{-1} (m_2 - m_1)$.
+Dividing both sides by $w^T S_W w$ (a scalar), 
+$$\frac{(w^T S_B w)}{(w^T S_W w)} S_W w  = S_B w$$
+$$\lambda S_W w = S_B w$$
+Hence, finding $w$ comes down to solving the generalized eigenvalue problem:
+$$S_B w = \lambda S_w w$$
+$S_B x$, for any vector $x$, points in the direction of $m_2 - m_1$:
+$$(m_2 - m_1)(m_2 - m_1)^T x = \alpha (m_2 - m_1)$$
+Hence, we can directly get $w$ from the equation:
+$$w = S_w^{-1} (m_2 - m_1)$$
 
-_TODO:The formulas given in the slides are inconsistent. Have to fix._
+This idea can be generalized to $C$ classes, though we will not get such a pretty formula out of it. If we look at our discussion so far as dimensionality reduction, where the discriminant reduces the dimensions from $R^k$ to $R$, then we will see that in the case of $C$ classes, the dimension will get reduces to $C-1$.
+
+_TODO : Formulas for multi-class, though it hasn't been covered in the slides._
+
 
 # Support Vector Machines
 
@@ -366,7 +377,7 @@ $$sgn(wx+b) = sgn \left( \sum \alpha_i y_i K(x_i,x) + b \right)$$
 $$\text{where } b \text{ solves } \alpha_j(y_j \sum \alpha_i y_i K(x_i,x_j) + b-1) = 0$$
 $$ \text{for any } j \text{ with } \alpha_j \neq 0$$
 
-A **Polynomial kernel** uses the mapping $K(x \cdot z) = (x \cdot z + 1)^p$. It is said do have degree $p$. A **Gaussian kernel** uses the mapping $K(x \cdot z) = \exp{(-||x-z||/2\sigma^2)}$
+A **Polynomial kernel** uses the mapping $K(x \cdot z) = (x \cdot z + 1)^p$. It is said do have degree $p$. A **Gaussian kernel** uses the mapping $K(x \cdot z) = \exp{(-||x-z||^2/2\sigma^2)}$
 
 There is not always a mapping $\Phi(x)$ for any symmetric kernel $K(x,z)$. If we define the **Gram Matrix** $G$ to be $G_{ij} = K(x_i,x_j)$, the **Mercer condition** states that there is a feature space $\Phi(x)$ when the kernel is such that $G$ is always positive semi-definite.
 
@@ -408,8 +419,8 @@ In accordance with **Occam's Razor**, if two models have comparable errors, we w
 The perceptron learning algorithm is a linear classifier. Formally, it is given by:
 
 $$d(n) = \begin{cases}
-+1 & if x(n) \in A \\
--1 & if x(n) \in B \\
++1 & \text{if } x(n) \in A \\
+-1 & \text{if } x(n) \in B \\
 \end{cases}$$
 
 Here, $d(i)$ is 1 if $\sum w_i \cdot x_i \geq \theta$ and -1 otherwise.
@@ -515,6 +526,27 @@ We can also prune the tree after it's construction, by doing some operations lik
 
 How do we know whether to prune a certain subtree or not? One possibility is to use a **Cost Complexity Pruning Algorithm**, where the pruning operation is performed if it does not increase the estimated error rate. However, training error isn't really a useful estimator of "goodness", and generally this results in almost no pruning. Another possibility is to use a **Minimum Description Length Algorithm**, which states that the best tree is the one that can be encoded using the fewest number of bits. As such, our pruning algorithm will attempt to find the subtree that can be encoded with the least number of bits.
 
+## Performance Evaluation
+
+Binary predictions can be classified into 4 types:
+
+- **True Positive:** The ground truth is "Yes", model classified it as a "Yes"
+- **False Positive:** The ground truth is "No", model classified it as a "Yes"
+- **True Negative:** The ground truth is "No", model classified it as a "No"
+- **False Negative:** The ground truth is "Yes", model classified it as a "No"
+
+A **confusion matrix** is one that contains these values - the rows contain the ground truth and the columns contain the model predictions.
+
+Based on this, we can define the following metrics:
+$$Accuracy = \frac{TP+TN}{TP+FP+TN+FN}$$
+$$Precision = \frac{TP}{TP+FP}$$
+$$Recall = \frac{TP}{TP+FN}$$
+$$F = 2\frac{Precision \cdot Recall}{Precision + Recall}$$
+
+## Decision Boundary
+
+The resultant decision boundary of the decision tree generally consist of axis-parallel lines, forming cubic regions in space. They are axis parallel since the test condition generally exists of one comparison, e.g. $y > 0.5$. An **oblique** decision tree is one that can create other decision boundaries by having test conditions that consider multiple attributes at once.
+
 # VC Dimensions
 
 A **learning machine** $f$ is a black box that takes an input $x$ and transforms it, somehow using weights $\alpha$, into a predicted output $y^{est} = \pm 1$.
@@ -531,11 +563,11 @@ $$R^{emp}(\alpha) = \frac{1}{R} \sum_{k=1}^{R} \frac{1}{2} |y_k-f(x_k,\alpha)|$$
 
 The **Vapnik-Chervonekis dimension** or VC dimension is a measure of the capacity of $f$. If the VC dimension of $f$ is given by $h$, then Vapnik shows that with probability $\geq 1-\delta$:
 
-$$R(\alpha) \leq R^{emp}(\alpha) \sqrt{\frac{h(\ln{(2R/h)}+1)-\ln{(\delta/4)}}{R}} $$
+$$R(\alpha) \leq R^{emp}(\alpha) + \sqrt{\frac{h(\ln{(2R/h)}+1)-\ln{(\delta/4)}}{R}} $$
 
 A machine is said to **shatter** a configuration of points if, for every possible assignment of positive and negative for the points, it is able to perfectly partition the space such that positive points are separated from negative points. Formally, a machine can shatter a set of points $x_1,x_2,..x_r$ if and only if for every possibly training set of the form $(x_1,y_1),(x_2,y_2),...(x_r,y_r)$ there exists some value of $\alpha$ that gets zero training error. There are, of course, $2^r$ such training sets ($y_i = \pm 1$)
 
-For any given machine $f$, the VC dimension $h$ is the maximum number of points such that $f$ shatters every arrangement of $h$ points. The VC dimension of a linear classifier is exactly 3.
+For any given machine $f$, the VC dimension $h$ is the maximum number of points such that $f$ shatters some arrangement of $h$ points. The VC dimension of a linear classifier is exactly 3.
 
 # Kernel Methods
 
@@ -548,8 +580,6 @@ Kernels are non-linear generalizations of inner products. A function $K : \chi \
 Kernel methods consist of two modules - the kernel, and the kernel algorithm. The choice of the former is non-trivial, but luckily algorithms are modular! We can use any kernel with any kernel algorithm.
 
 Kernel learning, unfortunately, is prone to overfitting. Moreover, all information must go through the kernel-bottleneck.
-
-
 
 # Optimization
 
