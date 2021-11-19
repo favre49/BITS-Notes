@@ -581,6 +581,57 @@ Kernel methods consist of two modules - the kernel, and the kernel algorithm. Th
 
 Kernel learning, unfortunately, is prone to overfitting. Moreover, all information must go through the kernel-bottleneck.
 
+# Ensemble Learning
+
+Ensemble methods use multiple classifiers together to obtain better predictive performance than could be obtained from any of the constituent classifiers alone. For instance, suppose that we have 25 "base classifiers", each of which have an error rate $e$ of 0.35. The ensemble classifier will classify based on the majority decision of the base classifiers. Hence, the probability of the ensemble classifier making a wrong prediction will follow a binomial distribution:
+$$\sum_{i = 13}^{25} {{25}\choose{i}} e^i (1-e)^{25-i} = 0.06$$
+
+Ensemble methods work best with "unstable classifiers", which are sensitive to small perturbations in the training set like decision trees.
+
+There are some general methods for constructing an ensemble classifier:
+
+- **Manipulating training set:** We can create multiple training sets by sampling the data according to some sampling distribution. Each classifier is built from each training set using some learning algorithm. This is what is done in bagging and boosting.
+- **Manipulating input features:** A subset of the input features is chosen to form each training set and fed to different classifiers. This is useful for data with many redundant features. Random Forests use this approach, with Decision Trees as their base classifiers.
+- **Manipulating class labels:** Here the training data is transformed into a binary class problem by randomly partitioning the class labels into 2 disjoint subsets. The relabelled examples are then used to train a base classifier. By doing this $O(\log n)$ times, we can complete the classification. This is especially useful when we have a large number of classes.
+- **Manipulating the learning algorithm:** Learning algorithms can be manipulated in such a way that applying the algorithm several times on the same training data may result in different models. For example, ANNs can produce different models with different network topologies. Unlike the other approaches, this is not generic and depends on which classifier we use.
+
+## Bagging
+
+Bagging is a short form for bootstrap aggregation. Given a training set $D$ of size $n$, bagging generates $m$ new training sets $D_i$ each of size $n'$ by sampling from $D$ uniformly with replacement. The samples so created are called **bootstrap samples**. Since we sample with replacement, each $D_i$ is independent from the others. Then, $m$ models are fitted with the bootstrap samples and combined (**aggregated**) by any heuristic, like averaging the output or voting.
+
+Since we sample with replacement, we can expect some observations to be repeated in each $D_i$. If $n' = n$, then the set $D_i$ is expected to have $1 - e^{-1} \approx 63.2\%$ unique examples from $D$. As such, the remaining 36.8% form the test set. This means the accuracy of bagging is given by:
+$$Acc(M) = \sum_{i=1}^k 0.632 \times Acc(M_i)_{test\_set} + 0.368 \times Acc(M_i)_{train\_set}$$
+
+Bagging works well when the data size is small and the base classifiers are unstable. It reduces the variance of each individual classifier, and does not focus on particular instances of the training data, resulting in a lower likelihood of overfitting.
+
+## Boosting
+
+Boosting is an iterative procedure to adaptively change the distribution of training data by focusing more on previously misclassified records. Initially, all $n$ records are assigned equal probabilities of being chosen. At the end of each boosting round, depending on whether or not the record was misclassified, the probabilities are adjusted. Correctly classified records have their probabilities decreased, while incorrectly classified records have their probabilities increased.
+Each classifier hence receives a training dataset $D_i$ chosen from a different distribution and they are no longer independent. The final boosted classifier combines the votes of each individual classifier, weighted by their accuracy.
+
+A popular example of boosting is the **AdaBoost algorithm**. Assume we have a dataset $D$ of $d$ tuples $(x_i, y_i)$ where $y_i$ is the class. Initially, a probability $1/d$ is assigned to every tuple. To generate $k$ base classifiers, we go through $k$ rounds of boosting. In each round, we do the following:
+
+1. The base classifier $M_i$ is trained on $D_i$, and it's error is tested. Say this error is $E(M_i)$.
+2. If a tuple is correctly classified, it's probability is multiplied by 
+$$\frac{E(M_i)}{1-E(M_i)}$$
+3. The probabilities are normalized.
+4. The weight of classifier $M_i$, $\w_i$ is given by:
+$$\frac{1}{2}\log{\frac{E(M_i)}{1-E(M_i)}}$$
+
+To classify a tuple, for each class $c$, we sum the weights of each classifier that assigned class $c$ to that tuple. The class with the highest sum is the winner.
+
+__Note: Check formulae, they are inconsistent. In fact the entire explanation seems so__
+
+## Random Forest
+
+Random forests use unpruned decision trees as their base classifiers. The trees themselves are trained on bootstrap samples of the training data created by bagging. When creating the trees, the best split is chosen by considering a random sample of variables instead of all of the variables.
+
+The error rate of the random forest rate depends on two things:
+
+- The **correlation** between any two trees in the forest. Increasing the correlation will increase the forest error rate.
+- The **strength** of each individual tree, where a **strong classifier** is characterizes with a lower rate. Increasing the strength of the individual trees decreases the forest error rate.
+
+
 # Optimization
 
 ## Constrained optimization
