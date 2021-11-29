@@ -615,7 +615,7 @@ A popular example of boosting is the **AdaBoost algorithm**. Assume we have a da
 2. If a tuple is correctly classified, it's probability is multiplied by 
 $$\frac{E(M_i)}{1-E(M_i)}$$
 3. The probabilities are normalized.
-4. The weight of classifier $M_i$, $\w_i$ is given by:
+4. The weight of classifier $M_i$, $w_i$ is given by:
 $$\frac{1}{2}\log{\frac{E(M_i)}{1-E(M_i)}}$$
 
 To classify a tuple, for each class $c$, we sum the weights of each classifier that assigned class $c$ to that tuple. The class with the highest sum is the winner.
@@ -630,6 +630,95 @@ The error rate of the random forest rate depends on two things:
 
 - The **correlation** between any two trees in the forest. Increasing the correlation will increase the forest error rate.
 - The **strength** of each individual tree, where a **strong classifier** is characterizes with a lower rate. Increasing the strength of the individual trees decreases the forest error rate.
+
+# Clustering
+
+Cluster analysis involves finding groups of objects such that the objects in a group will be similar to one another and different from the objects in other groups. It is an example of unsupervised learning. Unlike classification, we have no prior knowledge when clustering - for instance we do not know how many clusters there are, or what meaning we are looking for when clustering them.
+
+When clustering, the input in the raw form would be a matrix where every row is a vector for each data point. This would be a $n \times p$ matrix, i.e. there are $n$ points in the dataset each having $p$ variables. This is called the **data matrix**. However, we generally operate on the **dissimilarity matrix** instead. This is a $n \times n$ lower diagonal matrix where the entry in the $i$th row and the $j$th column give the dissimilarity between points $i$ and $j$. Of course the diagonal is $d(i,i) = 0$.
+
+The question arises as to what this dissimilarity function $d$ is. This can depend on the type of variables involved:
+
+1. **Numeric variables:** Numeric variables are those that have some real value. One issue is that these numeric values may not apply the same ranges - for instance while a height variable could go from 120 to 200, a hair length variable may only go up to 30. To fix this, we standardize the variables. In order to do this, we first calculate the **mean absolute deviation**:
+$$s_f = \frac{1}{n}(|x_{1f} - m_f| + |x_{2f} - m_f| + \cdots)$$
+where $m_f$ is given by:
+$$m_f = \frac{1}{n}(x_{1f} + x_{2f} + \cdots)$$
+Then, the standardized values are:
+$$z_{if} = \frac{x_{if} - m_f}{s_f}$$
+The dissimilarity function generally used is the distance. In general, the distance is given by the **Minkowski distance**
+$$d(i,j) = \sqrt[q]{|x_{i1} - x_{j1}| + |x_{i2} - x_{j2}| + \cdots}$$
+As such, when $q=2$ it is Euclidean distance and when $q=1$, it is Manhattan distance. Since it is a distance metric, it satisfies the properties that all distance metrics have.
+2. **Binary variables:** Imagine that we are comparing data points $i$ and $j$. Then, dissimilarity becomes akin to measuring precision and recall - we let $i$ be the ground truth and $j$ be the classifier's "guess". Then, one possible metric is the **simple matching coefficient**:
+$$d(i,j) = \frac{FN + FP}{TP+FP+TN+FN}$$
+Another possible metric is the Jacard coefficient:
+$$d(i,j) = \frac{FN+FP}{TP+FP+FN}$$
+The simple matching coefficient is invariant if the binary variable is symmetric, while the Jacard coefficient is non-invariant if the binary variable is asymmetric. (__Note: What does this mean__)
+3. **Nominal Variables:** Nominal variables are generalizations of binary variables in that they may take on more than 2 states (e.g. colours). One way to find the dissimilarity is to yet again use a simple matching:
+$$d(i,j) = \frac{p-m}{p}$$
+where $m$ is the number of matches and $p$ is the total number of variables.  Another is to create a large number of binary variables, one for every one of the nominal states. We can then use our binary variable distance metrics to compare them.
+4. **Ordinal Variables:** Ordinal variables may be discrete or continuous, but the order is important. These arise when considering rankings - consider a variable that signifies the placing of a participant in a contest. We can still treat these as numeric variables by standardizing them appropriately. Let $r_if$ be the rank such that $r_if \in [1,M_f]$. Then we replace it by:
+$$z_{if} = \frac{r_{if}-1}{M_f-1}$$
+5. **Ratio Scaled Variables:** Ratio scaled variables are measurements on a non-linear scale, like $Ae^{Bt}$. We can apply a logarithmic transformation and then treat them as continuous ordinal data from that point on.
+6. **Mixed Variables:** If the data point contain a mix of different variable types, we can combine the dissimilarities by taking their weighted average.
+
+Clustering is good when the clusters produced having high intra-class similarity and low inter-class similarity. Outliers are an enemy to good clustering - if any data point is far away from the others, then the clustering algorithm may be tempted to assign that it's own cluster. To prevent this, we should remove the outliers beforehand.
+
+There are two types of clustering:
+1. **Partitional clustering**, which involves the division of data points into non-overlapping clusters such that each object is in exactly one cluster.
+2. **Hierarchical clustering**, where a set of nested clusters are found, organized into a hierarchical tree.
+
+## K-Means
+
+In K-Means, we try to partition the input into $k$ clusters, where $k$ is known a priori. In order to find the clusters, we first pick $k$ random points as the "centroids" of the $k$ clusters. Then, we iteratively repeat the following steps:
+1. For each point, put the point in the cluster whose centroid is the closest.
+2. Recompute the cluster centroids.
+We do this until there is no change in the clusters between two consecutive iterations. The aggregate dissimilarity produced is the sum of the squares of the distances of each point from its cluster center, and this is decreased through every iteration till we reach the minima.
+
+Choosing random initial centroids is not ideal, since K-Means is sensitive to the starting conditions. Instead, we could sample and perform hierarchical clustering on that small sample. The $k$ clusters so found can then be used as initial seeds. This is only doable with small sample sizes and values of $k$.
+
+K-Means is fast and easy to implement. However, it has multiple issues:
+1. It is only applicable when a centroid can be defined. For instance, what can we do when there is categorical data?
+2. We need to specify the number of clusters $k$ beforehand. You cannot just try different $k$ since the intra-cluster distances will always decrease with increase in $k$, but doing so may lose any interpretability and meaning.
+3. It is sensitive to the choice of the starting centroids - we must try out multiple starting points.
+4. It does not handle outliers.
+5. It assumes clusters are spherical in coordinate space, and is hence  sensitive to changes in the coordinate space.
+
+There exist some variations on K-Means that can improve performance. For instance, we have **Bisecting K-means**. In Bisecting K-Means, we start with an initial cluster containing all the points. Then, we repeat the following steps:
+
+1. Select a cluster from the list of clusters.
+2. Using K-Means, bisect the selected cluster.
+3. Add the two clusters from the bisection with the lowest SSE to the list of clusters.
+This continues until we have $K$ clusters.
+
+## Fuzzy Clustering
+
+So far, we have only discussed clusters where a point can belong to only one cluster. In fuzzy clustering, we allow data points to belong to multiple clusters. A fuzzy cluster $S$ assigns a value in the range $[0,1]$ to every data point - the higher this value the more it "belongs" to that cluster.
+
+In general, for $m$ fuzzy clusters $C_1, C_2, \cdots C_m$ on $n$ points, we can represent the clustering as a $n \times m$ **partition matrix** $M$. This matrix must satisfy the following properties:
+
+1. For every $i,j$, $M_{i,j} \in [0,1]$.
+2. For every object $o_i$, $\sum_{j=1}^m M_{i,j} = 1$.
+3. For every cluster $C_j$, $\sum_{i=1}^n M_{i,j} \in (0,n)$, ensuring there are no empty clusters.
+
+Let $c_1, c_2, \cdots c_m$ be the centers of the $m$ clusters. Then for any object $o_i$, the sum of squared errors is given by:
+$$SSE(o_i) = \sum_{j=1}^m M_{ij}^p dist(o_i,c_j)^2$$
+For any cluster $C_j$, the SSE is given by:
+$$SSE(C_j) = \sum_{i=1}^n M_{ij}^p dist(o_i,c_j)^2$$
+The total clustering SSE is:
+$$SSE(C) = \sum_{i=1}^n \sum_{j=1}^m M_{ij}^p dist(o_i,c_j)^2$$
+
+## Model-Based Clustering
+
+In Model-Based Clustering, we find a set of $k$ clusters $C_1, C_2, \cdots, C_k$ with probability density functions $f_1, f_2, \cdots, f_k$ and their probabilities $\omega_1, \omega_2, \cdots, \omega_k$. Probability of an object $o$ generated by cluster $C_j$ is given by:
+$$P(o|C_j) = \omega_j f_j(o)$$
+Probability of $o$ generated by the set of clusters $C$ is:
+$$P(o|C) = \sum_j \omega_j f_j(o)$$
+We assume the objects have been generated independently. Hence, the probability of generating the entire dataset is:
+$$P(D|C) = \prod_i P(o_i|C)$$
+Our goal is to find a set of $k$ probabilistic clusters such that $P(D|C)$ is maximized. In order to make this problem tractable, we generally assume that $f$ assumes some parametrizes probability distributions. For instance, in a **Univariate Gaussian Mixture Model**, we assume each probability density function follows a 1D Gaussian distribution, centered at $\mu_j$ and having s.d $\sigma_j$. Hence, the set of clusters can be parametrized by a set $\Theta = \{\theta_i\}$ where $\theta_i = (\mu_i,\sigma_i)$. Hence, the value we want to minimize would be:
+$$P(O|\Theta) = \prod_{i=1}^n \sum_{j=1}^k \frac{1}{\sqrt{2 \pi} \sigma_j} e^{-\frac{(o_i - \mu_j)^2}{2 \sigma^2}}$$
+
+A popular model-based clustering algorithm is the **Expectation Maximization Algorithm** or the EM Algorithm. 
 
 
 # Optimization
