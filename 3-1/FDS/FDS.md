@@ -718,7 +718,103 @@ $$P(D|C) = \prod_i P(o_i|C)$$
 Our goal is to find a set of $k$ probabilistic clusters such that $P(D|C)$ is maximized. In order to make this problem tractable, we generally assume that $f$ assumes some parametrizes probability distributions. For instance, in a **Univariate Gaussian Mixture Model**, we assume each probability density function follows a 1D Gaussian distribution, centered at $\mu_j$ and having s.d $\sigma_j$. Hence, the set of clusters can be parametrized by a set $\Theta = \{\theta_i\}$ where $\theta_i = (\mu_i,\sigma_i)$. Hence, the value we want to minimize would be:
 $$P(O|\Theta) = \prod_{i=1}^n \sum_{j=1}^k \frac{1}{\sqrt{2 \pi} \sigma_j} e^{-\frac{(o_i - \mu_j)^2}{2 \sigma^2}}$$
 
-A popular model-based clustering algorithm is the **Expectation Maximization Algorithm** or the EM Algorithm. 
+A popular model-based clustering algorithm is the **Expectation Maximization Algorithm** or the EM Algorithm. The EM algorithm considers of two steps:
+
+1. **Expectation Step**, which assigns objects to clusters according to the current fuzzy clustering or parameters of probabilistic clusters.
+2. **Maximization Step**, which finds the new clustering or parameters that maximize the SSE or the expected likelihood.
+
+K-Means also basically has these steps. In the E-Step, K means assigns to the closest cluster, and in the M-Step, K means chooses the new centroids as the cluster centroids.
+
+The EM algorithm can be illustrated using an example with fuzzy clustering. Imagine a set of points $O$, and we want to find 2 clusters. Initially, let $c_1$ and $c_2$ be centroids randomly chosen among the given points. Then, in the E-Step, we try to calculate every point's membership to each cluster. This means that for every point $o \in O$, we calculate it's membership to $c_1$ as:
+$$\frac{dist(o,c_2)^2}{dist(o,c_1)^2 + dist(o,c_2)^2}$$
+We also calculate this for $c_2$. Then, in the M-Step, we calculate the new centroids as the weighted means of the points in $O$. We repeat this process until there is no change in the cluster values.
+
+Now, how can we apply this to mixture models? We are given a set of objects $O$ and we want to estimate a set of parameters $\Theta = \{\theta_i\}$, where each $\theta_i = (\mu_i, \sigma_i)$, the parameters of individual Gaussian distributions. As such, this forms a Gaussian mixture model.
+Now we apply the EM algorithm. Initially, $\Theta$ is random. Then, the steps are:
+
+1. In the E-step, for each object $o \in O$, we calculate the probability that it belongs  to each distribution, i.e.:
+$$P(\Theta_j | o_i \Theta) = \frac{P(o,\Theta_j)}{\sum_{l} P(o_i|\Theta_l)}$$
+2. In the M-step, we adjust the parameters of $\Theta$ so that the expected likelihood $P(O | \Theta)$ is maximized. This can be achieved by setting:
+$$\mu_j = \frac{1}{k} \sum_{i=1}^n o_i \frac{P(\Theta_j | o_i, \Theta)}{ \sum_{l} P(\Theta_j | o_l, \Theta)} = \frac{1}{k} \frac{\sum_{i=1}^n o_i P(\Theta_j | o_i, \Theta)}{ \sum_l P(\Theta_j | o_i, \Theta)}$$
+$$\sigma_j = \sqrt{\frac{\sum_{i=1}^n P(\Theta_j | o_i, \Theta) (o_i - \mu_j)^2}{\sum_{i=1}^n P(\Theta_j | o_i, \Theta)}}$$
+
+The advantages of such models are:
+
+- They are more general than partitioning and fuzzy clustering.
+- Clusters can be characterized with a small number of parameters.
+- The results can satisfy the assumptions of the generative models.
+
+The disadvantages of such models are:
+
+- They may converge to local optima.
+- They are computationally intensive if there is a small number of points or if the number of clusters is large.
+- It is hard to estimate the number of clusters.
+
+## K-Modes and K-Medoids
+
+K-Modes is an extension of K-Means to allow the clustering of categorical data by using the modes of clusters instead of their means.
+
+K-Medoids, as the name suggests, uses medoids instead of means for the "centroid" of the cluster. The medoid of a cluster is the point in it that is closest to the mean - this means that the centroids are now restricted to be one of the points in the dataset. A classical example of the K-Medoids algorithm is **PAM**, which stands for Partitioning Around Medoids. Initially, we arbitrarily choose $k$ objects as the medoids. Then, we repeatedly do the following:
+
+- Assign each object to the cluster of the closest medoid.
+- Randomly select a non-medoid object $o'$, and swap it with $o$ in the final set of medoids if it decreases the cost function.
+
+This means that at every step in the algorithm, the overall "cost" is improved. This cost is the sum of errors, given by:
+$$E = \sum_{i=1}^k \sum_{p \in C_i} dist(p,c_i)$$
+To check if the swap decreases this cost function, i.e. the change in cost is negative, we need to see how points in the dataset are reassigned - they may stay in the same clusters, be assigned to the random point, or join an old cluster. For every reassignment, we calculate the change in the error, and only do the swap if the total change is negative.
+
+PAM is more robust to outliers than K-means, but it does not scale to large datasets. If we want to work with larger datasets, we need to use sampling based methods like CLARA.
+
+# Active Learning
+
+For some problems, while unlabelled data may be abundant, labelling it can be expensive. For instance, consider speech recognition tasks - labelling sound-bites could take much longer than the length of the sound-bite itself. Once you scale this to thousands of segments, it becomes impossible to label them all quickly and cheaply. For tasks like these, we can make use of active learning. In active learning, the learning algorithm actively queries an oracle for the labels. Generally, the number of labels queried is much fewer than the amount needed for normal supervised learning.
+
+Let us illustrate the use of active learning by considering the problem of finding the threshold $\theta$ of some threshold $f_{\theta}$ such that $f_{\theta}(x) = -1$ if $x \leq \theta$ and 1 otherwise. From our previous discussions, we may choose to solve this using a decision stump, which is a threshold classifier. It would need the labels of all the points to do this, and choose a $\theta$ which minimizes the number of misclassified points. Instead, an active learner may just need $\log{n}$ different points. Since the function itself is monotonic, the active learner can use binary search to find the threshold function!
+
+Another case could be an interval function $f_{a,b}$ such that $f_{a,b} = 1$ if $x \in [a,b]$, and -1 otherwise. Here binary search cannot be used directly. The active learner would query random points to find one such that $f_{a,b}(x)$ is 1, and then perform binary search on either side of that 1 to find the interval. The binary search part will still take $O(\log n)$ queries, but finding the 1 can require querying every point in the worst case.
+
+## Membership Query Synthesis
+
+Membership Query Synthesis is a type of active learning algorithm. Here, the learner may request labels for any unlabelled instance in the input space, including queries that the learner generates _de novo_ rather than those sampled from some underlying natural distribution. For instance, if the dataset has pictures of humans and animals, the active learner may query a clipped image of a leg to the oracle and query if it belongs to a human or an animal.
+
+This is reasonable for many problems, but may be awkward in the case of human annotators. For instance, in the case of handwriting recognition, an active learner may query images that contain no recognizable characters.
+
+## Stream Based Selective Sampling
+
+In stream based selective sampling, we assume that obtaining an unlabelled instance is inexpensive, so it can be sampled from the actual distribution and then the active learner can decide whether or not to request it's label. This is stream-based since the learned normally draws each unlabelled instance one at a time from the data source and the learner must decide whether or not to discard it. If the input distribution is uniform, it acts much like membership query synthesis. However, even if this is not the case, we are guaranteed that the queries are still sensible.
+
+## Pool Based Sampling
+
+Assume that we have a small set $L$ of labelled data and a large pool $U$ of unlabelled data. Queries are selectively drawn from the pool $U$, typically in a greedy fashion according to some measure of "informativeness". Pool-based sampling is more common than stream-based. Stream-based sampling is generally more appropriate when memory and processing power is limited.
+
+## Query Selection Strategies
+
+From our discussion so far, we can summarize how an active learning algorithm would work. It proceeds in rounds, with each round having some model trained from the previous ones. This model is used to assess "informativeness" of unlabelled examples, and the most informative samples are selected for querying. The oracle returns the labels and then the model is re-trained. 
+
+In order to do this, we need a query selection strategy that can score the unlabelled examples and give us a measure of "informativeness". One such strategy is **Uncertainty Sampling**, where the algorithm queries the examples that it is most uncertain about. This kind of strategy is especially straightforward for probabilistic models. For instance, if we are using such a model for binary classification, we would simply query those examples whose posterior probability of being positive is closest to 0.5.
+
+In the case of multi-class uncertainty sampling, we might choose the instance whose prediction is the least confident, which is the $x$ such that 
+$$1 - P(\widehat{y} | x)$$
+is maximum where $\widehat{y} = argmax_{y} P_\theta(y | x)$, or the class label with the highest posterior probability under the model $\theta$.
+
+However, this criterion only consider information about the most probable label, and throws away the rest. To correct for this, another approach is **margin sampling**:
+$$x^*_M = argmin_x P_{\theta}(\widehat{y}_1 | x) - P_{\theta}(\widehat{y}_2 | x)$$
+where $\widehat{y}_1$ and $\widehat{y_2}$ are the first and second most probable class labels. This corrects the problem a bit, but is still not ideal for large label sets.
+
+A more general solution to the problem is using **entropy**:
+$$x^*_H = argmax_x - \sum_i P_{\theta}(y_i|x) \log{P_{\theta}(y_i|x)}$$
+
+Another query selection strategy is **Query by Committee** or QBC. This involves maintaining a "committee" of models  which are all trained on the current labelled data $L$, but represent competing hypotheses. Each member votes on the labellings of the query candidates. The most informative query is the one about which they most disagree.
+
+The fundamental idea behind QBC is the minimization of the **version space**, which is the set of hypotheses that are consistent with the current labelled training data $L$. By querying in controversial regions of the input space, QBC tries to constrain the size of the version space as much as possible by querying as few labelled instances as possible.
+
+The committee of models itself can be constructed using boosting or bagging, since it is essentially an ensemble. We also need a measure of voter disagreement. One way to do this is using **vote entropy**, given by:
+$$x_{VE}^* = argmax_x - \sum_i \frac{V(y_i)}{C} \log{\frac{V(y_i)}{C}}$$
+where $y_i$ again ranges from all possible labellings, $V(y_i)$ is the number of votes that a label receives from among the members' predictions, and $C$ is the committee size.
+
+
+
+
 
 
 # Optimization
