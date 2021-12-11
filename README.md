@@ -10,6 +10,6 @@ The notes for the Machine Learning course have been merged with the notes for FD
 
 * The information may not be complete or 100% reliable until we have a major exam on that portion.
 * Often parts of the syllabus were cut out. You may not find what you are looking for in that case.
-* If the portions were covered in previous courses (looking at you DAA), I will point to that, but not include it.
+* If the portions were covered in previous courses, I will point to that, but not include it.
 
 I welcome any and all pull requests and issues.
