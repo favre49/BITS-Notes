@@ -646,7 +646,7 @@ $$m_f = \frac{1}{n}(x_{1f} + x_{2f} + \cdots)$$
 Then, the standardized values are:
 $$z_{if} = \frac{x_{if} - m_f}{s_f}$$
 The dissimilarity function generally used is the distance. In general, the distance is given by the **Minkowski distance**
-$$d(i,j) = \sqrt[q]{|x_{i1} - x_{j1}| + |x_{i2} - x_{j2}| + \cdots}$$
+$$d(i,j) = \sqrt[q]{|x_{i1} - x_{j1}|^q + |x_{i2} - x_{j2}|^q + \cdots}$$
 As such, when $q=2$ it is Euclidean distance and when $q=1$, it is Manhattan distance. Since it is a distance metric, it satisfies the properties that all distance metrics have.
 2. **Binary variables:** Imagine that we are comparing data points $i$ and $j$. Then, dissimilarity becomes akin to measuring precision and recall - we let $i$ be the ground truth and $j$ be the classifier's "guess". Then, one possible metric is the **simple matching coefficient**:
 $$d(i,j) = \frac{FN + FP}{TP+FP+TN+FN}$$
@@ -812,9 +812,78 @@ The committee of models itself can be constructed using boosting or bagging, sin
 $$x_{VE}^* = argmax_x - \sum_i \frac{V(y_i)}{C} \log{\frac{V(y_i)}{C}}$$
 where $y_i$ again ranges from all possible labellings, $V(y_i)$ is the number of votes that a label receives from among the members' predictions, and $C$ is the committee size.
 
+## Exploiting Cluster Structure
+
+Say we cluster our data into $k$ clusters. Then, we can sample a few randomly chosen points in each cluster, and find the majority label in each of them. Finally, we can assign that majority label to every point in the cluster. This creates a new labelled dataset while only labelling some small proportion of it. We can use this new labelled dataset to build a classifier for our problem.
+
+# Reinforcement Learning
+
+In reinforcement learning, the agent acts on its environment and receives an evaluation of its action, but is not told which action is the correct one to achieve it's goal. The agent uses this evaluation to develop an optimal policy that maximizes it's long-term reward.
+
+The **policy** $\pi$ is a mapping from the set of states $S$ to the set of actions $A$. This means that based on the current state, the agent chooses some action according to it's policy. The **reward function** $R$ maps each state (or state-action pair) to a real number called the **reward**. The **value function** $V$ maps a state (or state-action pair) to it's **value**, which is the total expected reward starting from that state. This means that our "optimal policy" must maximize the value function.
+
+In some cases, the agent-environment interaction has some terminal states, after which the agent's task will finish. This allows us to naturally break it into subsequences called **episodes**, starting in a starting state and ending in a terminal state. Tasks like this are called **episodic tasks**. When this is the case, the return or payoff from time step $t$ is simply the sum of the rewards:
+$$G_t = R_{t+1} + R_{t+2} + \cdots + R_T$$
+
+However, this is not always the case. Sometimes, the agent may have a long life span or an endless task. Such tasks are called **continuing tasks**. To allow a well-defined payoff, we need a concept of **discounting**, which states that later rewards are less valuable. This is done with a discount factor $\gamma \in [0,1)$. The goal of the agent would be to maximize the expected discounted return, i.e.:
+$$G_t = R_{t+1} + \gamma R_{t+2} + \cdots  = \sum_{k=0}^{\infty} \gamma^k R_{t+k+1}$$
 
 
+## Markov Decision Process
 
+A **Markov Decision Process** is a tuple $(S,A,\{P_{sa}\}, \gamma, R)$ where:
+
+- $S$ is a set of states
+- $A$ is a set of actions
+- $P_{sa}$ are the transition probabilities. It is a distribution over the state space, telling us which states we will transition to if we take action $a$ in state $s$
+- $\gamma \in [0,1)$ is the discount factor
+- $R : S \times A \to \mathbb{R}$ is the reward function.
+
+An MDP is a fully observable domain, so we always know which state we are in and the transition probabilities. Moreover, since it is Markovian, it is stateless, and the history is unimportant. The time taken for a transition is also fixed.
+
+For a given policy $\pi$, we can have two different value functions. One is the **state-value function** $v_{\pi}$, given by:
+$$v_{\pi}(s) = E[\sum_{k=0}^{\infty} \gamma^k R_{t+k+1} | S_t = s, \pi]$$
+The other is the **action-value function** $q_{\pi}(s,a)$, given by:
+$$q_{\pi}(s,a) = E_{\pi}[\sum_{k=0}^{\infty} \gamma^k R_{t+k+1} | S_t = s, A_t = a, \pi]$$
+
+The policy $\pi_*$ is an **optimal policy** if it's expected return is greater than or equal to that of $\pi$ over all states for every policy $\pi$. All optimal policies have the same value functions:
+$$v_*(s) = max_{\pi}v_{\pi}(s)$$
+$$q_*(s,a) = max_{\pi}q_{\pi}(s,a)$$
+We can write $q_*$ in terms of $v_*$ as follows:
+$$q_*(s,a) = E[R_{t+1} + \gamma v_*(S_{t+1}) | S_t = s, A_t = a]$$
+Intuitively, the value of a state under an optimal policy must equal the expected return for the best action from that state. This is encoded in the **Bellman optimality equation**:
+$$v_*(s) = R(s) + \max_{a \in A} \gamma \sum_{s'} P_{sa}(s') v_*(s')$$
+For the action-value function, it is given by:
+$$q_*(s,a) = R(s) + \gamma \sum_{s' \in S} P_{sa}(s') \max_{a' \in A} q_*(s',a')$$
+
+### Value Iteration
+
+_Not In Syllabus_
+
+### Policy Iteration
+
+_Not In Syllabus_
+
+### Q-Learning
+
+In Q-Learning, we attempt to learn the action value function over time. This is simple and easy to implement, but since it has to keep information about state-action pairs, it is memory intensive. Initially, $Q$ is fixed to some arbitrary value. Then, at each time $t$ the agent selects an action $a_t$, observes a reward $r_t$ and enters the new state $s_{t+1}$. After this, $Q$ gets updated. This is done using a Bellman equation:
+$$Q'(s,a) = Q(s,a) + \alpha(r_t + \gamma \max_a Q(s',a) - Q(s,a))$$
+$\alpha$ is the learning rate. A single run of the algorithm generally ends after an episode, but it can also be used in continuous tasks.
+
+## Exploration and Exploitation
+
+In reinforcement learning, we are making decisions online. This means that we must make a choice:
+- Exploitation, where we make the best decision based on the current information
+- Exploration, where we gather more information
+Ideally, we want to explore in the short term so that we gain more information, but exploit in the long term so that we have a good policy and can move in the direction of optimality.
+
+To choose between which to do, we need **action selection techniques**. Based on the current action value function, there are three ways of choosing $a$:
+
+- **Greedy**, by always picking the action $a$ such that $Q(s,a)$ is maximum
+- **$\epsilon$-greedy**, where we pick a random action with some probability $\epsilon$, otherwise we pick the greedy action. This allows for exploration, resulting in better solutions that pure greedy.
+- **Softmax**. The softmax function approximates a hardmax function, but is infinitely differentiable. It is used to find the action probabilities, given by:
+    $$P(a) = \frac{\exp(Q(s,a)/\tau)}{\sum_{a' \in A} \exp(Q(a')/\tau)}$$
+    $\tau$ is the "temperature parameter", akin to simulated annealing. When $\tau$ is large, actions have almost the same probability(exploration). This decreases over time, forcing action probabilities to matter more (exploitation)
 
 
 # Optimization
